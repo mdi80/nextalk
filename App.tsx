@@ -3,17 +3,18 @@ import React from 'react';
 import { RootStackNavigator } from './app/navigator/stackNavigations';
 import { Provider } from 'react-redux';
 import { store } from './app/store';
+import Container from './app/components/screenContainer';
 
 
 function App(): JSX.Element {
   return (
-
-    <Provider store={store}>
-      <NavigationContainer>
-        <RootStackNavigator />
-      </NavigationContainer>
-    </Provider>
-
+    <Container>
+      <Provider store={store}>
+        <NavigationContainer>
+          <RootStackNavigator />
+        </NavigationContainer>
+      </Provider>
+    </Container>
   );
 }
 

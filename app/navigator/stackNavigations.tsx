@@ -45,7 +45,7 @@ export const AuthNavigator = () => (
     <AuthStack.Navigator>
         <RootStack.Screen name="auth_intro" component={IntroAuthScreen} options={{ headerShown: false }} />
         <AuthStack.Screen name="phone" component={InsertPhoneVerify} options={{ headerShown: false, animation: 'fade' }} />
-        <AuthStack.Screen name="verifyphone" component={InsertCodeVerify} options={{ headerShown: false }} />
+        <AuthStack.Screen name="verifyphone" component={InsertCodeVerify} options={{ headerShown: false, animation: 'fade' }} />
 
         {/* <AuthStack.Screen name="login" component={InsertPhoneVerify} options={{ headerShown: false }} /> */}
     </AuthStack.Navigator>

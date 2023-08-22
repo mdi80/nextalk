@@ -27,10 +27,11 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
     const phoneNumberPattern = /^\+[0-9]{12,}$/;
 
     const onPressNext = () => {
-        console.log('here');
+
 
         if (phoneInput.trim() === "") {
-            setError("Enter something FOOL")
+            navigation.navigate("verifyphone")
+            // setError("Enter something FOOL")
         } else if (!phoneInput.startsWith("+")) {
             setError("Should start with +")
 
