@@ -47,7 +47,7 @@ function IntroScreen({ navigation }: Props): JSX.Element {
             if (token) {
                 navigation.replace("main", { home: undefined })
             } else {
-                navigation.navigate("auth", { auth_intro: undefined, phone: undefined, verifyphone: undefined })
+                navigation.replace("auth", { auth_intro: undefined, phone: undefined, verifyphone: undefined })
             }
         }
     }, [timerFinished, userLoading])
