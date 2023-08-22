@@ -6,11 +6,11 @@ import typogrphy from "../../theme/font"
 
 type TextProps = {
     style?: TextStyle
-    childern?: React.ReactNode
+    children?: React.ReactNode
 }
 
 
-const Text = ({ style, childern }: TextProps) => {
+const Text = ({ style, children }: TextProps) => {
     const { colorText } = useTheme()
 
     return (
@@ -21,7 +21,7 @@ const Text = ({ style, childern }: TextProps) => {
                 fontSize: typogrphy.fontSize.m,
                 ...style
             }}>
-            {childern}
+            {children}
         </RNText>
     )
 }

@@ -1,16 +1,53 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import LoginScreen from "../screens/login";
+import { NativeStackNavigationProp, createNativeStackNavigator } from "@react-navigation/native-stack";
+import InsertPhoneVerify from "../screens/auth/insertPhoneScreen";
 import IntroScreen from "../screens/intro";
+import InsertCodeVerify from "../screens/auth/insertCodeVerifyScreen";
+import IntroAuthScreen from "../screens/auth/introScreen";
+import MainScreen from "../screens/main";
+import { AuthStackParams, MainStackParams, RootStackParamsType } from "./types";
 
 
-const Stack = createNativeStackNavigator()
+const RootStack = createNativeStackNavigator()
 
 
-export const MainStackNavigator = () => (
 
-    <Stack.Navigator>
-        <Stack.Screen name="intro" component={IntroScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="login" component={LoginScreen} options={{ headerShown: false }} />
-    </Stack.Navigator>
+
+
+
+export const RootStackNavigator = () => (
+
+    <RootStack.Navigator>
+        <RootStack.Screen name="intro" component={IntroScreen} options={{ headerShown: false }} />
+        <RootStack.Screen name="auth" component={AuthNavigator} options={{ headerShown: false, animation: 'none' }} />
+        <RootStack.Screen name="main" component={MainNavigator} options={{ headerShown: false }} />
+    </RootStack.Navigator>
 )
 
+
+const MainStack = createNativeStackNavigator()
+
+export const MainNavigator = () => (
+
+    <MainStack.Navigator>
+        <MainStack.Screen name="home" component={MainScreen} options={{ headerShown: false }} />
+
+    </MainStack.Navigator>
+
+)
+
+
+
+
+const AuthStack = createNativeStackNavigator<AuthStackParams>()
+
+export const AuthNavigator = () => (
+
+    <AuthStack.Navigator>
+        <RootStack.Screen name="auth_intro" component={IntroAuthScreen} options={{ headerShown: false }} />
+        <AuthStack.Screen name="phone" component={InsertPhoneVerify} options={{ headerShown: false, animation: 'fade' }} />
+        {/* <AuthStack.Screen name="login" component={InsertCodeVerify} options={{ headerShown: false }} /> */}
+
+        {/* <AuthStack.Screen name="login" component={InsertPhoneVerify} options={{ headerShown: false }} /> */}
+    </AuthStack.Navigator>
+
+)
