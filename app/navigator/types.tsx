@@ -17,4 +17,5 @@ export type MainStackParams = {
 export type AuthStackParams = {
     auth_intro: undefined
     phone: undefined
+    verifyphone: undefined
 } 

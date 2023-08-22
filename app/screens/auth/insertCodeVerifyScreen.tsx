@@ -1,6 +1,8 @@
 import { JSX } from "react"
-import { SafeAreaView, Text, StatusBar } from "react-native"
+import { SafeAreaView, Text } from "react-native"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
+import Container from "../../components/screenContainer"
+import { AppStatusBar } from "../../components/StatusBar"
 
 
 function InsertCodeVerify(): JSX.Element {
@@ -8,13 +10,10 @@ function InsertCodeVerify(): JSX.Element {
 
 
     return (
-        <SafeAreaView
-            style={{
-                flex: 1,
-            }}>
-            <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
-
-        </SafeAreaView>
+        <Container>
+            <AppStatusBar />
+            
+        </Container>
 
     )
 }

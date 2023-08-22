@@ -4,12 +4,12 @@ export default {
     primary: "#0DB787",
     secondry: "",
     light: {
-        background: "white",
+        background: "#DDDDDD",
         text: "black",
         lightText: "",
     },
     dark: {
-        background: "black",
+        background: "#222222",
         text: "white",
         lightText: "",
     },

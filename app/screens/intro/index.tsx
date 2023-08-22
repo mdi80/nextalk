@@ -45,12 +45,9 @@ function IntroScreen({ navigation }: Props): JSX.Element {
             console.log(token);
 
             if (token) {
-                //Change app state to 
-
+                navigation.replace("main", { home: undefined })
             } else {
-                console.log("here");
-
-                navigation.replace("auth", { auth_intro: undefined, phone: undefined })
+                navigation.navigate("auth", { auth_intro: undefined, phone: undefined, verifyphone: undefined })
             }
         }
     }, [timerFinished, userLoading])
@@ -60,13 +57,7 @@ function IntroScreen({ navigation }: Props): JSX.Element {
         <Container style={styles.container}>
             <AppStatusBar translucent forcelight />
 
-            {/* <Animated.View
-                style={{
-                    width: 300, height: 300
-                }}
-                sharedTransitionTag="tag"> */}
             <FontAwesome name="send-o" color="white" size={100} />
-            {/* </Animated.View> */}
             {timerFinished && userLoading &&
 
                 <DotIndicator
