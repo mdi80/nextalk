@@ -7,19 +7,18 @@ import { getUserFromStorage } from "./utils"
 import { useDispatch, useSelector } from "react-redux"
 import { setUserInfo } from "../../reducers/auth"
 import { RootState } from "../../store"
-import { IntroScreenParmas, RootStackParamsType } from "../../navigator/types"
+import { RootStackParamsType } from "../../navigator/types"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { StyleSheet } from "react-native"
 import colors from "../../theme/colors"
 
 type Props = {
-    route: IntroScreenParmas
     navigation: NativeStackNavigationProp<RootStackParamsType, 'intro'>
 };
 
 
 
-function IntroScreen({ navigation, route }: Props): JSX.Element {
+function IntroScreen({ navigation }: Props): JSX.Element {
 
     const [timerFinished, setTimerFinshed] = React.useState(false)
     const [userLoading, setUserLoading] = React.useState(true)
@@ -44,7 +43,7 @@ function IntroScreen({ navigation, route }: Props): JSX.Element {
             if (token) {
                 navigation.replace("main", { screen: 'home' })
             } else {
-                navigation.replace("auth", { screen: 'login' })
+                navigation.replace("auth", { screen: 'auth_intro' })
             }
         }
     }, [timerFinished, userLoading])

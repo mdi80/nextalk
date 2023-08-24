@@ -75,8 +75,8 @@ export const addUser = async (db: SQLiteDatabase, userTableName: string, userInf
 export const updateUserLastActive = async (db: SQLiteDatabase, userTableName: string, phone: string, acitve: boolean) => {
 
     const updateQuery =
-        `UPDATE TABLE ${userTableName} SET lastactive=` +
-        `(${acitve ? 'TRUE' : 'FALSE'}) WHERE phone=${phone}`
+        `UPDATE ${userTableName} SET lastactive=` +
+        `${acitve ? 'TRUE' : 'FALSE'} WHERE phone='${phone}';`
 
     await db.executeSql(updateQuery);
 };

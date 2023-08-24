@@ -5,7 +5,8 @@ import { AUTH_URL } from '../config';
 const LOGOUT_URL = AUTH_URL + "logout/"
 const VERIFY_PHONE_URL = AUTH_URL + "verify/"
 const VERIFY_CODE_URL = AUTH_URL + "check-code/"
-
+const SIGNUP_URL = AUTH_URL + "user/"
+const LOGIN_URL = AUTH_URL + "login/"
 
 
 
@@ -39,6 +40,7 @@ interface verifyPhoneCodeReturnType {
     new: boolean
     first_name?: string
     last_name?: string
+    username?: string
 }
 
 const verifyPhoneCode = async (phone: string, code: number): Promise<verifyPhoneCodeReturnType | null> => {
@@ -63,6 +65,81 @@ const verifyPhoneCode = async (phone: string, code: number): Promise<verifyPhone
     }
 
 }
+
+
+interface signupProps {
+    phone_key: string
+    first_name: string
+    last_name: string
+    userid?: string
+}
+
+
+const signup = async (data: signupProps): Promise<boolean> => {
+
+    try {
+        const res = await axios.post(SIGNUP_URL, data, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+
+        return res.status === 201
+
+    } catch (error: any | AxiosError) {
+        if (error.response) {
+            return false
+        } else if (error.request) {
+            throw Error("No Response!")
+        } else {
+            throw Error("Unkowen Error!")
+        }
+    }
+
+}
+
+interface returnUserInfo {
+    first_name: string,
+    last_name: string,
+    phone: string,
+    userid: string | undefined,
+    date_joined: string
+
+}
+
+interface loginResault {
+    token: string
+    user: returnUserInfo
+}
+
+
+const login = async (phone_token: string): Promise<loginResault> => {
+
+    try {
+        const { data, status } = await axios.post(LOGIN_URL, { phone_token: phone_token }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        console.log(data);
+        console.log(status);
+
+
+        return data
+
+    } catch (error: any | AxiosError) {
+
+        if (error.response) {
+            throw Error(error.response?.statusText)
+        } else if (error.request) {
+            throw Error("No Response!")
+        } else {
+            throw Error("Unkowen Error!")
+        }
+    }
+
+}
+
 
 
 
@@ -99,4 +176,4 @@ const logoutToken = async (token: string | null): Promise<boolean> => {
     return false
 }
 
-export { logoutToken, verifyPhone, verifyPhoneCode }
+export { logoutToken, verifyPhone, verifyPhoneCode, signup, login, }

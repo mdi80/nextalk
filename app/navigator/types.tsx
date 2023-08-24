@@ -1,10 +1,18 @@
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { NavigatorScreenParams } from '@react-navigation/native';
 
-export type IntroScreenParmas = {}
+export type SignUpScreenProps = {
+    phone_token: string
+    phone: string
+}
+export type AddUserNameScreenProps = {
+    phone_token: string
+    phone: string
+    firstname: string
+    lastname: string
+}
 
 export type RootStackParamsType = {
-    intro: NavigatorScreenParams<IntroScreenParmas>
+    intro: NavigatorScreenParams<undefined>
     auth: NavigatorScreenParams<AuthStackParams>
     main: NavigatorScreenParams<MainStackParams>
 }
@@ -18,5 +26,6 @@ export type MainStackParams = {
 export type AuthStackParams = {
     auth_intro: undefined
     phone: undefined
-    login: { phone_key: string } | undefined
+    signup: SignUpScreenProps
+    setusername: AddUserNameScreenProps
 } 

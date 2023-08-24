@@ -1,22 +1,32 @@
-import React from "react"
+import React, { LegacyRef, MutableRefObject, Ref, RefObject, forwardRef, useEffect, useImperativeHandle, useRef } from "react"
 import { TextInput as RNTextInput, TextInputProps } from "react-native"
 import useTheme from "../../theme"
 import typogrphy from "../../theme/font"
 import colors from "../../theme/colors"
 
 
-interface props extends TextInputProps {
+export interface props extends TextInputProps {
     isFouced?: boolean
 }
 
+export interface RefTextInput {
+    focus: () => void
+}
 
-const TextInput = (props: props) => {
+
+const TextInput = forwardRef((props: props, ref: Ref<RefTextInput>) => {
     const { colorText } = useTheme()
+    const tnref = useRef<RNTextInput | null>(null)
 
+    useImperativeHandle(ref, () => ({ focus }));
+    function focus() {
+        tnref.current?.focus()
+    }
     return (
         <RNTextInput
-            cursorColor={colorText}
-            placeholderTextColor="#aaaaaa"
+            ref={tnref}
+            cursorColor="#777"
+            placeholderTextColor="#aaaaaa77"
             {...props}
             style={[{
                 borderBottomColor: colors.primary,
@@ -29,6 +39,6 @@ const TextInput = (props: props) => {
             }, props.style]}
         />
     )
-}
+})
 
 export default TextInput

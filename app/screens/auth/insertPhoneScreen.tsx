@@ -13,13 +13,14 @@ import Text from "../../components/Text"
 import Container from "../../components/screenContainer"
 import TextInput from "../../components/InputText"
 import FloatingButton from "../../components/floatingButton"
-import { verifyPhone, verifyPhoneCode } from "../../apis/auth"
+import { login, verifyPhone, verifyPhoneCode } from "../../apis/auth"
 import { AuthStackParams } from "../../navigator/types"
 import { AppStatusBar } from "../../components/StatusBar"
-import { setNewUserPhoneKey, setUserPhoneKey } from "../../reducers/auth"
+import { setUserInfo } from "../../reducers/auth"
 import useTheme from "../../theme"
 import { stylesphoneVeify } from "./styles"
 import TimerAuthView from "../../components/timerAuthView"
+import { addUserToStorage } from "../intro/utils"
 
 type Props = {
     navigation: NativeStackNavigationProp<AuthStackParams, 'auth_intro'>
@@ -79,40 +80,56 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
     const onFulfill = (code: number) => {
         if (phoneSmsSent)
             verifyPhoneCode(phoneSmsSent, code)
-                .then(res => {
-
-                    console.log(res);
-                    if (!res) {
+                .then(res => { // this 
+                    if (!res)
                         setError("Incorrect!")
-                    } else {
+                    else {
+                        console.log(res);
 
-                        if (res.new) {
-                            dispatch(setNewUserPhoneKey(res.key))
-
-                        } else {
-
-                            dispatch(setUserPhoneKey({
-                                // @ts-ignore
-                                firstname: res.first_name,
-                                // @ts-ignore
-                                lastname: res.last_name,
-                                phone_key: res.key,
-                            }))
-
-                        }
-
-
-
+                        if (res.new)
+                            navigation.navigate("signup", { "phone_token": res.key, "phone": phoneInput.trim() })
+                        else
+                            return login(res.key)
                     }
-                }).catch(error => {
-                    setError(error.message)
+                }).then(res => {//this will save user data into storage if login successed
+                    console.log(res);
+
+                    if (res)
+                        return addUserToStorage({
+                            token: res.token,
+                            phone: res.user.phone,
+                            username: res.user.userid == "null" ? undefined : res.user.userid,
+                            first_name: res.user.first_name,
+                            last_name: res.user.last_name,
+                            lastactive: true,
+                        })
+
+
+                }).then(data => { // this will save user data into store
+                    if (data) {
+                        dispatch(setUserInfo({
+                            phone: data.phone,
+                            token: data.token,
+                            // @ts-ignore
+                            firstname: data.first_name,
+                            lastname: data.last_name,
+                            username: data.username,
+                        }))
+                        navigation.reset({
+                            index: 0,
+                            //@ts-ignore
+                            routes: [{ name: 'main' }],
+                        })
+                    }
+                }).catch(e => {
+                    console.log(e.message)
                 })
     }
 
     const onPressNext = () => {
 
         if (phoneInput.trim() === "") {
-            // navigation.navigate("verifyphone")
+
             setError("Enter something FOOL")
         } else if (!phoneInput.startsWith("+")) {
             setError("Should start with +")
@@ -150,7 +167,7 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
         }
 
 
-
+        7667
     }
 
 
@@ -161,7 +178,7 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
             <View
                 style={stylesphoneVeify().contentContainer}>
 
-                <Animated.View sharedTransitionTag="intro">
+                <Animated.View sharedTransitionTag="logo">
                     <FontAwesome name="send-o" color={colors.primary} size={100} />
                 </Animated.View>
 
@@ -181,7 +198,7 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
                                     justifyContent: 'center',
                                 }}>
                                 <Text
-                                    style={stylesphoneVeify().phoneTextInput}>
+                                    style={stylesphoneVeify().phoneTextView}>
                                     {phoneInput}
                                 </Text>
                                 <TouchableOpacity

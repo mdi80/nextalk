@@ -35,8 +35,7 @@ function IntroAuthScreen({ navigation }: Props): JSX.Element {
         }}>
             <AppStatusBar translucent forcelight />
 
-            <Animated.View
-                sharedTransitionTag="intro">
+            <Animated.View sharedTransitionTag="logo">
                 <FontAwesome name="send-o" color="white" size={100} />
             </Animated.View>
 

@@ -23,7 +23,8 @@ export const AppStatusBar: React.FC<StatusBarPropsType> = ({ translucent, forcel
                     :
                     "dark-content"
             }
-            translucent={translucent} />
+            translucent={translucent}
+        />
     )
 }
 type HideStatusBarProps = {}
