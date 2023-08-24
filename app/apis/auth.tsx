@@ -37,6 +37,8 @@ const verifyPhone = async (phone: string): Promise<number> => {
 interface verifyPhoneCodeReturnType {
     key: string
     new: boolean
+    first_name?: string
+    last_name?: string
 }
 
 const verifyPhoneCode = async (phone: string, code: number): Promise<verifyPhoneCodeReturnType | null> => {

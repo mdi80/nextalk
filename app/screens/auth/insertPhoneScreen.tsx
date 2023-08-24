@@ -1,21 +1,25 @@
 import React, { JSX } from "react"
-import { SafeAreaView, StatusBar, View, TouchableOpacity } from "react-native"
+import { View, TouchableOpacity } from "react-native"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import Animated from "react-native-reanimated"
+import { NativeStackNavigationProp } from "@react-navigation/native-stack"
+import CodeInput from 'react-native-confirmation-code-input';
+import { useDispatch } from "react-redux"
+import { DotIndicator } from "react-native-indicators"
+
 import colors from "../../theme/colors"
 import Text from "../../components/Text"
 import Container from "../../components/screenContainer"
 import TextInput from "../../components/InputText"
 import FloatingButton from "../../components/floatingButton"
-import { BarIndicator, DotIndicator, MaterialIndicator } from "react-native-indicators"
-import typogrphy from "../../theme/font"
 import { verifyPhone, verifyPhoneCode } from "../../apis/auth"
-import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { AuthStackParams } from "../../navigator/types"
-import CodeInput from 'react-native-confirmation-code-input';
 import { AppStatusBar } from "../../components/StatusBar"
-import { useDispatch } from "react-redux"
+import { setNewUserPhoneKey, setUserPhoneKey } from "../../reducers/auth"
+import useTheme from "../../theme"
+import { stylesphoneVeify } from "./styles"
+import TimerAuthView from "../../components/timerAuthView"
 
 type Props = {
     navigation: NativeStackNavigationProp<AuthStackParams, 'auth_intro'>
@@ -25,19 +29,18 @@ const phoneNumberPattern = /^\+[0-9]{12,}$/;
 
 function InsertPhoneVerify({ navigation }: Props): JSX.Element {
 
+    const { colorScheme } = useTheme()
 
     const codeInputRed = React.useRef(null)
-
     const timerInterval = React.useRef<NodeJS.Timeout | null>(null)
 
-    const [phoneSmsSent, setPhoneSmsSent] = React.useState<string | null>(null)
+
     const [timerSec, setTimerSec] = React.useState(0)
-
-
+    const [phoneSmsSent, setPhoneSmsSent] = React.useState<string | null>(null)
     const [phoneInput, setPhoneInput] = React.useState("")
     const [loading, setLoading] = React.useState(false)
-    const [error, setError] = React.useState("")
     const [codeSend, setCodeSend] = React.useState(false)
+    const [error, setError] = React.useState("")
 
 
     const dispatch = useDispatch()
@@ -81,11 +84,26 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
                     console.log(res);
                     if (!res) {
                         setError("Incorrect!")
+                    } else {
+
+                        if (res.new) {
+                            dispatch(setNewUserPhoneKey(res.key))
+
+                        } else {
+
+                            dispatch(setUserPhoneKey({
+                                // @ts-ignore
+                                firstname: res.first_name,
+                                // @ts-ignore
+                                lastname: res.last_name,
+                                phone_key: res.key,
+                            }))
+
+                        }
+
+
+
                     }
-
-
-
-
                 }).catch(error => {
                     setError(error.message)
                 })
@@ -117,7 +135,6 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
             verifyPhone(phoneInput).
                 then(res => {
                     if (res == 200) {
-                        // navigation.navigate("verifyphone")
                         setCodeSend(true)
                     } else if (res == 406) {
                         setError("Provider Can not send sms to this Phone number!")
@@ -139,37 +156,23 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
 
     return (
         <Container
-            style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-            }}>
+            style={stylesphoneVeify().container}>
             <AppStatusBar translucent />
             <View
-                style={{
-                    height: 300,
-                    width: "100%",
-                    alignItems: 'center',
-                    justifyContent: 'space-between'
-                }}>
+                style={stylesphoneVeify().contentContainer}>
 
                 <Animated.View sharedTransitionTag="intro">
                     <FontAwesome name="send-o" color={colors.primary} size={100} />
                 </Animated.View>
-                <View
-                    style={{
-                        alignItems: 'center'
-                    }}>
-                    <Text style={{ fontSize: typogrphy.fontSize.sm, color: "red", marginBottom: 10 }}>
+
+                <View style={{ alignItems: 'center' }}>
+                    <Text style={stylesphoneVeify().errortv}>
                         {error}
                     </Text>
-                    {codeSend &&
+                    {codeSend ?
                         <>
                             <Text
-                                style={{
-                                    fontSize: typogrphy.fontSize.sm,
-                                    color: "#aaaaaa",
-                                    marginBottom: 10
-                                }}>
+                                style={stylesphoneVeify().enterCodetv}>
                                 Please Enter Verification code
                             </Text>
                             <View
@@ -178,30 +181,29 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
                                     justifyContent: 'center',
                                 }}>
                                 <Text
-                                    style={{
-                                        fontSize: typogrphy.fontSize.sm,
-                                        color: "#aaaaaa",
-                                        marginBottom: 10,
-                                        marginRight: 10,
-                                    }}>
+                                    style={stylesphoneVeify().phoneTextInput}>
                                     {phoneInput}
                                 </Text>
-                                <TouchableOpacity onPress={() => {
-                                    setError('');
-                                    setCodeSend(false);
-                                }}>
-                                    <Text style={{ color: colors.primary }}>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setError('');
+                                        setCodeSend(false);
+                                    }}>
+                                    <Text style={stylesphoneVeify().editBtntv}>
                                         Edit
                                     </Text>
                                 </TouchableOpacity>
                             </View>
 
                         </>
+                        :
+                        <Text style={stylesphoneVeify().enterPhonetv}>
+                            Please Enter your Phone number
+                        </Text>
                     }
                     {!codeSend ?
                         <TextInput
-                            placeholder="Enter Phone number."
-                            style={{ width: 200, marginLeft: 10 }}
+                            style={stylesphoneVeify(colorScheme).phoneTextInput}
                             value={phoneInput}
                             onChangeText={(v) => {
                                 setPhoneInput(v);
@@ -209,6 +211,7 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
                                 setError('');
                             }}
                             keyboardType="phone-pad"
+                            maxLength={17}
                         />
                         :
 
@@ -232,22 +235,10 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
 
             </View>
             {codeSend ?
-                <View
-                    style={{
-                        position: 'absolute',
-                        bottom: 20,
-                    }}>
-                    <Text
-                        style={{
-                            color: "#777",
-                            fontSize: typogrphy.fontSize.lg
-                        }}>
-
-                        {Math.floor((smsAuthTTL - timerSec) / 60)} : {((smsAuthTTL - timerSec) % 60) < 10 && "0"}{(smsAuthTTL - timerSec) % 60}
-                    </Text>
-                </View>
+                <TimerAuthView timer={smsAuthTTL - timerSec} />
                 :
                 <FloatingButton
+                    activeOpacity={0.9}
                     disabled={loading}
                     icon={loading ?
                         <DotIndicator size={5} color="white" />

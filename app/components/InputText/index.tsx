@@ -11,8 +11,8 @@ interface props extends TextInputProps {
 
 
 const TextInput = (props: props) => {
-    const { colorText, colorBackground, colorScheme } = useTheme()
-    const background = colorScheme === "light" ? "#FFFFFF" : ""
+    const { colorText } = useTheme()
+
     return (
         <RNTextInput
             cursorColor={colorText}
@@ -24,9 +24,8 @@ const TextInput = (props: props) => {
                 color: colorText,
                 fontFamily: typogrphy.fontFamily,
                 fontSize: typogrphy.fontSize.m,
-                paddingTop: 0,
-                paddingBottom: 5,
-                paddingHorizontal: 10,
+                paddingVertical: 5,
+                paddingHorizontal: 0,
             }, props.style]}
         />
     )

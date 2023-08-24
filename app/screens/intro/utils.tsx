@@ -1,4 +1,3 @@
-import { getItemAsync } from "expo-secure-store"
 import { IUserInfo, createTable, getDBConnection, getUsersInfo, updateUserLastActive } from "../../db/service";
 
 

@@ -1,6 +1,5 @@
 import React, { JSX } from "react"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
-import styles from "./styles"
 import Container from "../../components/screenContainer"
 import { AppStatusBar } from "../../components/StatusBar"
 import { DotIndicator } from "react-native-indicators"
@@ -8,12 +7,10 @@ import { getUserFromStorage } from "./utils"
 import { useDispatch, useSelector } from "react-redux"
 import { setUserInfo } from "../../reducers/auth"
 import { RootState } from "../../store"
-import Animated from "react-native-reanimated"
-import { AuthStackParams, IntroScreenParmas, RootStackParamsType } from "../../navigator/types"
-import { StackNavigationProp } from "@react-navigation/stack"
-import { RouteProp } from "@react-navigation/native"
-import { AuthNavigator } from "../../navigator/stackNavigations"
+import { IntroScreenParmas, RootStackParamsType } from "../../navigator/types"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
+import { StyleSheet } from "react-native"
+import colors from "../../theme/colors"
 
 type Props = {
     route: IntroScreenParmas
@@ -22,7 +19,7 @@ type Props = {
 
 
 
-function IntroScreen({ navigation }: Props): JSX.Element {
+function IntroScreen({ navigation, route }: Props): JSX.Element {
 
     const [timerFinished, setTimerFinshed] = React.useState(false)
     const [userLoading, setUserLoading] = React.useState(true)
@@ -45,9 +42,9 @@ function IntroScreen({ navigation }: Props): JSX.Element {
             console.log(token);
 
             if (token) {
-                navigation.replace("main", { home: undefined })
+                navigation.replace("main", { screen: 'home' })
             } else {
-                navigation.replace("auth", { auth_intro: undefined, phone: undefined, verifyphone: undefined })
+                navigation.replace("auth", { screen: 'login' })
             }
         }
     }, [timerFinished, userLoading])
@@ -74,5 +71,18 @@ function IntroScreen({ navigation }: Props): JSX.Element {
     )
 }
 
+
+
+const styles = StyleSheet.create({
+
+    container: {
+        flex: 1,
+        backgroundColor: colors.primary,
+        justifyContent: 'center',
+        alignItems: 'center',
+
+    }
+
+})
 
 export default IntroScreen

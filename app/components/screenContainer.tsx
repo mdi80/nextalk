@@ -1,6 +1,6 @@
 import React from "react"
 import { SafeAreaView, ViewStyle } from "react-native"
-import useTheme from "../../theme"
+import useTheme from "../theme"
 
 
 type ContainerProps = {
