@@ -27,7 +27,9 @@ export function stylesphoneVeify(colorScheme: "dark" | "light" = "light") {
         errortv: {
             fontSize: typogrphy.fontSize.sm,
             color: colors.error,
-            marginBottom: 10
+            marginBottom: 10,
+            textAlign: 'center',
+
         },
         enterPhonetv: {
             fontSize: typogrphy.fontSize.sm,

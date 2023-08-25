@@ -14,7 +14,7 @@ const LOGIN_URL = AUTH_URL + "login/"
 const verifyPhone = async (phone: string): Promise<number> => {
 
     try {
-        const { data, status } = await axios.post(VERIFY_PHONE_URL, { phone }, {
+        const { status } = await axios.post(VERIFY_PHONE_URL, { phone }, {
             headers: {
                 'Content-Type': 'application/json'
             }

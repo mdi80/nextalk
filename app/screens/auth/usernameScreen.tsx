@@ -1,24 +1,21 @@
-import React, { JSX, useRef, useState } from "react"
-import { Keyboard, StyleSheet, ToastAndroid, View, Modal } from "react-native"
+import React, { JSX, useState } from "react"
+import { Keyboard, ToastAndroid, View } from "react-native"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 import Container from "../../components/screenContainer"
-import { AppStatusBar, HideStatusBar } from "../../components/StatusBar"
+import { AppStatusBar } from "../../components/StatusBar"
 import colors from "../../theme/colors"
-import useTheme from "../../theme"
 import Animated from "react-native-reanimated"
 import Text from "../../components/Text"
 import { stylesLogin } from "./styles"
-import { AuthStackParams, SignUpScreenProps } from "../../navigator/types"
+import { AuthStackParams } from "../../navigator/types"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import TextInput from "../../components/InputText"
 import FloatingButton from "../../components/floatingButton"
 import type { RouteProp } from '@react-navigation/native';
 import { DotIndicator } from "react-native-indicators"
 import typogrphy from "../../theme/font"
-import { BlurView } from "@react-native-community/blur"
 import { login, signup } from "../../apis/auth"
-import { addUser } from "../../db/service"
 import { addUserToStorage } from "../intro/utils"
 import { useDispatch } from "react-redux"
 import { setUserInfo } from "../../reducers/auth"
@@ -35,6 +32,7 @@ function AddUserNameScreen({ navigation, route }: Props): JSX.Element {
         ToastAndroid.show("Please Enter first and last name!", ToastAndroid.SHORT)
         navigation.goBack()
     }
+    
 
     const [loading, setLoading] = useState(false)
     const [username, setUsername] = useState("")

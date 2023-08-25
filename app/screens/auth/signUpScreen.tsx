@@ -1,7 +1,8 @@
-import React, { JSX, RefObject, useRef, useState } from "react"
-import { View, TextInput as RNTextInput } from "react-native"
+import React, { JSX, RefObject, useRef, useState, useCallback } from "react"
+import { View, TextInput as RNTextInput, BackHandler } from "react-native"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
+import { useFocusEffect, } from "@react-navigation/native"
 import Container from "../../components/screenContainer"
 import { AppStatusBar } from "../../components/StatusBar"
 import colors from "../../theme/colors"
@@ -35,6 +36,17 @@ function SignUpScreen({ navigation, route }: Props): JSX.Element {
     const ilname = useRef<RefTextInput>(null)
 
 
+    useFocusEffect(
+        useCallback(() => {
+            const onBackPress = () => {
+                BackHandler.exitApp()
+                return true
+            };
+            const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+            return () => subscription.remove();
+        }, [])
+    );
+
 
     const submit = () => {
 
@@ -47,7 +59,7 @@ function SignUpScreen({ navigation, route }: Props): JSX.Element {
         }
 
 
-        navigation.navigate("setusername", { phone: route.params.phone,phone_token: route.params.phone_token, firstname: fname.trim(), lastname: lname.trim() })
+        navigation.navigate("setusername", { phone: route.params.phone, phone_token: route.params.phone_token, firstname: fname.trim(), lastname: lname.trim() })
 
     }
 

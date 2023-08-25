@@ -18,6 +18,7 @@ export default function FloatingButton(props: propsType) {
             {...props}
 
             style={[{
+                elevation: 2,
                 justifyContent: 'center',
                 alignItems: 'center',
                 position: "absolute",

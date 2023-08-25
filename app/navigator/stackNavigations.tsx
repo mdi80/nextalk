@@ -47,10 +47,37 @@ export const AuthNavigator = () => {
     return (
 
         <AuthStack.Navigator>
-            <RootStack.Screen name="auth_intro" component={IntroAuthScreen} options={{ headerShown: false }} />
-            <AuthStack.Screen name="phone" component={InsertPhoneVerify} options={{ headerShown: false, animation: 'fade_from_bottom' }} />
-            <AuthStack.Screen name="signup" component={SignUpScreen} options={{ headerTitle: "Sign Up", headerTitleAlign: 'center', animation: 'fade_from_bottom', headerTintColor: 'white', headerStyle: { backgroundColor: colors.primary } }} />
-            <AuthStack.Screen name="setusername" component={AddUserNameScreen} options={{ headerTitle: 'Username', headerTitleAlign: 'center', animation: 'fade_from_bottom', headerTintColor: 'white', headerStyle: { backgroundColor: colors.primary } }} />
+            <RootStack.Screen
+                name="auth_intro"
+                component={IntroAuthScreen}
+                options={{ headerShown: false }} />
+            <AuthStack.Screen
+                name="phone"
+                component={InsertPhoneVerify}
+                options={{
+                    headerShown: false,
+                    animation: 'fade_from_bottom'
+                }} />
+            <AuthStack.Screen
+                name="signup"
+                component={SignUpScreen}
+                options={{
+                    headerTitle: "Sign Up",
+                    headerTitleAlign: 'center',
+                    animation: 'fade_from_bottom',
+                    headerTintColor: 'white',
+                    headerStyle: { backgroundColor: colors.primary }
+                }} />
+            <AuthStack.Screen
+                name="setusername"
+                component={AddUserNameScreen}
+                options={{
+                    headerTitle: 'Username',
+                    headerTitleAlign: 'center',
+                    animation: 'fade_from_bottom',
+                    headerTintColor: 'white',
+                    headerStyle: { backgroundColor: colors.primary }
+                }} />
 
         </AuthStack.Navigator>
 
