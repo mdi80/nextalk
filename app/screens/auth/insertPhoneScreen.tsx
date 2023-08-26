@@ -1,5 +1,5 @@
-import React, { JSX, useCallback } from "react"
-import { View, TouchableOpacity, BackHandler, Platform } from "react-native"
+import React, { JSX, useCallback, useState } from "react"
+import { View, TouchableOpacity, BackHandler, Platform, Alert } from "react-native"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import Animated from "react-native-reanimated"
@@ -22,12 +22,17 @@ import { stylesphoneVeify } from "./styles"
 import TimerAuthView from "../../components/timerAuthView"
 import { addUserToStorage } from "../intro/utils"
 import { useFocusEffect, } from "@react-navigation/native"
+import SimpleDialog from "../../components/dialogs/simpleDialog"
+import { AppState } from "react-native"
 
 type Props = {
     navigation: NativeStackNavigationProp<AuthStackParams, 'auth_intro'>
 };
 const smsAuthTTL = 120
 const phoneNumberPattern = /^\+[0-9]{12,}$/;
+
+
+
 
 function InsertPhoneVerify({ navigation }: Props): JSX.Element {
 
@@ -43,9 +48,22 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
     const [loading, setLoading] = React.useState(false)
     const [codeSend, setCodeSend] = React.useState(false)
     const [error, setError] = React.useState("")
+    const [timeUpDialog, setTimeUpDialog] = useState(false)
     const dispatch = useDispatch()
+    // const now = React.useRef(new Date())
 
-    const backTOInsertPhone = () => {
+
+
+    const createTwoButtonAlert = () =>
+        Alert.alert('Time Up!', 'Your time is up. You can get another code.', [
+            {
+                text: 'Try Again', onPress: () => {
+                    setCodeSend(false);
+                    setPhoneSmsSent(null);
+                }
+            },
+        ]);
+    const backToInsertPhone = () => {
         setError('');
         setCodeSend(false);
     }
@@ -54,15 +72,14 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
         useCallback(() => {
             const onBackPress = () => {
                 if (codeSend)
-                    backTOInsertPhone();
+                    backToInsertPhone();
                 else if (Platform.OS === "android")
                     BackHandler.exitApp()
-
                 return true
             };
             const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
             return () => subscription.remove();
-        }, [codeSend, backTOInsertPhone, navigation])
+        }, [codeSend, backToInsertPhone, navigation])
     );
 
 
@@ -70,9 +87,8 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
         if (timerSec === smsAuthTTL && timerInterval.current) {
             setTimerSec(0)
             clearInterval(timerInterval.current)
-            setError("Yor time is up!")
-            setCodeSend(false)
-            setPhoneSmsSent(null)
+            createTwoButtonAlert()
+            setPhoneInput('')
         }
     }, [timerSec])
 
@@ -83,12 +99,15 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
             setTimerSec(0)
             clearInterval(timerInterval.current)
         }
-
+        const initTime = new Date()
         timerInterval.current = setInterval(() => {
-            setTimerSec(prev => prev + 1)
+            setTimerSec(Math.floor((new Date().getTime() - initTime.getTime()) / 1000))
         }, 1000)
 
-
+        return () => {
+            if (timerInterval.current)
+                clearInterval(timerInterval.current);
+        }
     }, [phoneSmsSent])
 
     const clearTimer = () => {
@@ -209,10 +228,10 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
                                 }}>
                                 <Text
                                     style={stylesphoneVeify().phoneTextView}>
-                                    {phoneInput}
+                                    {phoneSmsSent}
                                 </Text>
                                 <TouchableOpacity
-                                    onPress={backTOInsertPhone}>
+                                    onPress={backToInsertPhone}>
                                     <Text style={stylesphoneVeify().editBtntv}>
                                         Edit
                                     </Text>
@@ -229,6 +248,7 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
                         <TextInput
                             style={stylesphoneVeify(colorScheme).phoneTextInput}
                             value={phoneInput}
+                            placeholder="Phone"
                             onChangeText={(v) => {
                                 setPhoneInput(v);
                                 clearTimer();
@@ -236,6 +256,7 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
                             }}
                             keyboardType="phone-pad"
                             maxLength={17}
+                            onSubmitEditing={() => onPressNext()}
                         />
                         :
 
@@ -272,6 +293,15 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
                     onPress={() => onPressNext()}
                 />
             }
+            <SimpleDialog
+                visible={timeUpDialog}
+                btnCilck={() => {
+                    console.log("here")
+                }}
+                btnText="Try Again"
+                close={() => setTimeUpDialog(false)}
+                text="Your Time is finshed!"
+            />
         </Container>
     )
 }

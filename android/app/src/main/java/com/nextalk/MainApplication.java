@@ -2,6 +2,7 @@ package com.nextalk;
 import android.content.res.Configuration;
 import expo.modules.ApplicationLifecycleDispatcher;
 import expo.modules.ReactNativeHostWrapper;
+import com.jamesisaac.rnbackgroundtask.BackgroundTaskPackage;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
@@ -62,6 +63,8 @@ public class MainApplication extends Application implements ReactApplication {
     }
     ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
     ApplicationLifecycleDispatcher.onApplicationCreate(this);
+    BackgroundTaskPackage.useContext(this);
+
   }
 
   @Override

@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import typogrphy from "../../theme/font";
+import colors from "../../theme/colors";
 
 
 export const BottomDialogStyle = StyleSheet.create({
@@ -41,13 +42,29 @@ export const BottomDialogStyle = StyleSheet.create({
 export const SimpleDialogStyle = StyleSheet.create({
 
     modalContainer: {
-        elevation: 2,
+        elevation: 10,
         borderRadius: 10,
-        width: 200,
-        height: 100,
+        width: "75%",
+        height: 150,
         // alignSelf: 'center',
         padding: 20,
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        alignItems: 'center'
+
+    },
+    btn: {
+        width: '100%',
+        alignItems: 'center'
+    },
+    btnText: {
+        color: colors.primary,
+        fontSize: typogrphy.fontSize.sm
+    },
+    textView: {
+        fontSize: typogrphy.fontSize.sm,
+        textAlign: 'center',
+        marginTop: 5,
+
     }
 
 

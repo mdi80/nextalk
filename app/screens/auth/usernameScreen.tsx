@@ -113,7 +113,8 @@ function AddUserNameScreen({ navigation, route }: Props): JSX.Element {
                     onChangeText={(t) => {
                         setError('');
                         setUsername(t);
-                    }} />
+                    }}
+                    onSubmitEditing={submit} />
                 <Text style={{ fontSize: typogrphy.fontSize.xsm }}>Should be unique. Letters, digits and @/./+/-/_ only</Text>
 
             </View>

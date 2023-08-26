@@ -1,4 +1,4 @@
-import { Modal, TouchableOpacity } from "react-native"
+import { Modal, TouchableNativeFeedback, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native"
 import { SimpleDialogStyle as styles } from "./styles"
 import useTheme from "../../theme"
 import Text from "../Text"
@@ -13,23 +13,38 @@ interface propsType {
     btnCilck: () => void
 }
 
-const SimpleDialog = ({ visible, close, text, btnText, btnCilck }: propsType) => {
+export default function SimpleDialog({ visible, close, text, btnText, btnCilck }: propsType) {
 
     const { colorBackground } = useTheme()
 
     return (
-        <Modal visible={visible} animationType="fade" transparent={true} onRequestClose={() => close()}>
-            <TouchableOpacity
-                style={{ ...styles.modalContainer, backgroundColor: colorBackground }}
-                onPressOut={() => close()}>
-                <Text>
-                    {text}
-                </Text>
+        <Modal
+            visible={visible}
+            animationType="fade"
+            transparent={true}
+            onRequestClose={() => close()}
+            style={{
+                backgroundColor: 'red'
+            }}>
+            <TouchableWithoutFeedback
+                
+            >
+                <View
+                    style={{ ...styles.modalContainer, backgroundColor: "#333" }}>
+                    <Text style={{ ...styles.textView }}>
+                        {text}
+                    </Text>
 
-                <TouchableOpacity onPress={btnCilck}>
-                    {btnText}
-                </TouchableOpacity>
-            </TouchableOpacity>
+                    <TouchableOpacity onPress={close}
+                        style={styles.btn}>
+                        <Text style={{ ...styles.btnText }}>
+                            {btnText}
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </TouchableWithoutFeedback>
         </Modal>
     )
 }
+
+
