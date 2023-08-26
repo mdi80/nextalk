@@ -1,18 +1,11 @@
 
 import { View, TouchableOpacity, Text } from "react-native";
 import { BottomSheet } from 'react-native-btr';
-import styles from "./styles";
+import { BottomDialogStyle as styles } from "./styles";
 import colors from "../../theme/colors";
 
-
-const BottomSheetDialog = ({
-    deletedItemId,
-    setDeletedItemId,
-    onDelete,
-    message,
-    buttonsTitle,
-    confirmColor
-}) => (
+//@ts-ignore
+const BottomSheetDialog = ({ deletedItemId, setDeletedItemId, onDelete, message, buttonsTitle, confirmColor }) => (
     <BottomSheet
         visible={deletedItemId !== -1}>
         <View style={styles.container}>

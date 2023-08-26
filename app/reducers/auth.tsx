@@ -30,8 +30,8 @@ const authSlice = createSlice({
         setUserInfo(state: TUserState, action: PayloadAction<IUserInfo>) {
             state.phone = action.payload.phone
             state.token = action.payload.token
-            state.firstname = action.payload.first_name
-            state.lastname = action.payload.last_name
+            state.firstname = action.payload.firstname
+            state.lastname = action.payload.lastname
             state.username = action.payload.username ? action.payload.username : null
 
         },

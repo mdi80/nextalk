@@ -12,8 +12,8 @@ function MainScreen(): JSX.Element {
 
 
     const username = useSelector<RootState, string | undefined | null>(state => state.auth.username)
-    const first_name = useSelector<RootState, string | undefined | null>(state => state.auth.firstname)
-    const last_name = useSelector<RootState, string | undefined | null>(state => state.auth.lastname)
+    const firstname = useSelector<RootState, string | undefined | null>(state => state.auth.firstname)
+    const lastname = useSelector<RootState, string | undefined | null>(state => state.auth.lastname)
     const phone = useSelector<RootState, string | undefined | null>(state => state.auth.phone)
     const token = useSelector<RootState, string | undefined | null>(state => state.auth.token)
 
@@ -25,11 +25,11 @@ function MainScreen(): JSX.Element {
                 justifyContent: 'center',
                 alignItems: 'center'
             }}>
-                
+
             <AppStatusBar translucent />
             <Text>{username}</Text>
-            <Text>{first_name}</Text>
-            <Text>{last_name}</Text>
+            <Text>{firstname}</Text>
+            <Text>{lastname}</Text>
             <Text>{phone}</Text>
             <Text>{token}</Text>
 

@@ -13,8 +13,8 @@ export const createTable = async (db: SQLiteDatabase, tableName: string) => {
     const query = `CREATE TABLE IF NOT EXISTS ${tableName}(
         phone TEXT NOT NULL PRIMARY KEY,
         token TEXT NOT NULL,
-        first_name TEXT NOT NULL,
-        last_name TEXT NOT NULL,
+        firstname TEXT NOT NULL,
+        lastname TEXT NOT NULL,
         username TEXT,
         lastactive BOOLEAN
       );`;
@@ -26,15 +26,15 @@ export const createTable = async (db: SQLiteDatabase, tableName: string) => {
 export interface IUserInfo {
     token: string
     phone: string
-    first_name: string
-    last_name: string
+    firstname: string
+    lastname: string
     username?: string
     lastactive?: boolean
 }
 export interface IUpdateUserInfo {
     token?: string
-    first_name?: string
-    last_name?: string
+    firstname?: string
+    lastname?: string
     username?: string
     lastactive?: boolean
 }
@@ -63,12 +63,12 @@ export const getUsersInfo = async (db: SQLiteDatabase, userTableName: string): P
 
 export const addUser = async (db: SQLiteDatabase, userTableName: string, userInfo: IUserInfo) => {
     const insertQuery =
-        `INSERT INTO ${userTableName}(phone, token,first_name,last_name) values` +
+        `INSERT INTO ${userTableName}(phone, token,firstname,lastname) values` +
         `(
             '${userInfo.phone}',
              '${userInfo.token}',
-             '${userInfo.first_name}',
-             '${userInfo.last_name}')`;
+             '${userInfo.firstname}',
+             '${userInfo.lastname}')`;
 
     return await db.executeSql(insertQuery);
 };

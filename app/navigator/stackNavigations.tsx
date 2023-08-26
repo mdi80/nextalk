@@ -62,6 +62,7 @@ export const AuthNavigator = () => {
                 name="signup"
                 component={SignUpScreen}
                 options={{
+                    headerBackVisible: false,
                     headerTitle: "Sign Up",
                     headerTitleAlign: 'center',
                     animation: 'fade_from_bottom',
@@ -74,7 +75,7 @@ export const AuthNavigator = () => {
                 options={{
                     headerTitle: 'Username',
                     headerTitleAlign: 'center',
-                    animation: 'fade_from_bottom',
+                    animation: 'slide_from_right',
                     headerTintColor: 'white',
                     headerStyle: { backgroundColor: colors.primary }
                 }} />

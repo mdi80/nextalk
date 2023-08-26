@@ -119,8 +119,8 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
                             token: res.token,
                             phone: res.user.phone,
                             username: res.user.userid == "null" ? undefined : res.user.userid,
-                            first_name: res.user.first_name,
-                            last_name: res.user.last_name,
+                            firstname: res.user.firstname,
+                            lastname: res.user.lastname,
                             lastactive: true,
                         })
 
@@ -131,8 +131,8 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
                             phone: data.phone,
                             token: data.token,
                             // @ts-ignore
-                            firstname: data.first_name,
-                            lastname: data.last_name,
+                            firstname: data.firstname,
+                            lastname: data.lastname,
                             username: data.username,
                         }))
                         navigation.reset({

@@ -29,6 +29,8 @@ function IntroScreen({ navigation }: Props): JSX.Element {
     React.useEffect(() => {
         setTimeout(() => { setTimerFinshed(true) }, 1000)
         getUserFromStorage().then(user => {
+            console.log(user);
+
             if (user)
                 dispatch(setUserInfo(user))
         }).finally(() => {
