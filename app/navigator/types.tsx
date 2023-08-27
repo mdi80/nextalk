@@ -19,6 +19,9 @@ export type RootStackParamsType = {
 
 export type MainStackParams = {
     home: undefined
+    room: undefined
+    settings: undefined
+    profile: undefined
 }
 
 
