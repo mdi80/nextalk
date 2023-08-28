@@ -20,7 +20,7 @@ import { setUserInfo } from "../../reducers/auth"
 import useTheme from "../../theme"
 import { stylesphoneVeify } from "./styles"
 import TimerAuthView from "../../components/timerAuthView"
-import { addUserToStorage } from "../intro/utils"
+import { addUserToStorage } from "../../db/apis"
 import { RouteProp, useFocusEffect, } from "@react-navigation/native"
 import SimpleDialog from "../../components/dialogs/simpleDialog"
 import { AppState } from "react-native"
@@ -31,7 +31,7 @@ type Props = {
     route: RouteProp<AuthStackParams, 'phone'>
     navigation: NativeStackNavigationProp<AuthStackParams, 'auth_intro'>
 };
-const smsAuthTTL = 120
+const smsAuthTTL = 5
 const phoneNumberPattern = /^\+[0-9]{12,}$/;
 
 
@@ -87,10 +87,12 @@ function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
                 return true
             };
             const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
-            return () => subscription.remove();
+            return () => {
+                subscription.remove();
+                clearTimer()
+            };
         }, [codeSend, backToInsertPhone, navigation])
     );
-
 
     React.useEffect(() => {
         if (timerSec === smsAuthTTL && timerInterval.current) {
@@ -100,7 +102,6 @@ function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
             setPhoneInput('')
         }
     }, [timerSec])
-
 
     React.useEffect(() => {
         if (!phoneSmsSent) return
@@ -151,7 +152,7 @@ function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
                         console.log(res);
 
                         if (res.new)
-                            navigation.navigate("signup", { "phone_token": res.key, "phone": phoneInput.trim() })
+                            navigation.navigate("signup", { phone_token: res.key, phone: phoneInput.trim(), canBack: route.params.canBack })
                         else
                             return login(res.key)
                     }

@@ -3,6 +3,7 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 export type SignUpScreenProps = {
     phone_token: string
     phone: string
+    canBack?: boolean
 }
 export type AddUserNameScreenProps = {
     phone_token: string
@@ -22,6 +23,11 @@ export type MainStackParams = {
     room: undefined
     settings: undefined
     profile: undefined
+    contacts: undefined
+    features: undefined
+    invite: undefined
+    recentCalls: undefined
+
 }
 
 export type InserPhoneProps = {

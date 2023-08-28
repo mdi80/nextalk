@@ -1,7 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { IUserState, setUserInfo } from "./auth"
 import { IUserInfo } from "../db/service"
-import { getUsersFromStorage } from "../components/MainScreenDrwerContent/utils"
+import { changeAccountInStorage, getAllUsersFromStorage } from "../db/apis"
 
 
 
@@ -11,7 +11,7 @@ export const loadUsersData = createAsyncThunk(
     'app/loadUsersData',
     async (_, { getState, dispatch }) => {
         const payload: { user: IUserInfo | null, users: IUserInfo[] } = { user: null, users: [] }
-        payload.users = await getUsersFromStorage()
+        payload.users = await getAllUsersFromStorage()
 
         payload.users.forEach(user => {
             if (user.lastactive) {
@@ -22,6 +22,25 @@ export const loadUsersData = createAsyncThunk(
         dispatch(setUserInfo(payload.user))
 
         return payload
+    }
+)
+type changeAccountProps = { phoneNumber: string }
+export const changeAccount = createAsyncThunk(
+    'app/chnageAccount',
+    async ({ phoneNumber }: changeAccountProps, { getState, dispatch }) => {
+        const payload: { user: IUserInfo | null, users: IUserInfo[] } = { user: null, users: [] }
+
+        payload.users = await changeAccountInStorage(phoneNumber)
+        payload.users.forEach(user => {
+            if (user.lastactive) {
+                payload.user = user
+            }
+        });
+
+        dispatch(setUserInfo(payload.user))
+
+        return payload
+
     }
 )
 
@@ -47,9 +66,12 @@ const appSlice = createSlice({
     },
     extraReducers: builder => {
         builder.addCase(loadUsersData.fulfilled, (state, action) => {
-
             state.allUsersInfo = action.payload.users
         })
+        builder.addCase(changeAccount.fulfilled, (state, action) => {
+            state.allUsersInfo = action.payload.users
+        })
+
     }
 })
 

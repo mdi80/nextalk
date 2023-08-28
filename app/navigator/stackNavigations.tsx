@@ -35,6 +35,10 @@ export const MainNavigator = () => (
         <MainStack.Screen name="room" component={RoomScreen} options={{ headerShown: false }} />
         <MainStack.Screen name="settings" component={SettingsScreen} options={{ headerShown: false }} />
         <MainStack.Screen name="profile" component={ProfileScreen} options={{ headerShown: false }} />
+        <MainStack.Screen name="contacts" component={SettingsScreen} options={{ headerShown: false }} />
+        <MainStack.Screen name="features" component={ProfileScreen} options={{ headerShown: false }} />
+        <MainStack.Screen name="invite" component={SettingsScreen} options={{ headerShown: false }} />
+        <MainStack.Screen name="recentCalls" component={ProfileScreen} options={{ headerShown: false }} />
 
     </MainStack.Navigator>
 
