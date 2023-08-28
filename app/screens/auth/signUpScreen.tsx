@@ -28,7 +28,6 @@ function SignUpScreen({ navigation, route }: Props): JSX.Element {
         navigation.goBack()
     }
 
-    const [loading, setLoading] = useState(false)
     const [fname, setFname] = useState("")
     const [lname, setLname] = useState("")
 
@@ -39,6 +38,9 @@ function SignUpScreen({ navigation, route }: Props): JSX.Element {
     useFocusEffect(
         useCallback(() => {
             const onBackPress = () => {
+                if (route.params.canBack) {
+                    navigation.pop(2)
+                }
                 BackHandler.exitApp()
                 return true
             };
@@ -116,12 +118,7 @@ function SignUpScreen({ navigation, route }: Props): JSX.Element {
             {/* </View> */}
             <FloatingButton
                 activeOpacity={0.9}
-                disabled={loading}
-                icon={loading ?
-                    <DotIndicator size={5} color="white" />
-                    :
-                    <MaterialIcons name="keyboard-arrow-right" size={30} color="white" />
-                }
+                icon={<MaterialIcons name="keyboard-arrow-right" size={30} color="white" />}
                 onPress={submit}
             />
 
