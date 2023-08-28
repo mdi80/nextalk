@@ -3,7 +3,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome"
 import Container from "../../components/screenContainer"
 import { AppStatusBar } from "../../components/StatusBar"
 import { DotIndicator } from "react-native-indicators"
-import { getUserFromStorage } from "./utils"
+import { getAllUsersFromStorage, getUserFromStorage } from "./utils"
 import { useDispatch, useSelector } from "react-redux"
 import { setUserInfo } from "../../reducers/auth"
 import { RootState } from "../../store"
@@ -11,9 +11,10 @@ import { RootStackParamsType } from "../../navigator/types"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { StyleSheet } from "react-native"
 import colors from "../../theme/colors"
-
+import { setAllUsers } from "../../reducers/app"
+type navigationType = NativeStackNavigationProp<RootStackParamsType, 'intro'>
 type Props = {
-    navigation: NativeStackNavigationProp<RootStackParamsType, 'intro'>
+    navigation: navigationType
 };
 
 
@@ -28,9 +29,18 @@ function IntroScreen({ navigation }: Props): JSX.Element {
 
     React.useEffect(() => {
         setTimeout(() => { setTimerFinshed(true) }, 1000)
-        getUserFromStorage().then(user => {
-            if (user)
-                dispatch(setUserInfo(user))
+        getAllUsersFromStorage().then(users => {
+
+            if (users) {
+                dispatch(setAllUsers(users))
+                users.forEach(user => {
+                    if (user.lastactive) {
+                        dispatch(setUserInfo(user))
+                    }
+                });
+            }
+
+
         }).finally(() => {
             setUserLoading(false)
         })
@@ -41,7 +51,7 @@ function IntroScreen({ navigation }: Props): JSX.Element {
             console.log(token);
 
             if (token) {
-                navigation.replace("main", { screen: 'home' })
+                navigation.replace("main", { screen: "home" })
             } else {
                 navigation.replace("auth", { screen: 'auth_intro' })
             }
@@ -83,5 +93,8 @@ const styles = StyleSheet.create({
     }
 
 })
+
+
+export type { navigationType }
 
 export default IntroScreen

@@ -1,4 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+import { IUserState } from "./auth"
+import { IUserInfo } from "../db/service"
 
 
 
@@ -7,12 +9,12 @@ export type statusType = "auth" | "init" | "login"
 
 
 export interface IAppState {
-    status: statusType
+    allUsersInfo: IUserInfo[] | undefined
 }
 
 const initialState: IAppState = {
 
-    status: "init"
+    allUsersInfo: undefined
 }
 
 
@@ -20,10 +22,12 @@ const appSlice = createSlice({
     name: "app",
     initialState,
     reducers: {
-
+        setAllUsers(state: IAppState, action: PayloadAction<IUserInfo[]>) {
+            state.allUsersInfo = action.payload
+        }
     }
 })
 
 
-export const { } = appSlice.actions
+export const { setAllUsers } = appSlice.actions
 export default appSlice.reducer

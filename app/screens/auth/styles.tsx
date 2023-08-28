@@ -11,7 +11,7 @@ export function stylesphoneVeify(colorScheme: "dark" | "light" = "light") {
             alignItems: 'center',
         },
         contentContainer: {
-            height: 300,
+            height: 250,
             width: "100%",
             alignItems: 'center',
             justifyContent: 'space-between'
@@ -27,12 +27,14 @@ export function stylesphoneVeify(colorScheme: "dark" | "light" = "light") {
         errortv: {
             fontSize: typogrphy.fontSize.sm,
             color: colors.error,
-            marginBottom: 10
+            marginBottom: 10,
+            textAlign: 'center',
+
         },
         enterPhonetv: {
-            fontSize: typogrphy.fontSize.sm,
+            fontSize: typogrphy.fontSize.m,
             color: "#888",
-            marginBottom: 30
+            marginBottom: 20
         },
         enterCodetv: {
             fontSize: typogrphy.fontSize.sm,

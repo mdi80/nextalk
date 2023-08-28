@@ -14,7 +14,7 @@ const LOGIN_URL = AUTH_URL + "login/"
 const verifyPhone = async (phone: string): Promise<number> => {
 
     try {
-        const { data, status } = await axios.post(VERIFY_PHONE_URL, { phone }, {
+        const { status } = await axios.post(VERIFY_PHONE_URL, { phone }, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -38,8 +38,8 @@ const verifyPhone = async (phone: string): Promise<number> => {
 interface verifyPhoneCodeReturnType {
     key: string
     new: boolean
-    first_name?: string
-    last_name?: string
+    firstname?: string
+    lastname?: string
     username?: string
 }
 
@@ -69,13 +69,13 @@ const verifyPhoneCode = async (phone: string, code: number): Promise<verifyPhone
 
 interface signupProps {
     phone_key: string
-    first_name: string
-    last_name: string
+    firstname: string
+    lastname: string
     userid?: string
 }
 
 
-const signup = async (data: signupProps): Promise<boolean> => {
+const signup = async (data: signupProps): Promise<boolean | string> => {
 
     try {
         const res = await axios.post(SIGNUP_URL, data, {
@@ -88,7 +88,10 @@ const signup = async (data: signupProps): Promise<boolean> => {
 
     } catch (error: any | AxiosError) {
         if (error.response) {
-            return false
+            // console.log(error.response.data)
+            if (error.response.data['userid'])
+                return false
+            throw Error("Unkown errors!")
         } else if (error.request) {
             throw Error("No Response!")
         } else {
@@ -99,8 +102,8 @@ const signup = async (data: signupProps): Promise<boolean> => {
 }
 
 interface returnUserInfo {
-    first_name: string,
-    last_name: string,
+    firstname: string,
+    lastname: string,
     phone: string,
     userid: string | undefined,
     date_joined: string

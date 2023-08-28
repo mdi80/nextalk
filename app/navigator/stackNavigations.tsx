@@ -8,13 +8,12 @@ import { AuthStackParams, MainStackParams, RootStackParamsType } from "./types";
 import useTheme from "../theme";
 import colors from "../theme/colors";
 import AddUserNameScreen from "../screens/auth/usernameScreen";
+import RoomScreen from "../screens/main/room";
+import SettingsScreen from "../screens/menu/settings";
+import ProfileScreen from "../screens/menu/profile";
 
 
 const RootStack = createNativeStackNavigator()
-
-
-
-
 
 
 export const RootStackNavigator = () => (
@@ -27,12 +26,15 @@ export const RootStackNavigator = () => (
 )
 
 
-const MainStack = createNativeStackNavigator()
+const MainStack = createNativeStackNavigator<MainStackParams>()
 
 export const MainNavigator = () => (
 
     <MainStack.Navigator>
         <MainStack.Screen name="home" component={MainScreen} options={{ headerShown: false }} />
+        <MainStack.Screen name="room" component={RoomScreen} options={{ headerShown: false }} />
+        <MainStack.Screen name="settings" component={SettingsScreen} options={{ headerShown: false }} />
+        <MainStack.Screen name="profile" component={ProfileScreen} options={{ headerShown: false }} />
 
     </MainStack.Navigator>
 
@@ -47,10 +49,38 @@ export const AuthNavigator = () => {
     return (
 
         <AuthStack.Navigator>
-            <RootStack.Screen name="auth_intro" component={IntroAuthScreen} options={{ headerShown: false }} />
-            <AuthStack.Screen name="phone" component={InsertPhoneVerify} options={{ headerShown: false, animation: 'fade_from_bottom' }} />
-            <AuthStack.Screen name="signup" component={SignUpScreen} options={{ headerTitle: "Sign Up", headerTitleAlign: 'center', animation: 'fade_from_bottom', headerTintColor: 'white', headerStyle: { backgroundColor: colors.primary } }} />
-            <AuthStack.Screen name="setusername" component={AddUserNameScreen} options={{ headerTitle: 'Username', headerTitleAlign: 'center', animation: 'fade_from_bottom', headerTintColor: 'white', headerStyle: { backgroundColor: colors.primary } }} />
+            <RootStack.Screen
+                name="auth_intro"
+                component={IntroAuthScreen}
+                options={{ headerShown: false }} />
+            <AuthStack.Screen
+                name="phone"
+                component={InsertPhoneVerify}
+                options={{
+                    headerShown: false,
+                    animation: 'fade_from_bottom'
+                }} />
+            <AuthStack.Screen
+                name="signup"
+                component={SignUpScreen}
+                options={{
+                    headerBackVisible: false,
+                    headerTitle: "Sign Up",
+                    headerTitleAlign: 'center',
+                    animation: 'fade_from_bottom',
+                    headerTintColor: 'white',
+                    headerStyle: { backgroundColor: colors.primary }
+                }} />
+            <AuthStack.Screen
+                name="setusername"
+                component={AddUserNameScreen}
+                options={{
+                    headerTitle: 'Username',
+                    headerTitleAlign: 'center',
+                    animation: 'slide_from_right',
+                    headerTintColor: 'white',
+                    headerStyle: { backgroundColor: colors.primary }
+                }} />
 
         </AuthStack.Navigator>
 
