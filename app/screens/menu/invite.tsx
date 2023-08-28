@@ -28,7 +28,7 @@ function InviteScreen(): JSX.Element {
             }}>
 
             <AppStatusBar translucent />
-            <Text>profile</Text>
+            <Text>InviteScreen</Text>
         </Container>
 
     )

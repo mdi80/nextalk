@@ -28,7 +28,7 @@ function ContactsScreen(): JSX.Element {
             }}>
 
             <AppStatusBar translucent />
-            <Text>profile</Text>
+            <Text>ContactsScreen</Text>
         </Container>
 
     )

@@ -28,7 +28,7 @@ function FeaturesScreen(): JSX.Element {
             }}>
 
             <AppStatusBar translucent />
-            <Text>settings</Text>
+            <Text>FeaturesScreen</Text>
 
         </Container>
 

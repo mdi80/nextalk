@@ -10,7 +10,11 @@ import colors from "../theme/colors";
 import AddUserNameScreen from "../screens/auth/usernameScreen";
 import RoomScreen from "../screens/main/room";
 import SettingsScreen from "../screens/menu/settings";
-import ProfileScreen from "../screens/menu/profile";
+import SavedScreen from "../screens/menu/saved";
+import ContactsScreen from "../screens/menu/contacts";
+import FeaturesScreen from "../screens/menu/features";
+import InviteScreen from "../screens/menu/invite";
+import RecentCallsScreen from "../screens/menu/recentCalls";
 
 
 const RootStack = createNativeStackNavigator()
@@ -31,14 +35,14 @@ const MainStack = createNativeStackNavigator<MainStackParams>()
 export const MainNavigator = () => (
 
     <MainStack.Navigator>
-        <MainStack.Screen name="home" component={MainScreen} options={{ headerShown: false }} />
-        <MainStack.Screen name="room" component={RoomScreen} options={{ headerShown: false }} />
-        <MainStack.Screen name="settings" component={SettingsScreen} options={{ headerShown: false }} />
-        <MainStack.Screen name="profile" component={ProfileScreen} options={{ headerShown: false }} />
-        <MainStack.Screen name="contacts" component={SettingsScreen} options={{ headerShown: false }} />
-        <MainStack.Screen name="features" component={ProfileScreen} options={{ headerShown: false }} />
-        <MainStack.Screen name="invite" component={SettingsScreen} options={{ headerShown: false }} />
-        <MainStack.Screen name="recentCalls" component={ProfileScreen} options={{ headerShown: false }} />
+        <MainStack.Screen name="home" component={MainScreen} options={{ headerShown: false, animationDuration: 100 }} />
+        <MainStack.Screen name="room" component={RoomScreen} options={{ headerShown: false, animationDuration: 10, animation: "fade_from_bottom" }} />
+        <MainStack.Screen name="settings" component={SettingsScreen} options={{ headerShown: false, animationDuration: 10, animation: "fade_from_bottom" }} />
+        <MainStack.Screen name="saved" component={SavedScreen} options={{ headerShown: false, animationDuration: 10, animation: "fade_from_bottom" }} />
+        <MainStack.Screen name="contacts" component={ContactsScreen} options={{ headerShown: false, animationDuration: 10, animation: "fade_from_bottom" }} />
+        <MainStack.Screen name="features" component={FeaturesScreen} options={{ headerShown: false, animationDuration: 10, animation: "fade_from_bottom" }} />
+        <MainStack.Screen name="invite" component={InviteScreen} options={{ headerShown: false, animationDuration: 10, animation: "fade_from_bottom" }} />
+        <MainStack.Screen name="recentCalls" component={RecentCallsScreen} options={{ headerShown: false, animationDuration: 10, animation: "fade_from_bottom" }} />
 
     </MainStack.Navigator>
 

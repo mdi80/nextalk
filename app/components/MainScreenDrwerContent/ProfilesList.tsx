@@ -175,9 +175,9 @@ const ProfileItem = ({ imageUrl, userinfo, item_hight, active }: ProfileItemProp
 const AddAccountBtn = () => {
     const { colorText, colorScheme } = useTheme()
     const navigation = useNavigation<NativeStackNavigationProp<MainStackParams, 'home'>>()
+    
     const pressed = () => {
         navigation.getParent()?.navigate("auth", { screen: "phone", params: { canBack: true } })
-
     }
 
     return (

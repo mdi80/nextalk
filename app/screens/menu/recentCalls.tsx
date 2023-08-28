@@ -28,7 +28,7 @@ function RecentCallsScreen(): JSX.Element {
             }}>
 
             <AppStatusBar translucent />
-            <Text>settings</Text>
+            <Text>RecentCallsScreen</Text>
 
         </Container>
 

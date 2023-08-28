@@ -9,7 +9,7 @@ import { RootState } from "../../store"
 import MainHeader from "../../components/MainScreenHeader"
 
 
-function ProfileScreen(): JSX.Element {
+function SavedScreen(): JSX.Element {
 
 
     const username = useSelector<RootState, string | undefined | null>(state => state.auth.username)
@@ -28,11 +28,11 @@ function ProfileScreen(): JSX.Element {
             }}>
 
             <AppStatusBar translucent />
-            <Text>profile</Text>
+            <Text>saved</Text>
         </Container>
 
     )
 }
 
 
-export default ProfileScreen
+export default SavedScreen

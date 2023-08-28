@@ -28,7 +28,7 @@ function SettingsScreen(): JSX.Element {
             }}>
 
             <AppStatusBar translucent />
-            <Text>settings</Text>
+            <Text>SettingsScreen</Text>
 
         </Container>
 

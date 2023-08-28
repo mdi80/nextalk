@@ -22,7 +22,7 @@ export type MainStackParams = {
     home: undefined
     room: undefined
     settings: undefined
-    profile: undefined
+    saved: undefined
     contacts: undefined
     features: undefined
     invite: undefined
