@@ -1,11 +1,9 @@
 import { View } from "react-native"
 import useTheme from "../../theme"
-import colors from "../../theme/colors"
 import { Image } from "expo-image"
-import { StatusBar } from "react-native"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 import ProfilesList from "./ProfilesList"
-import styles from "./styles"
+import { drawerHeaderStyles } from "./styles"
 
 
 export default function DrawerHeader() {
@@ -14,12 +12,9 @@ export default function DrawerHeader() {
 
     return (
         <>
-            <View style={{
-                ...styles.headerDrawerContainer,
-                backgroundColor: colorScheme === "light" ? colors.primary : colors.dark.background
-            }}>
+            <View style={drawerHeaderStyles(colorScheme).headerDrawerContainer}>
 
-                <View style={styles.headerDrawerContent}>
+                <View style={drawerHeaderStyles(colorScheme).headerDrawerContent}>
                     <Image
                         source={require("../../assets/1_main.jpg")}
                         style={{

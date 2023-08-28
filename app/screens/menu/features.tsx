@@ -9,7 +9,7 @@ import { RootState } from "../../store"
 import MainHeader from "../../components/MainScreenHeader"
 
 
-function SettingsScreen(): JSX.Element {
+function FeaturesScreen(): JSX.Element {
 
 
     const username = useSelector<RootState, string | undefined | null>(state => state.auth.username)
@@ -28,7 +28,7 @@ function SettingsScreen(): JSX.Element {
             }}>
 
             <AppStatusBar translucent />
-            <Text>SettingsScreen</Text>
+            <Text>FeaturesScreen</Text>
 
         </Container>
 
@@ -36,4 +36,4 @@ function SettingsScreen(): JSX.Element {
 }
 
 
-export default SettingsScreen
+export default FeaturesScreen
