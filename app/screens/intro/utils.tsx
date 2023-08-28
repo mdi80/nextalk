@@ -60,6 +60,7 @@ const addUserToStorage = async (data: IUserInfo): Promise<IUserInfo | null> => {
         const db = await getDBConnection();
         await createTable(db, "users");
         const users = await getUsersInfo(db, "users")
+        console.log(data);
 
 
         users.forEach(async user => {
@@ -67,7 +68,7 @@ const addUserToStorage = async (data: IUserInfo): Promise<IUserInfo | null> => {
         });
 
         await addUser(db, "users", data)
-
+        await updateUserLastActive(db, "users", data.phone, true)
         return data
 
     } catch (error) {
