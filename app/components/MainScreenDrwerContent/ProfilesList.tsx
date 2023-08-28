@@ -135,8 +135,6 @@ const ProfileItem = ({ imageUrl, userinfo, item_hight, active }: ProfileItemProp
             ToastAndroid.show(mes, ToastAndroid.LONG)
         })
     }
-
-
     return (
         <TouchableOpacity
             onPress={pressed}
