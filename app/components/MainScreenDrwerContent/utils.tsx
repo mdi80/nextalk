@@ -1,11 +1,11 @@
 import { IUserInfo, getDBConnection, getUsersInfo } from "../../db/service";
 
-const getUsersFromStorage = async (): Promise<IUserInfo[] | null> => {
+const getUsersFromStorage = async (): Promise<IUserInfo[]> => {
     try {
         const db = await getDBConnection();
         const users = await getUsersInfo(db, "users")
         //No users in db
-        if (!users || users.length === 0) return null;
+        // if (!users || users.length === 0) return null;
 
         return users
 
@@ -13,7 +13,7 @@ const getUsersFromStorage = async (): Promise<IUserInfo[] | null> => {
         console.log(error)
         console.log("db error!")
     }
-    return null
+    return []
 }
 
 export { getUsersFromStorage }

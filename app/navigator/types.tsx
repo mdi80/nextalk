@@ -24,11 +24,14 @@ export type MainStackParams = {
     profile: undefined
 }
 
+export type InserPhoneProps = {
+    canBack?: boolean
+}
 
 
 export type AuthStackParams = {
     auth_intro: undefined
-    phone: undefined
+    phone: InserPhoneProps
     signup: SignUpScreenProps
     setusername: AddUserNameScreenProps
 } 

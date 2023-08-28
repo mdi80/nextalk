@@ -6,12 +6,12 @@ import { DotIndicator } from "react-native-indicators"
 import { getAllUsersFromStorage, getUserFromStorage } from "./utils"
 import { useDispatch, useSelector } from "react-redux"
 import { setUserInfo } from "../../reducers/auth"
-import { RootState } from "../../store"
+import { AppDispatch, RootState } from "../../store"
 import { RootStackParamsType } from "../../navigator/types"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { StyleSheet } from "react-native"
 import colors from "../../theme/colors"
-import { setAllUsers } from "../../reducers/app"
+import { loadUsersData, setAllUsers } from "../../reducers/app"
 type navigationType = NativeStackNavigationProp<RootStackParamsType, 'intro'>
 type Props = {
     navigation: navigationType
@@ -24,26 +24,31 @@ function IntroScreen({ navigation }: Props): JSX.Element {
     const [timerFinished, setTimerFinshed] = React.useState(false)
     const [userLoading, setUserLoading] = React.useState(true)
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<AppDispatch>()
     const token = useSelector<RootState, string | null>((state) => state.auth.token)
 
     React.useEffect(() => {
         setTimeout(() => { setTimerFinshed(true) }, 1000)
-        getAllUsersFromStorage().then(users => {
-
-            if (users) {
-                dispatch(setAllUsers(users))
-                users.forEach(user => {
-                    if (user.lastactive) {
-                        dispatch(setUserInfo(user))
-                    }
-                });
-            }
-
-
+        dispatch(loadUsersData()).then(res => {
+            console.log(res);
         }).finally(() => {
             setUserLoading(false)
         })
+
+        // getAllUsersFromStorage().then(users => {
+
+        //     if (users) {
+        //         dispatch(setAllUsers(users))
+        //         users.forEach(user => {
+        //             if (user.lastactive) {
+        //                 dispatch(setUserInfo(user))
+        //             }
+        //         });
+        //     }
+
+
+        // }).finally(() => {
+        // })
     }, [])
 
     React.useEffect(() => {

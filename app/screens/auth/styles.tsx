@@ -50,6 +50,13 @@ export function stylesphoneVeify(colorScheme: "dark" | "light" = "light") {
         editBtntv: {
             color: colors.primary,
             fontSize: typogrphy.fontSize.sm,
+        },
+        allowPhoneText: {
+            color: 'gray',
+            marginTop: 8,
+            fontSize: typogrphy.fontSize.sm,
+            alignSelf: 'flex-start',
+            marginLeft: 10,
         }
 
     })

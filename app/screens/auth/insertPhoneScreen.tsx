@@ -5,7 +5,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import Animated from "react-native-reanimated"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import CodeInput from 'react-native-confirmation-code-input';
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { DotIndicator } from "react-native-indicators"
 
 import colors from "../../theme/colors"
@@ -21,11 +21,14 @@ import useTheme from "../../theme"
 import { stylesphoneVeify } from "./styles"
 import TimerAuthView from "../../components/timerAuthView"
 import { addUserToStorage } from "../intro/utils"
-import { useFocusEffect, } from "@react-navigation/native"
+import { RouteProp, useFocusEffect, } from "@react-navigation/native"
 import SimpleDialog from "../../components/dialogs/simpleDialog"
 import { AppState } from "react-native"
+import { AppDispatch, RootState } from "../../store"
+import { IAppState, loadUsersData } from "../../reducers/app"
 
 type Props = {
+    route: RouteProp<AuthStackParams, 'phone'>
     navigation: NativeStackNavigationProp<AuthStackParams, 'auth_intro'>
 };
 const smsAuthTTL = 120
@@ -34,7 +37,7 @@ const phoneNumberPattern = /^\+[0-9]{12,}$/;
 
 
 
-function InsertPhoneVerify({ navigation }: Props): JSX.Element {
+function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
 
     const { colorScheme } = useTheme()
 
@@ -49,7 +52,9 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
     const [codeSend, setCodeSend] = React.useState(false)
     const [error, setError] = React.useState("")
     const [timeUpDialog, setTimeUpDialog] = useState(false)
-    const dispatch = useDispatch()
+    const [allowPhone, setAllowPhone] = useState(true)
+    const dispatch = useDispatch<AppDispatch>()
+    const { allUsersInfo } = useSelector<RootState, IAppState>(state => state.app)
     // const now = React.useRef(new Date())
 
 
@@ -71,6 +76,10 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
     useFocusEffect(
         useCallback(() => {
             const onBackPress = () => {
+                if (route.params.canBack) {
+                    return false
+                }
+
                 if (codeSend)
                     backToInsertPhone();
                 else if (Platform.OS === "android")
@@ -116,10 +125,26 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
         setTimerSec(0)
     }
 
+    const onChangeText = (v: string) => {
+        let allow = true
+        allUsersInfo?.forEach(item => {
+
+            if (item.phone === v) {
+                console.log('here');
+                allow = false
+            }
+        })
+        setAllowPhone(allow)
+        setPhoneInput(v);
+
+        clearTimer();
+        setError('');
+    }
+
     const onFulfill = (code: number) => {
         if (phoneSmsSent)
             verifyPhoneCode(phoneSmsSent, code)
-                .then(res => { // this 
+                .then(res => {
                     if (!res)
                         setError("Incorrect!")
                     else {
@@ -131,13 +156,13 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
                             return login(res.key)
                     }
                 }).then(res => {//this will save user data into storage if login successed
-                    console.log(res);
+                    // console.log(res);
 
                     if (res)
                         return addUserToStorage({
                             token: res.token,
                             phone: res.user.phone,
-                            username: res.user.userid == "null" ? undefined : res.user.userid,
+                            username: res.user.userid,
                             firstname: res.user.firstname,
                             lastname: res.user.lastname,
                             lastactive: true,
@@ -146,18 +171,12 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
 
                 }).then(data => { // this will save user data into store
                     if (data) {
-                        dispatch(setUserInfo({
-                            phone: data.phone,
-                            token: data.token,
-                            // @ts-ignore
-                            firstname: data.firstname,
-                            lastname: data.lastname,
-                            username: data.username,
-                        }))
-                        navigation.reset({
-                            index: 0,
-                            //@ts-ignore
-                            routes: [{ name: 'main' }],
+                        dispatch(loadUsersData()).finally(() => {
+                            navigation.reset({
+                                index: 0,
+                                //@ts-ignore
+                                routes: [{ name: 'main' }],
+                            })
                         })
                     }
                 }).catch(e => {
@@ -245,19 +264,18 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
                         </Text>
                     }
                     {!codeSend ?
-                        <TextInput
-                            style={stylesphoneVeify(colorScheme).phoneTextInput}
-                            value={phoneInput}
-                            placeholder="Phone"
-                            onChangeText={(v) => {
-                                setPhoneInput(v);
-                                clearTimer();
-                                setError('');
-                            }}
-                            keyboardType="phone-pad"
-                            maxLength={17}
-                            onSubmitEditing={() => onPressNext()}
-                        />
+                        <>
+                            <TextInput
+                                style={stylesphoneVeify(colorScheme).phoneTextInput}
+                                value={phoneInput}
+                                placeholder="Phone"
+                                onChangeText={onChangeText}
+                                keyboardType="phone-pad"
+                                maxLength={17}
+                                onSubmitEditing={() => onPressNext()}
+                            />
+                            <Text style={stylesphoneVeify().allowPhoneText}>{!allowPhone && "You already login with this phone!"}</Text>
+                        </>
                         :
 
                         <CodeInput
@@ -284,7 +302,7 @@ function InsertPhoneVerify({ navigation }: Props): JSX.Element {
                 :
                 <FloatingButton
                     activeOpacity={0.9}
-                    disabled={loading}
+                    disabled={loading || !allowPhone}
                     icon={loading ?
                         <DotIndicator size={5} color="white" />
                         :
