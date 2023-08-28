@@ -120,26 +120,26 @@ function AddUserNameScreen({ navigation, route }: Props): JSX.Element {
                 <Text style={{ fontSize: typogrphy.fontSize.xsm }}>Should be unique. Letters, digits and @/./+/-/_ only</Text>
 
             </View>
-            <Animated.View sharedTransitionTag="logo2"
+            <View
                 style={{
-                    transform: [{ scale: 0.2 }],
+
                     position: 'absolute',
-                    bottom: 10,
-                    alignSelf: 'center'
+                    bottom: 20,
+                    alignSelf: 'center',
+                    flexDirection: 'row'
                 }}
             >
-                <FontAwesome name="send-o" color={colors.primary} size={100} />
-            </Animated.View>
-            <Text style={{
-                marginLeft: -30,
-                color: "#888",
-                fontSize: typogrphy.fontSize.xsm,
-                position: 'absolute',
-                bottom: 25,
-                alignSelf: 'center'
-            }}>
-                Nextalk 1.0.0
-            </Text>
+                <FontAwesome name="send-o" color={colors.primary} size={20} />
+                <Text style={{
+                    color: "#888",
+                    fontSize: typogrphy.fontSize.xsm,
+                    alignSelf: 'center',
+                    marginLeft: 10,
+                }}>
+                    Nextalk 1.0.0
+                </Text>
+
+            </View>
 
             <FloatingButton
                 activeOpacity={0.9}
