@@ -16,9 +16,11 @@ import type { RouteProp } from '@react-navigation/native';
 import { DotIndicator } from "react-native-indicators"
 import typogrphy from "../../theme/font"
 import { login, signup } from "../../apis/auth"
-import { addUserToStorage } from "../intro/utils"
+import { addUserToStorage } from "../../db/apis"
 import { useDispatch } from "react-redux"
 import { setUserInfo } from "../../reducers/auth"
+import { loadUsersData } from "../../reducers/app"
+import { AppDispatch } from "../../store"
 type Props = {
     route: RouteProp<AuthStackParams, 'setusername'>
     navigation: NativeStackNavigationProp<AuthStackParams, 'setusername'>
@@ -37,7 +39,7 @@ function AddUserNameScreen({ navigation, route }: Props): JSX.Element {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
     const [username, setUsername] = useState("")
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<AppDispatch>()
 
     const submit = () => {
         setLoading(true)
@@ -74,12 +76,12 @@ function AddUserNameScreen({ navigation, route }: Props): JSX.Element {
 
             if (data) {
 
-                dispatch(setUserInfo(data))
-
-                navigation.reset({
-                    index: 0,
-                    //@ts-ignore
-                    routes: [{ name: 'main' }],
+                dispatch(loadUsersData()).finally(() => {
+                    navigation.reset({
+                        index: 0,
+                        //@ts-ignore
+                        routes: [{ name: 'main' }],
+                    })
                 })
             } else {
                 throw Error("DB Error!!!!")

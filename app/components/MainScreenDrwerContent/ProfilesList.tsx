@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { View } from "react-native"
+import { ToastAndroid, View } from "react-native"
 import Text from "../Text"
 import useTheme from "../../theme"
 import colors from "../../theme/colors"
@@ -7,16 +7,19 @@ import { Image } from "expo-image"
 import typogrphy from "../../theme/font"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 import AntDesign from "react-native-vector-icons/AntDesign"
-import { useSelector } from "react-redux"
-import { RootState } from "../../store"
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch, RootState } from "../../store"
 import { IUserState } from "../../reducers/auth"
 import { TouchableOpacity } from "react-native"
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
 import { LayoutAnimation } from 'react-native'
 import { ImageSourcePropType } from 'react-native'
-import { IUserInfo } from '../../db/service'
-import { IAppState } from '../../reducers/app'
+import { IUserInfo, updateUserLastActive } from '../../db/service'
+import { IAppState, changeAccount } from '../../reducers/app'
 import styles from './styles'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { MainStackParams } from '../../navigator/types'
 
 const item_hight = 65
 
@@ -26,7 +29,7 @@ const ProfilesList = () => {
 
     const { allUsersInfo } = useSelector<RootState, IAppState>(state => state.app)
     const { firstname, lastname, phone } = useSelector<RootState, IUserState>(state => state.auth)
-
+    const listLen = allUsersInfo ? allUsersInfo.length + 2 : 1
     const { colorScheme, } = useTheme()
 
     const [showProfiles, setShowProile] = useState(false)
@@ -61,7 +64,7 @@ const ProfilesList = () => {
 
     return (
         <View style={{
-            height: showProfiles ? 3 * item_hight : item_hight,
+            height: showProfiles ? listLen * item_hight : item_hight,
             ...styles.profileListContainer
         }}>
             <TouchableOpacity
@@ -94,10 +97,11 @@ const ProfilesList = () => {
                     item_hight={item_hight}
                     imageUrl={require("../../assets/1_main.jpg")}
                     userinfo={user}
+
                 />
             ))}
             <AddAccountBtn />
-        </View >
+        </View>
 
 
     )
@@ -107,13 +111,28 @@ interface ProfileItemProps {
     imageUrl: string | ImageSourcePropType | null | undefined
     userinfo: IUserInfo
     item_hight: number
-    active?: boolean
+    active: boolean
 }
 
 const ProfileItem = ({ imageUrl, userinfo, item_hight, active }: ProfileItemProps) => {
     const imageSize = 40
+    const dispatch = useDispatch<AppDispatch>()
+    const navigation = useNavigation()
+    const pressed = () => {
+        dispatch(changeAccount({ phoneNumber: userinfo.phone })).then(res => {
+            navigation.reset({
+                index: 0,
+                //@ts-ignore
+                routes: [{ name: 'main' }],
+            })
+        }).catch(mes => {
+            console.error(mes);
+            ToastAndroid.show(mes, ToastAndroid.LONG)
+        })
+    }
     return (
         <TouchableOpacity
+            onPress={pressed}
             activeOpacity={0.9}
             style={{
                 ...styles.profileListItem,
@@ -127,8 +146,7 @@ const ProfileItem = ({ imageUrl, userinfo, item_hight, active }: ProfileItemProp
                         width: imageSize,
                         height: imageSize,
                         borderRadius: imageSize / 2
-                    }} >
-                </Image>
+                    }} />
 
 
                 {active &&
@@ -151,9 +169,15 @@ const ProfileItem = ({ imageUrl, userinfo, item_hight, active }: ProfileItemProp
 
 const AddAccountBtn = () => {
     const { colorText } = useTheme()
+    const navigation = useNavigation<NativeStackNavigationProp<MainStackParams, 'home'>>()
+    const pressed = () => {
+        navigation.getParent()?.navigate("auth", { screen: "phone", params: { canBack: true } })
+
+    }
 
     return (
         <TouchableOpacity
+            onPress={pressed}
             activeOpacity={0.8}
             style={{
                 ...styles.addAccountBtn,

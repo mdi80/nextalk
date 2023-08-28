@@ -9,7 +9,6 @@ export interface IUserState {
     lastname: string | null
     token: string | null
     username: string | null | undefined
-    already_register: boolean
 
 }
 
@@ -19,7 +18,6 @@ const initialState: IUserState = {
     lastname: null,
     token: null,
     username: undefined,
-    already_register: false,
 }
 
 
@@ -28,13 +26,14 @@ const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        setUserInfo(state: IUserState, action: PayloadAction<IUserInfo>) {
-            state.phone = action.payload.phone
-            state.token = action.payload.token
-            state.firstname = action.payload.firstname
-            state.lastname = action.payload.lastname
-            state.username = action.payload.username ? action.payload.username : null
-
+        setUserInfo(state: IUserState, action: PayloadAction<IUserInfo | null>) {
+            if (action.payload) {
+                state.phone = action.payload.phone
+                state.token = action.payload.token
+                state.firstname = action.payload.firstname
+                state.lastname = action.payload.lastname
+                state.username = action.payload.username ? action.payload.username : null
+            }
         },
 
         login(state: IUserState, action: PayloadAction<string>) {
