@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { View } from "react-native"
+import { ToastAndroid, View } from "react-native"
 import Text from "../Text"
 import useTheme from "../../theme"
 import colors from "../../theme/colors"
@@ -7,15 +7,15 @@ import { Image } from "expo-image"
 import typogrphy from "../../theme/font"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 import AntDesign from "react-native-vector-icons/AntDesign"
-import { useSelector } from "react-redux"
-import { RootState } from "../../store"
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch, RootState } from "../../store"
 import { IUserState } from "../../reducers/auth"
 import { TouchableOpacity } from "react-native"
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
 import { LayoutAnimation } from 'react-native'
 import { ImageSourcePropType } from 'react-native'
-import { IUserInfo } from '../../db/service'
-import { IAppState } from '../../reducers/app'
+import { IUserInfo, updateUserLastActive } from '../../db/service'
+import { IAppState, changeAccount } from '../../reducers/app'
 import styles from './styles'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -97,6 +97,7 @@ const ProfilesList = () => {
                     item_hight={item_hight}
                     imageUrl={require("../../assets/1_main.jpg")}
                     userinfo={user}
+
                 />
             ))}
             <AddAccountBtn />
@@ -115,8 +116,23 @@ interface ProfileItemProps {
 
 const ProfileItem = ({ imageUrl, userinfo, item_hight, active }: ProfileItemProps) => {
     const imageSize = 40
+    const dispatch = useDispatch<AppDispatch>()
+    const navigation = useNavigation()
+    const pressed = () => {
+        dispatch(changeAccount({ phoneNumber: userinfo.phone })).then(res => {
+            navigation.reset({
+                index: 0,
+                //@ts-ignore
+                routes: [{ name: 'main' }],
+            })
+        }).catch(mes => {
+            console.error(mes);
+            ToastAndroid.show(mes, ToastAndroid.LONG)
+        })
+    }
     return (
         <TouchableOpacity
+            onPress={pressed}
             activeOpacity={0.9}
             style={{
                 ...styles.profileListItem,

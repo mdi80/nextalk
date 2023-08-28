@@ -16,7 +16,7 @@ import type { RouteProp } from '@react-navigation/native';
 import { DotIndicator } from "react-native-indicators"
 import typogrphy from "../../theme/font"
 import { login, signup } from "../../apis/auth"
-import { addUserToStorage } from "../intro/utils"
+import { addUserToStorage } from "../../db/apis"
 import { useDispatch } from "react-redux"
 import { setUserInfo } from "../../reducers/auth"
 import { loadUsersData } from "../../reducers/app"
