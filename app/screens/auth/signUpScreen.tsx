@@ -2,7 +2,7 @@ import React, { JSX, RefObject, useRef, useState, useCallback } from "react"
 import { View, TextInput as RNTextInput, BackHandler } from "react-native"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
-import { useFocusEffect, } from "@react-navigation/native"
+import { StackActions, useFocusEffect, } from "@react-navigation/native"
 import Container from "../../components/screenContainer"
 import { AppStatusBar } from "../../components/StatusBar"
 import colors from "../../theme/colors"
@@ -39,10 +39,12 @@ function SignUpScreen({ navigation, route }: Props): JSX.Element {
         useCallback(() => {
             const onBackPress = () => {
                 if (route.params.canBack) {
-                    navigation.pop(2)
+                    navigation.popToTop()
+                    return false
+                } else {
+                    BackHandler.exitApp()
                 }
-                BackHandler.exitApp()
-                return true
+                return false
             };
             const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
             return () => subscription.remove();
@@ -95,26 +97,26 @@ function SignUpScreen({ navigation, route }: Props): JSX.Element {
 
             </View>
             {/* <View style={{ backgroundColor: 'red', flexDirection: 'row', alignItems: 'center', position: 'absolute', bottom: 0, alignSelf: 'center' }}> */}
-            <Animated.View sharedTransitionTag="logo"
+            <View
                 style={{
-                    transform: [{ scale: 0.2 }],
+
                     position: 'absolute',
-                    bottom: 10,
-                    alignSelf: 'center'
+                    bottom: 20,
+                    alignSelf: 'center',
+                    flexDirection: 'row'
                 }}
             >
-                <FontAwesome name="send-o" color={colors.primary} size={100} />
-            </Animated.View>
-            <Text style={{
-                marginLeft: -30,
-                color: "#888",
-                fontSize: typogrphy.fontSize.xsm,
-                position: 'absolute',
-                bottom: 25,
-                alignSelf: 'center'
-            }}>
-                Nextalk 1.0.0
-            </Text>
+                <FontAwesome name="send-o" color={colors.primary} size={20} />
+                <Text style={{
+                    color: "#888",
+                    fontSize: typogrphy.fontSize.xsm,
+                    alignSelf: 'center',
+                    marginLeft: 10,
+                }}>
+                    Nextalk 1.0.0
+                </Text>
+
+            </View>
             {/* </View> */}
             <FloatingButton
                 activeOpacity={0.9}
