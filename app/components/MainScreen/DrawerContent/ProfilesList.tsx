@@ -1,25 +1,25 @@
 import { useEffect, useState } from 'react'
 import { ToastAndroid, View } from "react-native"
-import Text from "../Text"
-import useTheme from "../../theme"
-import colors from "../../theme/colors"
+import Text from "../../Text"
+import useTheme from "../../../theme"
+import colors from "../../../theme/colors"
 import { Image } from "expo-image"
-import typogrphy from "../../theme/font"
+import typogrphy from "../../../theme/font"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 import AntDesign from "react-native-vector-icons/AntDesign"
 import { useDispatch, useSelector } from "react-redux"
-import { AppDispatch, RootState } from "../../store"
-import { IUserState } from "../../reducers/auth"
+import { AppDispatch, RootState } from "../../../store"
+import { IUserState } from "../../../reducers/auth"
 import { TouchableOpacity } from "react-native"
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
 import { LayoutAnimation } from 'react-native'
 import { ImageSourcePropType } from 'react-native'
-import { IUserInfo, updateUserLastActive } from '../../db/service'
-import { IAppState, changeAccount } from '../../reducers/app'
+import { IUserInfo, updateUserLastActive } from '../../../db/service'
+import { IAppState, changeAccount } from '../../../reducers/app'
 import { drawerHeaderStyles } from './styles'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { MainStackParams } from '../../navigator/types'
+import { MainStackParams } from '../../../navigator/types'
 
 const item_hight = 65
 
@@ -95,7 +95,7 @@ const ProfilesList = () => {
                     active={user.lastactive}
                     key={index}
                     item_hight={item_hight}
-                    imageUrl={require("../../assets/1_main.jpg")}
+                    imageUrl={require("../../../assets/1_main.jpg")}
                     userinfo={user}
 
                 />
@@ -175,7 +175,7 @@ const ProfileItem = ({ imageUrl, userinfo, item_hight, active }: ProfileItemProp
 const AddAccountBtn = () => {
     const { colorText, colorScheme } = useTheme()
     const navigation = useNavigation<NativeStackNavigationProp<MainStackParams, 'home'>>()
-    
+
     const pressed = () => {
         navigation.getParent()?.navigate("auth", { screen: "phone", params: { canBack: true } })
     }

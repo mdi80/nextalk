@@ -6,7 +6,7 @@ import Container from "../../components/screenContainer"
 import { AppStatusBar } from "../../components/StatusBar"
 import { useSelector } from "react-redux"
 import { RootState } from "../../store"
-import MainHeader from "../../components/MainScreenHeader"
+import MainHeader from "../../components/MainScreen/Header"
 
 
 function SettingsScreen(): JSX.Element {

@@ -1,7 +1,7 @@
-import Container from "../screenContainer"
+import Container from "../../screenContainer"
 import { drawerBodyStyles, drawerHeaderStyles } from "./styles"
-import useTheme from "../../theme"
-import colors from "../../theme/colors"
+import useTheme from "../../../theme"
+import colors from "../../../theme/colors"
 import DrawerHeader from './HeaderDrawer'
 import DrawerList from "./DrawerList"
 import { ScrollView } from "react-native"

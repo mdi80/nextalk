@@ -1,12 +1,12 @@
 import { TouchableOpacity, View } from "react-native";
 import styles from "./styles";
-import Text from "../Text";
+import Text from "../../Text";
 import Ionicons from "react-native-vector-icons/Ionicons"
-import useTheme from "../../theme";
-import colors from "../../theme/colors";
+import useTheme from "../../../theme";
+import colors from "../../../theme/colors";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
-import { MainStackParams, RootStackParamsType } from "../../navigator/types";
+import { MainStackParams, RootStackParamsType } from "../../../navigator/types";
 interface paramsType {
     navigation: NativeStackNavigationProp<MainStackParams, 'home'>
     openDrawer: () => void

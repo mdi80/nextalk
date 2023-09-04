@@ -1,5 +1,5 @@
 import { View } from "react-native"
-import useTheme from "../../theme"
+import useTheme from "../../../theme"
 import { Image } from "expo-image"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 import ProfilesList from "./ProfilesList"
@@ -16,7 +16,7 @@ export default function DrawerHeader() {
 
                 <View style={drawerHeaderStyles(colorScheme).headerDrawerContent}>
                     <Image
-                        source={require("../../assets/1_main.jpg")}
+                        source={require("../../../assets/1_main.jpg")}
                         style={{
                             width: imageSize,
                             height: imageSize,

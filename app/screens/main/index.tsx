@@ -1,17 +1,15 @@
 import { JSX, useState } from "react"
-import { SafeAreaView, StatusBar } from "react-native"
-import FontAwesome from "react-native-vector-icons/FontAwesome"
 import Text from "../../components/Text"
 import Container from "../../components/screenContainer"
 import { AppStatusBar } from "../../components/StatusBar"
 import { useSelector } from "react-redux"
 import { RootState } from "../../store"
-import MainHeader from "../../components/MainScreenHeader"
+import MainHeader from "../../components/MainScreen/Header"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
-import { MainStackParams, RootStackParamsType } from "../../navigator/types"
+import { MainStackParams } from "../../navigator/types"
 import { Drawer } from 'react-native-drawer-layout';
 import { TouchableOpacity } from "react-native"
-import DrawerContent from "../../components/MainScreenDrwerContent"
+import DrawerContent from "../../components/MainScreen/DrawerContent"
 
 
 

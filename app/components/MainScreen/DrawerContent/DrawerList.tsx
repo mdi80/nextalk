@@ -1,13 +1,13 @@
 import { TouchableOpacity, View } from "react-native"
-import Text from "../Text"
+import Text from "../../Text"
 import { drawerBodyStyles } from "./styles"
-import useTheme from "../../theme"
+import useTheme from "../../../theme"
 import AntDesign from "react-native-vector-icons/AntDesign"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 import Divider from "./Divider"
 import { useNavigation } from "@react-navigation/native"
-import { RootState } from "../../store"
-import { MainStackParams } from "../../navigator/types"
+import { RootState } from "../../../store"
+import { MainStackParams } from "../../../navigator/types"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 
 const DrawerList = () => {

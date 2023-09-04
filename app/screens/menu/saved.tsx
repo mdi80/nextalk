@@ -1,12 +1,9 @@
 import { JSX } from "react"
-import { SafeAreaView, StatusBar } from "react-native"
-import FontAwesome from "react-native-vector-icons/FontAwesome"
 import Text from "../../components/Text"
 import Container from "../../components/screenContainer"
 import { AppStatusBar } from "../../components/StatusBar"
 import { useSelector } from "react-redux"
 import { RootState } from "../../store"
-import MainHeader from "../../components/MainScreenHeader"
 
 
 function SavedScreen(): JSX.Element {
