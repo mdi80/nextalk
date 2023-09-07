@@ -50,7 +50,6 @@ export const getUsersInfo = async (db: SQLiteDatabase, userTableName: string): P
         results.forEach(result => {
             for (let index = 0; index < result.rows.length; index++) {
                 result.rows.item(index)['lastactive'] = result.rows.item(index)['lastactive'] === 1
-                console.log(result.rows.item(index));
                 users.push(result.rows.item(index))
             }
         });

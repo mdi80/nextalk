@@ -1,64 +1,68 @@
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "../store"
-import { closeSocket, connectWebSocketWithTicket, getTicketWithToken, setWebsocketStatus, ws_status } from "../reducers/app"
+import { getTicketWithToken, restartSocketValues, setWebsocketStatus, ws_status } from "../reducers/app"
+import { WEB_SOCKET_URL } from "../config"
 
-
-
-const useConnectToWS = () => {
-
+const useConnectToWS = (socket: WebSocket | null, setSocket: (socket: WebSocket | null) => void) => {
 
     const token = useSelector<RootState, string | null>(state => state.auth.token)
-    const wsocket = useSelector<RootState, WebSocket | null>(state => state.app.wsocket)
+    const ticket = useSelector<RootState, string | null>(state => state.app.ticket)
     const wsocket_status = useSelector<RootState, ws_status>(state => state.app.ws_status)
     const dispatch = useDispatch<AppDispatch>()
-
 
 
     useEffect(() => {
 
         if (!token) return
-        console.log('here');
-        if (wsocket_status === "start") {
-            console.log('start');
+        if (wsocket_status === "init") {
+            console.log('Socket: Init');
 
-            dispatch(closeSocket())
+            dispatch(restartSocketValues())
+        }
+
+        if (wsocket_status === "start") {
+            console.log('Socket: Start');
+
+            socket?.close()
+            setSocket(null)
             dispatch(getTicketWithToken())
         }
         if (wsocket_status === "connecting") {
-            console.log('connecting');
+            console.log('Socket: Connecting');
+            if (!ticket) {
+                dispatch(restartSocketValues())
+            }
+            const socket = new WebSocket(WEB_SOCKET_URL + "ws/chat/connect/?" + ticket)
+            socket.onerror = (error) => {
+                dispatch(setWebsocketStatus("faild"))
+            }
+            socket.onopen = () => {
+                dispatch(setWebsocketStatus("connected"))
+            }
 
-            dispatch(connectWebSocketWithTicket())
+            setSocket(socket)
         }
         if (wsocket_status === "connected") {
-            console.log('connected');
+            console.log('Socket: Connected');
 
-            if (!wsocket) {
+            if (!socket) {
                 dispatch(setWebsocketStatus("start"))
                 return
             }
-            wsocket.onmessage = (message) => {
+            socket.onmessage = (message) => {
                 console.log("message from server")
             }
         }
         if (wsocket_status === "faild") {//retry for now
-            console.log('faild');
+            console.log('Socket: Faild');
 
-            dispatch(setWebsocketStatus("start"))
+            dispatch(restartSocketValues())
         }
 
     }, [wsocket_status])
 
 
-
-
-    useEffect(() => {
-
-        dispatch(closeSocket())
-        dispatch(setWebsocketStatus("start"))
-        dispatch(getTicketWithToken())
-
-    }, [token])
 
 
 }

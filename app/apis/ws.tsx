@@ -26,10 +26,10 @@ const getTicket = async (token: string): Promise<string | void> => {
             console.log(error.response);
 
         } else if (error.request) {
-            console.log(error.response);
+            console.log("No Response!");
 
         } else {
-            console.log(error.response);
+            console.log("Unkowen Error!");
 
         }
     }

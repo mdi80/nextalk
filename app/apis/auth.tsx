@@ -163,10 +163,10 @@ const logoutToken = async (token: string | null): Promise<boolean> => {
             console.log(error.response);
 
         } else if (error.request) {
-            console.log(error.response);
+            console.log("No Response!");
 
         } else {
-            console.log(error.response);
+            console.log("Unkowen Error!");
 
         }
     }

@@ -72,7 +72,6 @@ function AddUserNameScreen({ navigation, route }: Props): JSX.Element {
                 throw Error("Unkown error!!!")
 
         }).then(data => {
-            console.log(data);
 
             if (data) {
 

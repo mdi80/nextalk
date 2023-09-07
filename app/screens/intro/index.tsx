@@ -11,7 +11,7 @@ import { RootStackParamsType } from "../../navigator/types"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { StyleSheet } from "react-native"
 import colors from "../../theme/colors"
-import { loadUsersData, setAllUsers } from "../../reducers/app"
+import { loadUsersData, restartSocketValues, setAllUsers } from "../../reducers/app"
 type navigationType = NativeStackNavigationProp<RootStackParamsType, 'intro'>
 type Props = {
     navigation: navigationType
@@ -29,31 +29,15 @@ function IntroScreen({ navigation }: Props): JSX.Element {
 
     React.useEffect(() => {
         setTimeout(() => { setTimerFinshed(true) }, 1000)
-        dispatch(loadUsersData()).then(res => {
-            console.log(res);
-        }).finally(() => {
+        dispatch(loadUsersData()).finally(() => {
+            dispatch(restartSocketValues())
             setUserLoading(false)
         })
 
-        // getAllUsersFromStorage().then(users => {
-
-        //     if (users) {
-        //         dispatch(setAllUsers(users))
-        //         users.forEach(user => {
-        //             if (user.lastactive) {
-        //                 dispatch(setUserInfo(user))
-        //             }
-        //         });
-        //     }
-
-
-        // }).finally(() => {
-        // })
     }, [])
 
     React.useEffect(() => {
         if (timerFinished && !userLoading) {
-            console.log(token);
 
             if (token) {
                 navigation.replace("main", { screen: "home" })

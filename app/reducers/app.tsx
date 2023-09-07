@@ -6,11 +6,11 @@ import { WEB_SOCKET_URL } from "../config"
 import { RootState } from "../store"
 import { getTicket } from "../apis/ws"
 
+//TODO Test this function runs twice if give some delay to api
 export const getTicketWithToken = createAsyncThunk<string, void, { state: RootState }>(
     'app/getticket',
     async (_, { getState, rejectWithValue }) => {
         try {
-            console.log('starting');
 
             const status = getState().app.ws_status
             const token = getState().auth.token
@@ -30,35 +30,6 @@ export const getTicketWithToken = createAsyncThunk<string, void, { state: RootSt
     }
 )
 
-
-export const connectWebSocketWithTicket = createAsyncThunk<WebSocket, void, { state: RootState }>(
-    'app/connect',
-    async (_, { getState, dispatch, rejectWithValue }) => {
-        try {
-            const status = getState().app.ws_status
-            const ticket = getState().app.ticket
-
-            if (!ticket)
-                return rejectWithValue(-1);
-
-
-            const socket = new WebSocket(WEB_SOCKET_URL + "ws/chat/connect/?" + ticket)
-            socket.onerror = (error) => {
-                dispatch(setWebsocketStatus("faild"))
-            }
-            socket.onopen = () => {
-                dispatch(setWebsocketStatus("connected"))
-            }
-            socket.onclose = () => {
-                dispatch(setWebsocketStatus("faild"))
-            }
-            return socket
-        } catch {
-
-            return rejectWithValue(-2);
-        }
-    }
-)
 
 
 
@@ -94,25 +65,23 @@ export const changeAccount = createAsyncThunk(
         });
 
         dispatch(setUserInfo(payload.user))
-
+        dispatch(setWebsocketStatus("init"))
         return payload
 
     }
 )
 
-export type ws_status = "start" | "connecting" | "connected" | "faild"
+export type ws_status = "init" | "start" | "connecting" | "connected" | "faild"
 
 export interface IAppState {
-    wsocket: WebSocket | null
     ws_status: ws_status
     ticket: string | null
     allUsersInfo: IUserInfo[] | null
 }
 
 const initialState: IAppState = {
-    wsocket: null,
     ticket: null,
-    ws_status: "start",
+    ws_status: "init",
     allUsersInfo: null
 }
 
@@ -124,13 +93,13 @@ const appSlice = createSlice({
         setAllUsers(state: IAppState, action: PayloadAction<IUserInfo[] | null>) {
             state.allUsersInfo = action.payload
         },
-        closeSocket(state: IAppState, action: PayloadAction<undefined>) {
-            state.wsocket?.close()
-            state.wsocket = null
-        },
         setWebsocketStatus(state: IAppState, action: PayloadAction<ws_status>) {
             state.ws_status = action.payload
         },
+        restartSocketValues(state: IAppState) {
+            state.ws_status = "start"
+            state.ticket = null
+        }
     },
     extraReducers: builder => {
         builder.addCase(loadUsersData.fulfilled, (state, action) => {
@@ -139,27 +108,23 @@ const appSlice = createSlice({
         builder.addCase(changeAccount.fulfilled, (state, action) => {
             state.allUsersInfo = action.payload.users
         })
-        builder.addCase(connectWebSocketWithTicket.fulfilled, (state, action) => {
-            state.wsocket = action.payload
-        })
-        builder.addCase(connectWebSocketWithTicket.rejected, (state, action) => {
-            state.ws_status = "start"
-            state.ticket = null
-            state.wsocket = null
-        })
+        // builder.addCase(connectWebSocketWithTicket.rejected, (state, action) => {
+        //     state.ws_status = "start"
+        //     state.ticket = null
+        // })
         builder.addCase(getTicketWithToken.fulfilled, (state, action) => {
             state.ticket = action.payload
             state.ws_status = "connecting"
         })
         builder.addCase(getTicketWithToken.rejected, (state, action) => {
             state.ws_status = "start"
+
             state.ticket = null
-            state.wsocket = null
         })
 
     }
 })
 
 
-export const { setAllUsers, closeSocket, setWebsocketStatus } = appSlice.actions
+export const { setAllUsers, setWebsocketStatus, restartSocketValues } = appSlice.actions
 export default appSlice.reducer

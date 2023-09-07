@@ -131,7 +131,6 @@ function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
         allUsersInfo?.forEach(item => {
 
             if (item.phone === v) {
-                console.log('here');
                 allow = false
             }
         })
@@ -149,7 +148,6 @@ function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
                     if (!res)
                         setError("Incorrect!")
                     else {
-                        console.log(res);
 
                         if (res.new)
                             navigation.navigate("signup", { phone_token: res.key, phone: phoneInput.trim(), canBack: route.params.canBack })

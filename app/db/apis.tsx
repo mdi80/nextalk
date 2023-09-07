@@ -49,7 +49,6 @@ const addUserToStorage = async (data: IUserInfo): Promise<IUserInfo | null> => {
         const db = await getDBConnection();
         await createTable(db, "users");
         const users = await getUsersInfo(db, "users")
-        console.log(data);
 
 
         users.forEach(async user => {

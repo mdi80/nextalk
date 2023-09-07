@@ -8,7 +8,7 @@ export { WebSocketContext }
 export default ({ children }: { children: ReactNode }) => {
 
     const [socket, setSocket] = useState<WebSocket | null>(null)
-    useConnectToWS()
+    useConnectToWS(socket, setSocket)
 
     return (
         <WebSocketContext.Provider value={socket}>
