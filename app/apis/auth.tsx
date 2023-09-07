@@ -124,8 +124,6 @@ const login = async (phone_token: string): Promise<loginResault> => {
                 'Content-Type': 'application/json'
             }
         })
-        console.log(data);
-        console.log(status);
 
 
         return data

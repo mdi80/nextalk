@@ -2,8 +2,8 @@ import { JSX, useState } from "react"
 import Text from "../../components/Text"
 import Container from "../../components/screenContainer"
 import { AppStatusBar } from "../../components/StatusBar"
-import { useSelector } from "react-redux"
-import { RootState } from "../../store"
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch, RootState } from "../../store"
 import MainHeader from "../../components/MainScreen/Header"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { MainStackParams } from "../../navigator/types"
@@ -19,7 +19,9 @@ type Props = {
 
 function MainScreen({ navigation }: Props): JSX.Element {
 
+    // const dispatch = useDispatch<AppDispatch>()
 
+    // dispatch(connectWebSocket())
     const username = useSelector<RootState, string | undefined | null>(state => state.auth.username)
     const firstname = useSelector<RootState, string | undefined | null>(state => state.auth.firstname)
     const lastname = useSelector<RootState, string | undefined | null>(state => state.auth.lastname)
