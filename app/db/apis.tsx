@@ -1,4 +1,4 @@
-import { IUserInfo, addUser, createTable, getDBConnection, getUsersInfo, updateUserLastActive } from "./service";
+import { IUserInfo, addUser, createTable, deleteUser, getDBConnection, getUsersInfo, updateUserLastActive } from "./service";
 
 
 const getUserFromStorage = async (): Promise<IUserInfo | null> => {
@@ -32,7 +32,16 @@ const getAllUsersFromStorage = async (): Promise<IUserInfo[]> => {
         await createTable(db, "users");
         const users = await getUsersInfo(db, "users")
 
-
+        let activeUser
+        users.forEach(user => {
+            if (user.lastactive) {
+                activeUser = user
+            }
+        });
+        if(!activeUser){
+            await updateUserLastActive(db, "users", users[0].phone, true)
+        }
+        
         return users
 
     } catch (error) {
@@ -87,6 +96,16 @@ const changeAccountInStorage = async (targetPhone: string): Promise<IUserInfo[]>
 }
 
 
+const deleteUserFromFromStorage = async (token: string): Promise<void> => {
+
+    const db = await getDBConnection();
+    await createTable(db, "users");
+
+    await deleteUser(db, "users", token)
+}
 
 
-export { getUserFromStorage, addUserToStorage, getAllUsersFromStorage, changeAccountInStorage }
+
+
+
+export { getUserFromStorage, addUserToStorage, getAllUsersFromStorage, changeAccountInStorage, deleteUserFromFromStorage }

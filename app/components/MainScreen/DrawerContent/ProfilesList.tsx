@@ -124,13 +124,16 @@ const ProfileItem = ({ imageUrl, userinfo, item_hight, active }: ProfileItemProp
     const { colorScheme, } = useTheme()
 
     const pressed = () => {
-        dispatch(changeAccount({ phoneNumber: userinfo.phone })).then(res => {
-            navigation.reset({
-                index: 0,
-                //@ts-ignore
-                routes: [{ name: 'main' }],
-            })
-        }).catch(mes => {
+
+        // then(res => {
+        //     navigation.reset({
+        //         index: 0,
+        //         //@ts-ignore
+        //         routes: [{ name: 'main' }],
+        //     })
+        // })
+
+        dispatch(changeAccount({ phoneNumber: userinfo.phone })).catch(mes => {
             console.error(mes);
             ToastAndroid.show(mes, ToastAndroid.LONG)
         })

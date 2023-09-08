@@ -85,9 +85,9 @@ export const updateUserLastActive = async (db: SQLiteDatabase, userTableName: st
     await db.executeSql(updateQuery);
 };
 
-export const deleteUser = async (db: SQLiteDatabase, userTableName: string, userPhon: string) => {
-    const deleteQuery = `DELETE from ${userTableName} where phone = ${userPhon} `;
-    await db.executeSql(deleteQuery);
+export const deleteUser = async (db: SQLiteDatabase, userTableName: string, userToken: string) => {
+    const deleteQuery = `DELETE from ${userTableName} where token = '${userToken}' `;
+    // await db.executeSql(deleteQuery);
 };
 
 export const deleteTable = async (db: SQLiteDatabase, userTableName: string) => {

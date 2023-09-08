@@ -8,9 +8,12 @@ const GET_TICKET_URL = AUTH_URL + "get-ticket/"
 
 
 
-const getTicket = async (token: string): Promise<string | void> => {
+const getTicket = async (token: string): Promise<string | number | null> => {
+
 
     try {
+        console.log(GET_TICKET_URL);
+
         const res = await axios({
             method: 'get',
             url: GET_TICKET_URL,
@@ -18,13 +21,14 @@ const getTicket = async (token: string): Promise<string | void> => {
                 "Authorization": "Token " + token
             }
         })
+        console.log('h2');
 
         return res.data['ticket']
 
     } catch (error: any | AxiosError) {
         if (error.response) {
-            console.log(error.response);
-
+            console.log(error.response.status);
+            return error.response.status
         } else if (error.request) {
             console.log("No Response!");
 
@@ -33,6 +37,7 @@ const getTicket = async (token: string): Promise<string | void> => {
 
         }
     }
+    return null
 }
 
 export { getTicket }

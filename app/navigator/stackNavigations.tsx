@@ -15,20 +15,39 @@ import ContactsScreen from "../screens/menu/contacts";
 import FeaturesScreen from "../screens/menu/features";
 import InviteScreen from "../screens/menu/invite";
 import RecentCallsScreen from "../screens/menu/recentCalls";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
+import { useNavigation } from "@react-navigation/native";
 
 
 const RootStack = createNativeStackNavigator()
 
 
-export const RootStackNavigator = () => (
+export const RootStackNavigator = () => {
 
-    <RootStack.Navigator>
-        <RootStack.Screen name="intro" component={IntroScreen} options={{ headerShown: false }} />
-        <RootStack.Screen name="auth" component={AuthNavigator} options={{ headerShown: false, animation: 'none' }} />
-        <RootStack.Screen name="main" component={MainNavigator} options={{ headerShown: false, animation: 'fade_from_bottom' }} />
-    </RootStack.Navigator>
-)
+    const token = useSelector<RootState, string | null>(state => state.auth.token)
+    const navigation = useNavigation()
+    useEffect(() => {
+        console.log(token);
+        if (!token) return
+        navigation.reset({
+            index: 0,
+            //@ts-ignore
+            routes: [{ name: 'main' }],
+        })
+    }, [token])
 
+
+    return (
+
+        <RootStack.Navigator>
+            <RootStack.Screen name="intro" component={IntroScreen} options={{ headerShown: false }} />
+            <RootStack.Screen name="auth" component={AuthNavigator} options={{ headerShown: false, animation: 'none' }} />
+            <RootStack.Screen name="main" component={MainNavigator} options={{ headerShown: false, animation: 'fade_from_bottom' }} />
+        </RootStack.Navigator>
+    )
+}
 
 const MainStack = createNativeStackNavigator<MainStackParams>()
 

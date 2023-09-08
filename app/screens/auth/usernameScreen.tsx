@@ -75,13 +75,7 @@ function AddUserNameScreen({ navigation, route }: Props): JSX.Element {
 
             if (data) {
 
-                dispatch(loadUsersData()).finally(() => {
-                    navigation.reset({
-                        index: 0,
-                        //@ts-ignore
-                        routes: [{ name: 'main' }],
-                    })
-                })
+                dispatch(loadUsersData())
             } else {
                 throw Error("DB Error!!!!")
             }

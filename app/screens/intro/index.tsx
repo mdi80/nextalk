@@ -40,7 +40,7 @@ function IntroScreen({ navigation }: Props): JSX.Element {
         if (timerFinished && !userLoading) {
 
             if (token) {
-                navigation.replace("main", { screen: "home" })
+                // navigation.replace("main", { screen: "home" })
             } else {
                 navigation.replace("auth", { screen: 'auth_intro' })
             }

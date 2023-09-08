@@ -170,13 +170,7 @@ function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
 
                 }).then(data => { // this will save user data into store
                     if (data) {
-                        dispatch(loadUsersData()).finally(() => {
-                            navigation.reset({
-                                index: 0,
-                                //@ts-ignore
-                                routes: [{ name: 'main' }],
-                            })
-                        })
+                        dispatch(loadUsersData())
                     }
                 }).catch(e => {
                     console.log(e.message)

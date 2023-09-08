@@ -7,6 +7,9 @@ import colors from "../../../theme/colors";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { MainStackParams, RootStackParamsType } from "../../../navigator/types";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
+import { ws_status } from "../../../reducers/app";
 interface paramsType {
     navigation: NativeStackNavigationProp<MainStackParams, 'home'>
     openDrawer: () => void
@@ -16,6 +19,8 @@ interface paramsType {
 export default function MainHeader({ navigation, openDrawer }: paramsType) {
 
     const { colorScheme } = useTheme()
+
+    const ws_status = useSelector<RootState, ws_status>(state => state.app.ws_status)
 
     return (
         <View style={{
@@ -31,7 +36,7 @@ export default function MainHeader({ navigation, openDrawer }: paramsType) {
                 </TouchableOpacity>
 
                 <Text style={styles.mainTitle}>
-                    Nextalk
+                    {ws_status === "connected" ? "Nextalk" : "Connecting..."}
                 </Text>
             </View>
             <TouchableOpacity

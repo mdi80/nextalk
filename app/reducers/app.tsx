@@ -1,15 +1,17 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { IUserState, setUserInfo } from "./auth"
-import { IUserInfo } from "../db/service"
+import { IUserState, logoutCurrentUser, setUserInfo } from "./auth"
+import { IUserInfo, deleteUser } from "../db/service"
 import { changeAccountInStorage, getAllUsersFromStorage } from "../db/apis"
 import { WEB_SOCKET_URL } from "../config"
 import { RootState } from "../store"
 import { getTicket } from "../apis/ws"
 
+
+
 //TODO Test this function runs twice if give some delay to api
 export const getTicketWithToken = createAsyncThunk<string, void, { state: RootState }>(
     'app/getticket',
-    async (_, { getState, rejectWithValue }) => {
+    async (_, { getState, dispatch, rejectWithValue }) => {
         try {
 
             const status = getState().app.ws_status
@@ -19,7 +21,14 @@ export const getTicketWithToken = createAsyncThunk<string, void, { state: RootSt
                 return rejectWithValue(-1);
 
             const ticket = await getTicket(token)
+            if (typeof (ticket) === 'number') {
+                if (ticket === 401) {
 
+                    dispatch(logoutCurrentUser())
+                    return rejectWithValue(-5);
+                }
+                return rejectWithValue(-4);
+            }
             if (!ticket) return rejectWithValue(-2);
 
             return ticket
@@ -44,6 +53,7 @@ export const loadUsersData = createAsyncThunk(
                 payload.user = user
             }
         });
+        console.log(payload.users);
 
         dispatch(setUserInfo(payload.user))
 
@@ -108,17 +118,18 @@ const appSlice = createSlice({
         builder.addCase(changeAccount.fulfilled, (state, action) => {
             state.allUsersInfo = action.payload.users
         })
-        // builder.addCase(connectWebSocketWithTicket.rejected, (state, action) => {
-        //     state.ws_status = "start"
-        //     state.ticket = null
-        // })
         builder.addCase(getTicketWithToken.fulfilled, (state, action) => {
             state.ticket = action.payload
             state.ws_status = "connecting"
         })
         builder.addCase(getTicketWithToken.rejected, (state, action) => {
-            state.ws_status = "start"
+            if (action.payload === -5) {//invlid token
+                //TODO logut the user from device and change active user 
+                console.log('here');
 
+
+            }
+            state.ws_status = "start"
             state.ticket = null
         })
 
