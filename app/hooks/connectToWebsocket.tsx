@@ -64,6 +64,10 @@ const useConnectToWS = (socket: WebSocket | null, setSocket: (socket: WebSocket 
 
 
 
+    useEffect(() => {
+        dispatch(setWebsocketStatus("init"))
+    }, [token])
+
 
 }
 

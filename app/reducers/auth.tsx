@@ -14,14 +14,11 @@ export const logoutCurrentUser = createAsyncThunk<void, void, { state: RootState
         const token = getState().auth.token
         if (!token) return
 
-
-
         await deleteUserFromFromStorage(token).catch(e => {
             console.error("couldn't delete user from db! message: " + e.message)
             return
         })
         await dispatch(loadUsersData())
-
 
         //     payload.users = await
         //         payload.users.forEach(user => {

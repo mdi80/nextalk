@@ -38,10 +38,15 @@ const getAllUsersFromStorage = async (): Promise<IUserInfo[]> => {
                 activeUser = user
             }
         });
-        if(!activeUser){
+
+        if (!activeUser) {
+
             await updateUserLastActive(db, "users", users[0].phone, true)
+            const newusers = await getUsersInfo(db, "users")
+            return newusers
+
         }
-        
+
         return users
 
     } catch (error) {

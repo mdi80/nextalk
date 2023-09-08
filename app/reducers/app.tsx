@@ -53,7 +53,7 @@ export const loadUsersData = createAsyncThunk(
                 payload.user = user
             }
         });
-        console.log(payload.users);
+        console.log(payload.user);
 
         dispatch(setUserInfo(payload.user))
 

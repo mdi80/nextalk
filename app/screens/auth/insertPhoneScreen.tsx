@@ -31,7 +31,7 @@ type Props = {
     route: RouteProp<AuthStackParams, 'phone'>
     navigation: NativeStackNavigationProp<AuthStackParams, 'auth_intro'>
 };
-const smsAuthTTL = 5
+const smsAuthTTL = 120
 const phoneNumberPattern = /^\+[0-9]{12,}$/;
 
 
@@ -39,7 +39,7 @@ const phoneNumberPattern = /^\+[0-9]{12,}$/;
 
 function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
 
-    const { colorScheme } = useTheme()
+    const { colorScheme, colorText } = useTheme()
 
     const codeInputRed = React.useRef(null)
     const timerInterval = React.useRef<NodeJS.Timeout | null>(null)
@@ -55,6 +55,7 @@ function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
     const [allowPhone, setAllowPhone] = useState(true)
     const dispatch = useDispatch<AppDispatch>()
     const { allUsersInfo } = useSelector<RootState, IAppState>(state => state.app)
+    const [loadingCheckCode, setLoadingCheckCode] = useState<boolean>(false)
     // const now = React.useRef(new Date())
 
 
@@ -142,6 +143,7 @@ function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
     }
 
     const onFulfill = (code: number) => {
+        setLoadingCheckCode(true)
         if (phoneSmsSent)
             verifyPhoneCode(phoneSmsSent, code)
                 .then(res => {
@@ -174,6 +176,8 @@ function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
                     }
                 }).catch(e => {
                     console.log(e.message)
+                }).finally(() => {
+                    setLoadingCheckCode(false)
                 })
     }
 
@@ -291,7 +295,8 @@ function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
 
             </View>
             {codeSend ?
-                <TimerAuthView timer={smsAuthTTL - timerSec} />
+
+                loadingCheckCode ? <DotIndicator style={{ position: 'absolute', bottom: 30 }} size={7} color={colors.primary} /> : <TimerAuthView timer={smsAuthTTL - timerSec} />
                 :
                 <FloatingButton
                     activeOpacity={0.9}
