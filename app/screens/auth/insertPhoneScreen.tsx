@@ -152,7 +152,7 @@ function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
                     else {
 
                         if (res.new)
-                            navigation.navigate("signup", { phone_token: res.key, phone: phoneInput.trim(), canBack: route.params.canBack })
+                            navigation.navigate("signup", { phone_token: res.key, phone: phoneInput.trim() })
                         else
                             return login(res.key)
                     }

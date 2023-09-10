@@ -1,10 +1,10 @@
-import { IUserInfo, addUser, createTable, deleteUser, getDBConnection, getUsersInfo, updateUserLastActive } from "./service";
+import { IUserInfo, addUser, createTableIfNotExists, deleteUser, getDBConnection, getUsersInfo, updateUserLastActive } from "./service";
 
 
 const getUserFromStorage = async (): Promise<IUserInfo | null> => {
     try {
         const db = await getDBConnection();
-        await createTable(db, "users");
+        await createTableIfNotExists(db, "users");
         const users = await getUsersInfo(db, "users")
 
         //No users in db
@@ -29,7 +29,7 @@ const getUserFromStorage = async (): Promise<IUserInfo | null> => {
 const getAllUsersFromStorage = async (): Promise<IUserInfo[]> => {
     try {
         const db = await getDBConnection();
-        await createTable(db, "users");
+        await createTableIfNotExists(db, "users");
         const users = await getUsersInfo(db, "users")
 
         let activeUser
@@ -40,11 +40,13 @@ const getAllUsersFromStorage = async (): Promise<IUserInfo[]> => {
         });
 
         if (!activeUser) {
+            if (users[0]) {
 
-            await updateUserLastActive(db, "users", users[0].phone, true)
-            const newusers = await getUsersInfo(db, "users")
-            return newusers
-
+                await updateUserLastActive(db, "users", users[0].phone, true)
+                console.log("here");
+                const newusers = await getUsersInfo(db, "users")
+                return newusers
+            } else return []
         }
 
         return users
@@ -61,7 +63,7 @@ const addUserToStorage = async (data: IUserInfo): Promise<IUserInfo | null> => {
     try {
 
         const db = await getDBConnection();
-        await createTable(db, "users");
+        await createTableIfNotExists(db, "users");
         const users = await getUsersInfo(db, "users")
 
 
@@ -83,7 +85,7 @@ const addUserToStorage = async (data: IUserInfo): Promise<IUserInfo | null> => {
 const changeAccountInStorage = async (targetPhone: string): Promise<IUserInfo[]> => {
 
     const db = await getDBConnection();
-    await createTable(db, "users");
+    await createTableIfNotExists(db, "users");
     const users = await getUsersInfo(db, "users")
 
 
@@ -104,7 +106,7 @@ const changeAccountInStorage = async (targetPhone: string): Promise<IUserInfo[]>
 const deleteUserFromFromStorage = async (token: string): Promise<void> => {
 
     const db = await getDBConnection();
-    await createTable(db, "users");
+    await createTableIfNotExists(db, "users");
 
     await deleteUser(db, "users", token)
 }

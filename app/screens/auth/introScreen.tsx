@@ -22,7 +22,7 @@ function IntroAuthScreen({ navigation }: Props): JSX.Element {
 
     React.useEffect(() => {
         if (timerFinished)
-            navigation.navigate("phone")
+            navigation.navigate("phone",{})
 
     }, [timerFinished])
 

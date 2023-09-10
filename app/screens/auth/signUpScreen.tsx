@@ -24,32 +24,12 @@ type Props = {
 
 function SignUpScreen({ navigation, route }: Props): JSX.Element {
 
-    if (!route.params.phone_token) {
-        navigation.goBack()
-    }
-
     const [fname, setFname] = useState("")
     const [lname, setLname] = useState("")
 
     const ifname = useRef<RefTextInput>(null)
     const ilname = useRef<RefTextInput>(null)
 
-
-    useFocusEffect(
-        useCallback(() => {
-            const onBackPress = () => {
-                if (route.params.canBack) {
-                    navigation.popToTop()
-                    return false
-                } else {
-                    BackHandler.exitApp()
-                }
-                return false
-            };
-            const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
-            return () => subscription.remove();
-        }, [])
-    );
 
 
     const submit = () => {
@@ -96,7 +76,7 @@ function SignUpScreen({ navigation, route }: Props): JSX.Element {
 
 
             </View>
-            {/* <View style={{ backgroundColor: 'red', flexDirection: 'row', alignItems: 'center', position: 'absolute', bottom: 0, alignSelf: 'center' }}> */}
+
             <View
                 style={{
 
@@ -117,7 +97,7 @@ function SignUpScreen({ navigation, route }: Props): JSX.Element {
                 </Text>
 
             </View>
-            {/* </View> */}
+
             <FloatingButton
                 activeOpacity={0.9}
                 icon={<MaterialIcons name="keyboard-arrow-right" size={30} color="white" />}

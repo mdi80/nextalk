@@ -47,14 +47,15 @@ export const loadUsersData = createAsyncThunk(
     async (_, { getState, dispatch }) => {
         const payload: { user: IUserInfo | null, users: IUserInfo[] } = { user: null, users: [] }
         payload.users = await getAllUsersFromStorage()
-
+        
         payload.users.forEach(user => {
             if (user.lastactive) {
                 payload.user = user
             }
         });
         console.log(payload.user);
-
+        
+        console.log("loadusers");
         dispatch(setUserInfo(payload.user))
 
         return payload
@@ -129,7 +130,7 @@ const appSlice = createSlice({
 
 
             }
-            state.ws_status = "start"
+            state.ws_status = "init"
             state.ticket = null
         })
 

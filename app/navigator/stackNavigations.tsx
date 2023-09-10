@@ -30,7 +30,14 @@ export const RootStackNavigator = () => {
     const navigation = useNavigation()
     useEffect(() => {
         console.log(token);
-        if (!token) return
+        if (!token) {
+            navigation.reset({
+                index: 0,
+                //@ts-ignore
+                routes: [{ name: 'auth' }],
+            })
+            return
+        }
         navigation.reset({
             index: 0,
             //@ts-ignore

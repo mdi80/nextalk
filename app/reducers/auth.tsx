@@ -62,6 +62,12 @@ const authSlice = createSlice({
                 state.firstname = action.payload.firstname
                 state.lastname = action.payload.lastname
                 state.username = action.payload.username ? action.payload.username : null
+            } else {
+                state.phone = null
+                state.token = null
+                state.firstname = null
+                state.lastname = null
+                state.username = null
             }
         },
 

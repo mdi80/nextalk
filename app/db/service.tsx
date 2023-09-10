@@ -8,7 +8,7 @@ export const getDBConnection = async () => {
 };
 
 
-export const createTable = async (db: SQLiteDatabase, tableName: string) => {
+export const createTableIfNotExists = async (db: SQLiteDatabase, tableName: string) => {
     // create table if not exists
     const query = `CREATE TABLE IF NOT EXISTS ${tableName}(
         phone TEXT NOT NULL PRIMARY KEY,
@@ -64,16 +64,23 @@ export const getUsersInfo = async (db: SQLiteDatabase, userTableName: string): P
 };
 
 export const addUser = async (db: SQLiteDatabase, userTableName: string, userInfo: IUserInfo) => {
+    let usernameField = ""
+    let usernameValue = ""
+    if (userInfo.username) {
+
+        usernameField = ",username"
+        usernameValue = ",'" + userInfo.username + "'"
+    }
     let insertQuery =
-        `INSERT INTO ${userTableName}(phone, token,firstname,lastname,lastactive${userInfo.username && ",username"}) values` +
+        `INSERT INTO ${userTableName}(phone, token,firstname,lastname,lastactive${usernameField}) values` +
         `(
             '${userInfo.phone}',
              '${userInfo.token}',
              '${userInfo.firstname}',
              '${userInfo.lastname}',
              '${userInfo.lastactive}'
-              ${userInfo.username && ",'" + userInfo.username + "'"});`;
-
+              ${usernameValue});`;
+            
     return await db.executeSql(insertQuery);
 };
 export const updateUserLastActive = async (db: SQLiteDatabase, userTableName: string, phone: string, acitve: boolean) => {

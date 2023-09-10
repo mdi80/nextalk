@@ -3,7 +3,6 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 export type SignUpScreenProps = {
     phone_token: string
     phone: string
-    canBack?: boolean
 }
 export type AddUserNameScreenProps = {
     phone_token: string

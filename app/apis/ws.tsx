@@ -31,13 +31,12 @@ const getTicket = async (token: string): Promise<string | number | null> => {
             return error.response.status
         } else if (error.request) {
             console.log("No Response!");
-
         } else {
             console.log("Unkowen Error!");
 
         }
+        throw error
     }
-    return null
 }
 
 export { getTicket }
