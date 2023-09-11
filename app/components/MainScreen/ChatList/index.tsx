@@ -1,16 +1,27 @@
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { FlatList, View } from "react-native"
 import { chatsType } from "./types"
 import Text from "../../Text"
-
+import { WebSocketContext } from "../../../webSocketContextContainer"
 
 
 
 
 const ListChats = () => {
 
+    const socket = useContext(WebSocketContext)
     const [chats, setChats] = useState<chatsType[]>([])
     const [len, setLen] = useState([])
+
+    useEffect(() => {
+
+        if (socket) {
+            socket.onmessage = (message) => {
+                
+            }
+        }
+
+    }, [socket])
 
     const renderItem = ({ item, index }: { item: chatsType, index: number }) => {
         return (
@@ -29,3 +40,5 @@ const ListChats = () => {
         />
     )
 }
+
+export default ListChats

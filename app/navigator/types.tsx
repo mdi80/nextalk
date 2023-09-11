@@ -17,6 +17,10 @@ export type RootStackParamsType = {
     main: NavigatorScreenParams<MainStackParams>
 }
 
+export type RoomScreenProps = {
+    phone: string
+}
+
 export type MainStackParams = {
     home: undefined
     room: undefined
@@ -26,7 +30,7 @@ export type MainStackParams = {
     features: undefined
     invite: undefined
     recentCalls: undefined
-
+    startchat: undefined
 }
 
 export type InserPhoneProps = {

@@ -19,6 +19,7 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { useNavigation } from "@react-navigation/native";
+import StartChatScreen from "../screens/main/startChat";
 
 
 const RootStack = createNativeStackNavigator()
@@ -62,6 +63,7 @@ export const MainNavigator = () => (
 
     <MainStack.Navigator>
         <MainStack.Screen name="home" component={MainScreen} options={{ headerShown: false, animationDuration: 100 }} />
+        <MainStack.Screen name="startchat" component={StartChatScreen} options={{ headerShown: false, animationDuration: 100 }} />
         <MainStack.Screen name="room" component={RoomScreen} options={{ headerShown: false, animationDuration: 10, animation: "fade_from_bottom" }} />
         <MainStack.Screen name="settings" component={SettingsScreen} options={{ headerShown: false, animationDuration: 10, animation: "fade_from_bottom" }} />
         <MainStack.Screen name="saved" component={SavedScreen} options={{ headerShown: false, animationDuration: 10, animation: "fade_from_bottom" }} />

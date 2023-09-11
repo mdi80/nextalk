@@ -50,9 +50,10 @@ const useConnectToWS = (socket: WebSocket | null, setSocket: (socket: WebSocket 
                 dispatch(setWebsocketStatus("start"))
                 return
             }
-            socket.onmessage = (message) => {
-                console.log("message from server")
-            }
+            // socket.onmessage = (message) => {
+            //     console.log("message from server")
+            // }
+            
         }
         if (wsocket_status === "faild") {//retry for now
             console.log('Socket: Faild');

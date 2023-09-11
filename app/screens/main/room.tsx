@@ -7,14 +7,17 @@ import { AppStatusBar } from "../../components/StatusBar"
 import { useSelector } from "react-redux"
 import { RootState } from "../../store"
 import MainHeader from "../../components/MainScreen/Header"
+import { RouteProp } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { MainStackParams, RootStackParamsType } from "../../navigator/types"
 
 type Props = {
+    route: RouteProp<MainStackParams, 'room'>
     navigation: NativeStackNavigationProp<MainStackParams, 'room'>
 };
 
 function RoomScreen({ navigation }: Props): JSX.Element {
+
 
 
 

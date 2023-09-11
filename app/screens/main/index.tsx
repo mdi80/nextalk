@@ -10,7 +10,9 @@ import { MainStackParams } from "../../navigator/types"
 import { Drawer } from 'react-native-drawer-layout';
 import { TouchableOpacity } from "react-native"
 import DrawerContent from "../../components/MainScreen/DrawerContent"
-
+import ListChats from "../../components/MainScreen/ChatList"
+import FloatingButton from "../../components/floatingButton"
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5"
 
 
 type Props = {
@@ -20,7 +22,12 @@ type Props = {
 function MainScreen({ navigation }: Props): JSX.Element {
 
     // const dispatch = useDispatch<AppDispatch>()
+    const navigateToStartChat = () => {
 
+        navigation.navigate("startchat")
+
+
+    }
     // dispatch(connectWebSocket())
     const username = useSelector<RootState, string | undefined | null>(state => state.auth.username)
     const firstname = useSelector<RootState, string | undefined | null>(state => state.auth.firstname)
@@ -50,13 +57,14 @@ function MainScreen({ navigation }: Props): JSX.Element {
 
                 <AppStatusBar translucent />
                 <MainHeader navigation={navigation} openDrawer={() => setShowDrawer(true)} />
-                <Text style={{ alignSelf: 'center' }}>{username}</Text>
-                <Text>{firstname}</Text>
-                <Text>{lastname}</Text>
-                <Text>{phone}</Text>
-                <TouchableOpacity onPress={() => setShowDrawer(true)}>
-                    <Text>{token}</Text>
-                </TouchableOpacity>
+
+                <ListChats />
+
+                <FloatingButton
+                    onPress={navigateToStartChat}
+                    activeOpacity={0.8}
+                    icon={<FontAwesome5 name="pen" size={20} color="white" />}
+                />
             </Container>
 
         </Drawer>
