@@ -7,7 +7,7 @@ import { AppStatusBar } from "../../components/StatusBar"
 import { useSelector } from "react-redux"
 import { RootState } from "../../store"
 import MainHeader from "../../components/MainScreen/Header"
-import StartChatHeader from "../../components/StarthatScreen/Header"
+import SimpleHeader from "../../components/SimpleHeader"
 import ContactsList from "../../components/StarthatScreen/ConatactList"
 
 
@@ -30,7 +30,7 @@ function StartChatScreen(): JSX.Element {
             }}>
 
             <AppStatusBar translucent />
-            <StartChatHeader />
+            <SimpleHeader title="Start Chat" />
             <ContactsList />
         </Container>
 

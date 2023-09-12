@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import { SectionList, View, StyleSheet } from "react-native"
+import { SectionList, View, StyleSheet, TouchableOpacity } from "react-native"
 import Text from "../Text"
 import { WebSocketContext } from "../../webSocketContextContainer"
 import { convertDataToSection } from "./utils"
@@ -8,6 +8,9 @@ import typogrphy from "../../theme/font"
 import { Image } from "expo-image"
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5"
 import useTheme from "../../theme"
+import { useNavigation } from "@react-navigation/native"
+import { MainStackParams, RootStackParamsType } from "../../navigator/types"
+import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 
 
 export type contactType = {
@@ -90,31 +93,38 @@ const ContactsList = () => {
     const socket = useContext(WebSocketContext)
     const [chats, setChats] = useState<contactType[]>(DATA)
     const [len, setLen] = useState([])
+    const navigtaion = useNavigation<NativeStackNavigationProp<MainStackParams, 'startchat'>>()
 
     const onPress = () => {
 
+    }
+
+    const goToStartWithUseridScreen = () => {
+        navigtaion.replace("startwithuserid")
 
     }
 
-    const Header = () => (
+    const renderHeader = () => (
         <>
-            <View
-                style={styles.btns}
-            >
-                <FontAwesome5 name="user-alt" color={colorText} size={20} />
+            <TouchableOpacity
+                onPress={goToStartWithUseridScreen}
+                activeOpacity={0.9}
+                style={styles.btns}>
 
+                <FontAwesome5 name="user-alt" color={colorText} size={20} />
                 <Text style={{ marginLeft: 15 }}>
-                    Start Chat With User ID
+                    Start Chat With Username
                 </Text>
-            </View>
-            <View
+            </TouchableOpacity>
+            <TouchableOpacity
+                activeOpacity={0.9}
                 style={styles.btns}
             >
                 <FontAwesome5 name="user-plus" color={colorText} size={20} />
                 <Text style={{ marginLeft: 15 }}>
                     New Contact
                 </Text>
-            </View>
+            </TouchableOpacity>
         </>
     )
 
@@ -152,7 +162,7 @@ const ContactsList = () => {
                 style={styles.sectionContainer}
                 sections={convertDataToSection(chats)}
                 renderItem={renderItem}
-                ListHeaderComponent={Header}
+                ListHeaderComponent={renderHeader}
                 keyExtractor={(item, index) => "contact-" + index}
                 renderSectionHeader={({ section: { title } }) => (
                     <Text style={styles.sectionTitle}>{title}</Text>

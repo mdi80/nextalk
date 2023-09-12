@@ -5,8 +5,6 @@ import { RootState } from "../store"
 import { deleteUserFromFromStorage } from "../db/apis"
 import { loadUsersData } from "./app"
 
-
-type logOutProps = {}
 export const logoutCurrentUser = createAsyncThunk<void, void, { state: RootState }>(
     'auth/logout',
     async (_, { getState, dispatch }) => {

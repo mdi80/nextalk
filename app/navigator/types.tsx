@@ -18,12 +18,13 @@ export type RootStackParamsType = {
 }
 
 export type RoomScreenProps = {
-    phone: string
+    type: "username" | "phone"
+    identity: string
 }
 
 export type MainStackParams = {
     home: undefined
-    room: undefined
+    room: RoomScreenProps
     settings: undefined
     saved: undefined
     contacts: undefined
@@ -31,6 +32,7 @@ export type MainStackParams = {
     invite: undefined
     recentCalls: undefined
     startchat: undefined
+    startwithuserid: undefined
 }
 
 export type InserPhoneProps = {

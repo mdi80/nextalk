@@ -1,13 +1,17 @@
-import { RootState } from "../../store"
-import useTheme from "../../theme"
-import Text from "../Text"
+import { RootState } from "../store"
+import useTheme from "../theme"
+import Text from "./Text"
 import { useNavigation } from "@react-navigation/native"
-import Container from "../screenContainer"
+import Container from "./screenContainer"
 import { TouchableOpacity, View } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
-import styles from "./styles"
-import colors from "../../theme/colors"
-export default function StartChatHeader() {
+import styles from "./StarthatScreen/styles"
+import colors from "../theme/colors"
+
+export type SimpleHeader = {
+    title: string
+}
+export default function SimpleHeader({ title }: SimpleHeader) {
 
     const navigation = useNavigation()
 
@@ -30,7 +34,7 @@ export default function StartChatHeader() {
                 </TouchableOpacity>
 
                 <Text style={styles.mainTitle}>
-                    Start Chat
+                    {title}
                 </Text>
             </View>
 

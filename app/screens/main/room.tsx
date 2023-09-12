@@ -16,7 +16,7 @@ type Props = {
     navigation: NativeStackNavigationProp<MainStackParams, 'room'>
 };
 
-function RoomScreen({ navigation }: Props): JSX.Element {
+function RoomScreen({ navigation, route }: Props): JSX.Element {
 
 
 
@@ -30,8 +30,8 @@ function RoomScreen({ navigation }: Props): JSX.Element {
             }}>
 
             <AppStatusBar translucent />
-
-            <Text>room</Text>
+            
+            <Text>start chat with : {route.params.identity}</Text>
 
         </Container>
 
