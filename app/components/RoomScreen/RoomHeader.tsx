@@ -1,17 +1,16 @@
-import { RootState } from "../store"
-import useTheme from "../theme"
-import Text from "./Text"
 import { useNavigation } from "@react-navigation/native"
-import Container from "./screenContainer"
 import { StatusBar, StyleSheet, TouchableOpacity, View } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
-import colors from "../theme/colors"
-import typogrphy from "../theme/font"
+import useTheme from "../../theme"
+import colors from "../../theme/colors"
+import typogrphy from "../../theme/font"
+import Text from "../Text"
+import { Image } from "expo-image"
 
 export type SimpleHeader = {
-    title: string
+    name: string
 }
-export default function SimpleHeader({ title }: SimpleHeader) {
+export default function RoomHeader({ name }: SimpleHeader) {
 
     const navigation = useNavigation()
 
@@ -19,6 +18,9 @@ export default function SimpleHeader({ title }: SimpleHeader) {
     const back = () => {
         navigation.goBack()
     }
+
+
+
 
     return (
         <View style={{
@@ -33,14 +35,29 @@ export default function SimpleHeader({ title }: SimpleHeader) {
                     <Ionicons name="arrow-back" size={35} color="white" />
                 </TouchableOpacity>
 
-                <Text style={styles.mainTitle}>
-                    {title}
-                </Text>
+                <Image
+                    source={require("../../assets/1_main.jpg")}
+                    style={{
+                        marginHorizontal: 10,
+                        width: 50,
+                        height: 50,
+                        borderRadius: 50 / 2
+                    }} />
+                <View>
+                    <Text style={styles.mainTitle}>
+                        {name}
+                    </Text>
+                    <Text style={styles.subTitle}>
+                        last seen at 19:08
+                    </Text>
+                </View>
             </View>
 
         </View >
     )
 }
+
+
 
 const innerPadding = 20
 
@@ -57,8 +74,12 @@ const styles = StyleSheet.create({
     },
     mainTitle: {
         color: 'white',
-        fontSize: typogrphy.fontSize.lg,
+        fontSize: typogrphy.fontSize.m,
         marginLeft: 20,
-        fontWeight: 'bold',
+    },
+    subTitle: {
+        color: "#ccc",
+        fontSize: typogrphy.fontSize.sm,
+        marginLeft: 20,
     }
 })

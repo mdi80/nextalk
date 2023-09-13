@@ -1,5 +1,5 @@
 import { JSX } from "react"
-import { SafeAreaView, StatusBar } from "react-native"
+import { ImageBackground, SafeAreaView, StatusBar, View } from "react-native"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 import Text from "../../components/Text"
 import Container from "../../components/screenContainer"
@@ -10,6 +10,9 @@ import MainHeader from "../../components/MainScreen/Header"
 import { RouteProp } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { MainStackParams, RootStackParamsType } from "../../navigator/types"
+import RoomHeader from "../../components/RoomScreen/RoomHeader"
+import useTheme from "../../theme"
+import RoomChatBox from "../../components/RoomScreen/ChatBox"
 
 type Props = {
     route: RouteProp<MainStackParams, 'room'>
@@ -18,6 +21,8 @@ type Props = {
 
 function RoomScreen({ navigation, route }: Props): JSX.Element {
 
+    const { colorScheme } = useTheme()
+    const name = "mahdi"
 
 
 
@@ -30,9 +35,20 @@ function RoomScreen({ navigation, route }: Props): JSX.Element {
             }}>
 
             <AppStatusBar translucent />
-            
-            <Text>start chat with : {route.params.identity}</Text>
+            <RoomHeader name={name} />
+            <ImageBackground
+                style={{ flex: 1, width: '100%' }}
+                source={colorScheme === "light" ? require("../../assets/roomPatternLight.png") : require("../../assets/roomPatternDark.png")}
+                resizeMode="cover">
 
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+
+                    <Text>No Message!</Text>
+                </View>
+
+                <RoomChatBox />
+
+            </ImageBackground>
         </Container>
 
     )

@@ -12,8 +12,8 @@ export default {
         lightText: "",
     },
     dark: {
-        background: "#111117",
-        secondBacground: "#222227",
+        background: "#0f0f0f",
+        secondBacground: "#101010",
         text: "white",
         lightText: "",
     },
