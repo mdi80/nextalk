@@ -18,8 +18,7 @@ export type RootStackParamsType = {
 }
 
 export type RoomScreenProps = {
-    type: "username" | "phone"
-    identity: string
+    username: string
 }
 
 export type MainStackParams = {

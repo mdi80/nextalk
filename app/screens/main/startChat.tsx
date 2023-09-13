@@ -14,19 +14,12 @@ import ContactsList from "../../components/StartChatScreen/ConatactList"
 function StartChatScreen(): JSX.Element {
 
 
-    const username = useSelector<RootState, string | undefined | null>(state => state.auth.username)
-    const firstname = useSelector<RootState, string | undefined | null>(state => state.auth.firstname)
-    const lastname = useSelector<RootState, string | undefined | null>(state => state.auth.lastname)
-    const phone = useSelector<RootState, string | undefined | null>(state => state.auth.phone)
-    const token = useSelector<RootState, string | undefined | null>(state => state.auth.token)
-
 
     return (
         <Container
             style={{
                 flex: 1,
                 justifyContent: 'center',
-
             }}>
 
             <AppStatusBar translucent />

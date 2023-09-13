@@ -50,7 +50,7 @@ function StartChatwithIdScreen({ navigation }: ScreenProps): JSX.Element {
         } else
             checkUserExistsWithUsernam(username, token).then(res => {
                 if (res) {
-                    navigation.replace("room", { type: "username", identity: username })
+                    navigation.replace("room", { username })
                 } else
                     setError("User with this username is not exists!")
             })
