@@ -14,7 +14,7 @@ import { TouchableOpacity } from "react-native"
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
 import { LayoutAnimation } from 'react-native'
 import { ImageSourcePropType } from 'react-native'
-import { IUserInfo, updateUserLastActive } from '../../../db/service'
+import { IUserInfo, updateUserLastActive } from '../../../db/auth-service'
 import { IAppState, changeAccount } from '../../../reducers/app'
 import { drawerHeaderStyles } from './styles'
 import { useNavigation } from '@react-navigation/native'

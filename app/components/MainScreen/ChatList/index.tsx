@@ -8,6 +8,10 @@ import typogrphy from "../../../theme/font"
 import { NavigationContainerProps, useNavigation } from "@react-navigation/native"
 import { MainStackParams, RootStackParamsType } from "../../../navigator/types"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
+import Animated from "react-native-reanimated"
+import { OtherUserType } from "../../../types"
+import { useSelector } from "react-redux"
+import { RootState } from "../../../store"
 
 
 
@@ -15,10 +19,8 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 const ListChats = () => {
 
     const socket = useContext(WebSocketContext)
-    const [chats, setChats] = useState<chatItemType[]>([
-        { from: "Mahdi", username: 'mdi80', imageUrl: "", lastmessage: "Hello!", latestConnect: "19:02" },
-        { from: "Mahdi", username: 'mdi10', imageUrl: "", latestConnect: "Thu", lastmessage: "Where Are gfdgd dfgfdg dfgfdg  dfdfd fdg dg gfdgfd dfg  dfg  you?" },
-    ])
+    const otherUsers = useSelector<RootState, OtherUserType[]>(state => state.chat.users)
+
     const [len, setLen] = useState([])
     const navigation = useNavigation<NativeStackNavigationProp<MainStackParams, "home">>()
 
@@ -40,7 +42,7 @@ const ListChats = () => {
 
     }
 
-    const renderItem = ({ item, index }: { item: chatItemType, index: number }) => {
+    const renderItem = ({ item, index }: { item: OtherUserType, index: number }) => {
 
 
 
@@ -51,14 +53,14 @@ const ListChats = () => {
     return (
         <FlatList
             style={{ width: "100%" }}
-            data={chats}
+            data={otherUsers}
             renderItem={renderItem}
-            keyExtractor={(item: chatItemType) => "chat-" + item.username}
+            keyExtractor={(item: OtherUserType) => "chat-" + item.username}
         />
     )
 }
 
-const ChatListItem = ({ item, onPress }: { item: chatItemType, onPress: () => void }) => {
+const ChatListItem = ({ item, onPress }: { item: OtherUserType, onPress: () => void }) => {
 
 
 
@@ -72,29 +74,29 @@ const ChatListItem = ({ item, onPress }: { item: chatItemType, onPress: () => vo
                 flexDirection: 'row',
                 alignItems: 'center'
             }}>
+            <Animated.View sharedTransitionTag={"chat-profile-" + item.username}>
 
-            <Image
-                source={require("../../../assets/1_main.jpg")}
-                style={{
-                    marginHorizontal: 10,
-                    width: 50,
-                    height: 50,
-                    borderRadius: 50 / 2
-                }} />
+                <Image
+                    source={require("../../../assets/1_main.jpg")}
+                    style={{
+                        marginHorizontal: 10,
+                        width: 50,
+                        height: 50,
+                        borderRadius: 50 / 2
+                    }} />
+            </Animated.View>
             <View style={{ flex: 1 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-
                     <Text>
-                        {item.from}
+                        {item.firstname} {item.lastname}
                     </Text>
-
                     <Text
                         style={{
                             fontSize: typogrphy.fontSize.sm,
                             color: "#888",
                             alignSelf: 'flex-end'
                         }}>
-                        {item.latestConnect}
+                        {item.lastActiveDateTime}
                     </Text>
                 </View>
 
@@ -105,7 +107,7 @@ const ChatListItem = ({ item, onPress }: { item: chatItemType, onPress: () => vo
                         fontSize: typogrphy.fontSize.sm,
                         color: "#555"
                     }}>
-                    {item.lastmessage}
+                    {item.chats[0]?.message}
                 </Text>
             </View>
 

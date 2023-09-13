@@ -6,11 +6,14 @@ import colors from "../../theme/colors"
 import typogrphy from "../../theme/font"
 import Text from "../Text"
 import { Image } from "expo-image"
+import Animated from "react-native-reanimated"
 
 export type SimpleHeader = {
     name: string
+    username: string
+    lastseen: string
 }
-export default function RoomHeader({ name }: SimpleHeader) {
+export default function RoomHeader({ name, username, lastseen }: SimpleHeader) {
 
     const navigation = useNavigation()
 
@@ -34,21 +37,24 @@ export default function RoomHeader({ name }: SimpleHeader) {
 
                     <Ionicons name="arrow-back" size={35} color="white" />
                 </TouchableOpacity>
+                <Animated.View sharedTransitionTag={"chat-profile-" + username}>
 
-                <Image
-                    source={require("../../assets/1_main.jpg")}
-                    style={{
-                        marginHorizontal: 10,
-                        width: 50,
-                        height: 50,
-                        borderRadius: 50 / 2
-                    }} />
+                    <Image
+                        source={require("../../assets/1_main.jpg")}
+                        style={{
+                            marginHorizontal: 10,
+                            width: 50,
+                            height: 50,
+                            borderRadius: 50 / 2
+                        }} />
+                </Animated.View>
                 <View>
+
                     <Text style={styles.mainTitle}>
                         {name}
                     </Text>
                     <Text style={styles.subTitle}>
-                        last seen at 19:08
+                        last seen at {lastseen}
                     </Text>
                 </View>
             </View>

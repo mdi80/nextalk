@@ -50,10 +50,24 @@ const useConnectToWS = (socket: WebSocket | null, setSocket: (socket: WebSocket 
                 dispatch(setWebsocketStatus("start"))
                 return
             }
-            // socket.onmessage = (message) => {
-            //     console.log("message from server")
-            // }
-            
+            socket.onmessage = (mes: WebSocketMessageEvent) => {
+
+
+                const type = mes.data['type']
+
+                switch (type) {
+                    case 'confirm-receive-message':
+                        console.log(mes.data);
+                        break;
+
+                    default:
+                        console.log("Unkown message from server!");
+
+                        break;
+                }
+
+            }
+
         }
         if (wsocket_status === "faild") {//retry for now
             console.log('Socket: Faild');
