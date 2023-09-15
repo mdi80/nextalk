@@ -100,8 +100,7 @@ const ContactsList = () => {
     }
 
     const goToStartWithUseridScreen = () => {
-        navigtaion.replace("startwithuserid")
-
+        navigtaion.navigate("startwithuserid")
     }
 
     const renderHeader = () => (

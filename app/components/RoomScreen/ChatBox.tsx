@@ -17,7 +17,7 @@ const RoomChatBox = ({ username }: { username: string }) => {
     const socket = useContext(WebSocketContext)
     const dispatch = useDispatch<AppDispatch>()
     const onSendMessage = () => {
-        console.log(username);
+        console.log("send to" + username);
 
         setMessage("")
         dispatch(sendMessageThunk({ message, socket, username }))

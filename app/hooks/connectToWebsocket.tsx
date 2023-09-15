@@ -65,8 +65,8 @@ const useConnectToWS = (socket: WebSocket | null, setSocket: (socket: WebSocket 
                         // console.log(data);
                         break;
                     case 'sync_new_messages':
-                        // console.log(data);
 
+                        
                         break;
 
                     case "new_message":

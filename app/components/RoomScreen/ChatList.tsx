@@ -20,7 +20,7 @@ const RoomChatList = ({ username }: { username: string }) => {
 
     const renderItem = ({ item }: { item: ChatType }) => {
 
-        return <ChatItem seen={item.seen} sendToServer={item.saved} time='19:02' message={item.message} self={item.from_user === username} />
+        return <ChatItem seen={item.seen} sendToServer={item.saved} time='19:02' message={item.message} self={item.from_user !== username} />
     }
 
     return (

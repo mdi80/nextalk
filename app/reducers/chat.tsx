@@ -7,7 +7,7 @@ import { getUserInfo } from "../apis/verification"
 
 
 export const sendMessageThunk = createAsyncThunk<void, { message: string, socket: WebSocket | null, username: string }, { state: RootState }>(
-    'chat/sendmessage',
+    'chat/sendMessageThunk',
     async ({ message, socket, username }, { getState, dispatch }) => {
         const currentUsername = getState().auth.username
         if (!currentUsername) {
@@ -16,6 +16,13 @@ export const sendMessageThunk = createAsyncThunk<void, { message: string, socket
         }
         const messageId = `${username}-${new Date().getTime()}`
         dispatch(addMessage({ from: currentUsername, message, username, id: messageId }))
+        console.log("send: " + JSON.stringify({
+            type: "send_message",
+            message,
+            username,
+            messageId
+        }));
+
         socket?.send(JSON.stringify({
             type: "send_message",
             message,
@@ -30,7 +37,7 @@ export const sendMessageThunk = createAsyncThunk<void, { message: string, socket
 
 
 export const confrimMessageThunk = createAsyncThunk<void, { id: string, newId: string }, { state: RootState }>(
-    'chat/confrimmessage',
+    'chat/confrimMessageThunk',
     async ({ id, newId }, { getState, dispatch }) => {
 
         const currentUsername = getState().auth.username
@@ -50,7 +57,7 @@ export const confrimMessageThunk = createAsyncThunk<void, { id: string, newId: s
 
 
 export const newMessageThunk = createAsyncThunk<void, { id: number, message: string, from: string, date: number }, { state: RootState }>(
-    'chat/confrimMessage',
+    'chat/newMessageThunk',
     async (data, { getState, dispatch }) => {
 
         const { username: currentUsername, token } = getState().auth
@@ -59,15 +66,18 @@ export const newMessageThunk = createAsyncThunk<void, { id: number, message: str
             dispatch(logoutCurrentUser())
             return
         }
+        console.log("newMessage: " + JSON.stringify(data));
 
 
         const user = getState().chat.users.find(user => user.username === data.from)
         if (user) {
             dispatch(newMessage({ ...data, currentUsername }))
         } else {
-            console.log("hre");
+
 
             getUserInfo(data.from, token).then(res => {
+                console.log(res);
+
                 dispatch(newUser(res))
                 dispatch(newMessage({ ...data, currentUsername }))
             })
@@ -86,8 +96,8 @@ type chatSliceStateType = {
 const initialState: chatSliceStateType = {
     users:
         [
-            { firstname: "Mahdi", lastname: "n", username: 'mdi20', imagePath: "", phone: "+98932432432", lastActiveDateTime: "19:02", chats: [] },
-            { firstname: "Mahdi", lastname: "nzasd", username: 'mdi80', imagePath: "", phone: "+98932432432", lastActiveDateTime: "19:02", chats: [] },
+            // { firstname: "Mahdi", lastname: "n", username: 'mdi20', imagePath: "", phone: "+98932432432", lastActiveDateTime: "19:02", chats: [] },
+            // { firstname: "Mahdi", lastname: "nzasd", username: 'mdi80', imagePath: "", phone: "+98932432432", lastActiveDateTime: "19:02", chats: [] },
         ]
 }
 
