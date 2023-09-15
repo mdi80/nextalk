@@ -19,9 +19,9 @@ const getTicket = async (token: string): Promise<string | number | null> => {
             url: GET_TICKET_URL,
             headers: {
                 "Authorization": "Token " + token
-            }
+            },
+            timeout: 5000
         })
-        console.log('h2');
 
         return res.data['ticket']
 

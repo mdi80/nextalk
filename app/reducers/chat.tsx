@@ -1,15 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { logoutToken } from "../apis/auth"
-import { IUserInfo } from "../db/auth-service"
 import { RootState } from "../store"
-import { deleteUserFromFromStorage } from "../db/auth-apis"
-import { loadUsersData } from "./app"
 
-import { ChatType, OtherUserType } from "../types"
+import { OtherUserType } from "../types"
 import { logoutCurrentUser } from "./auth"
+import { getUserInfo } from "../apis/verification"
 
 
-export const sendMessage = createAsyncThunk<void, { message: string, socket: WebSocket | null, username: string }, { state: RootState }>(
+export const sendMessageThunk = createAsyncThunk<void, { message: string, socket: WebSocket | null, username: string }, { state: RootState }>(
     'chat/sendmessage',
     async ({ message, socket, username }, { getState, dispatch }) => {
         const currentUsername = getState().auth.username
@@ -25,11 +22,62 @@ export const sendMessage = createAsyncThunk<void, { message: string, socket: Web
             username,
             messageId
         }))
-        console.log("here");
 
 
     }
 )
+
+
+
+export const confrimMessageThunk = createAsyncThunk<void, { id: string, newId: string }, { state: RootState }>(
+    'chat/confrimmessage',
+    async ({ id, newId }, { getState, dispatch }) => {
+
+        const currentUsername = getState().auth.username
+        if (!currentUsername) {
+            dispatch(logoutCurrentUser())
+            return
+        }
+
+
+
+        dispatch(confirmMessage({ id, newId }))
+        //TODO update in db
+    }
+)
+
+
+
+
+export const newMessageThunk = createAsyncThunk<void, { id: number, message: string, from: string, date: number }, { state: RootState }>(
+    'chat/confrimMessage',
+    async (data, { getState, dispatch }) => {
+
+        const { username: currentUsername, token } = getState().auth
+
+        if (!currentUsername || !token) {
+            dispatch(logoutCurrentUser())
+            return
+        }
+
+
+        const user = getState().chat.users.find(user => user.username === data.from)
+        if (user) {
+            dispatch(newMessage({ ...data, currentUsername }))
+        } else {
+            console.log("hre");
+
+            getUserInfo(data.from, token).then(res => {
+                dispatch(newUser(res))
+                dispatch(newMessage({ ...data, currentUsername }))
+            })
+        }
+
+
+        //TODO update in db
+    }
+)
+
 
 type chatSliceStateType = {
     users: OtherUserType[]
@@ -54,7 +102,6 @@ const chatSlice = createSlice({
             const user = state.users.find(item => item.username === action.payload.username)
             if (!user) {
                 throw new Error("Unkown error: User not found!!!");
-
             } else
                 user.chats = [{
                     to_user: user.username,
@@ -64,13 +111,45 @@ const chatSlice = createSlice({
                     message: action.payload.message,
                     reply: null,
                     seen: false,
-                    send: false,
-                }]
+                    saved: false,
+                }, ...user.chats]
 
         },
+        confirmMessage(state: chatSliceStateType, action: PayloadAction<{ id: string, newId: string }>) {
+            const username = action.payload.id.split("-")[0]
+
+
+            const chat = state.users.find(item => item.username === username)?.chats.find(chat => chat.id === action.payload.id)
+            if (!chat) return
+            chat.id = action.payload.newId
+            chat.saved = true
+
+        },
+        newMessage(state: chatSliceStateType, action: PayloadAction<{ id: number, message: string, from: string, date: number, currentUsername: string }>) {
+            const user = state.users.find(user => user.username === action.payload.from)
+
+            if (user) {
+                user.chats = [{
+                    to_user: action.payload.currentUsername,
+                    date: action.payload.date * 1000,
+                    from_user: action.payload.from,
+                    id: "" + action.payload.id,
+                    message: action.payload.message,
+                    reply: null,
+                    seen: false,
+                    saved: true,
+                }, ...user.chats]
+            } else {
+                throw new Error("Unkown error: User not found!!!");
+            }
+        },
+        newUser(state: chatSliceStateType, action: PayloadAction<OtherUserType>) {
+            state.users = [action.payload, ...state.users]
+        }
+
     }
 })
 
 
-export const { addMessage } = chatSlice.actions
+export const { addMessage, confirmMessage, newMessage, newUser } = chatSlice.actions
 export default chatSlice.reducer

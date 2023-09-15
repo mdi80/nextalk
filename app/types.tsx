@@ -5,7 +5,7 @@ export interface ChatType {
     from_user: string
     message: string
     date: number
-    send: boolean
+    saved: boolean
     seen: boolean
     reply: number | null
 

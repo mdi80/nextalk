@@ -62,7 +62,7 @@ const ListChats = () => {
 
 const ChatListItem = ({ item, onPress }: { item: OtherUserType, onPress: () => void }) => {
 
-
+    // if (item.chats.length === 0) return null
 
     return (
         <TouchableOpacity

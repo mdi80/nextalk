@@ -2,7 +2,7 @@
 
 export default {
     primary: "#0DB787",
-    secondry: "",
+    secondry: "#eefff8",
     darkSecond: "",
     error: "#cc3333",
     light: {

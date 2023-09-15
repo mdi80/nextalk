@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "../store"
 import { getTicketWithToken, restartSocketValues, setWebsocketStatus, ws_status } from "../reducers/app"
 import { WEB_SOCKET_URL } from "../config"
+import { confrimMessageThunk, newMessageThunk } from "../reducers/chat"
 
 const useConnectToWS = (socket: WebSocket | null, setSocket: (socket: WebSocket | null) => void) => {
 
@@ -34,9 +35,6 @@ const useConnectToWS = (socket: WebSocket | null, setSocket: (socket: WebSocket 
                 dispatch(restartSocketValues())
             }
             const socket = new WebSocket(WEB_SOCKET_URL + "ws/chat/connect/?" + ticket)
-            socket.onerror = (error) => {
-                dispatch(setWebsocketStatus("faild"))
-            }
             socket.onopen = () => {
                 dispatch(setWebsocketStatus("connected"))
             }
@@ -50,16 +48,31 @@ const useConnectToWS = (socket: WebSocket | null, setSocket: (socket: WebSocket 
                 dispatch(setWebsocketStatus("start"))
                 return
             }
+            socket.onerror = (error) => {
+                dispatch(setWebsocketStatus("faild"))
+            }
+            socket.onclose = () => {
+                dispatch(setWebsocketStatus("faild"))
+            }
             socket.onmessage = (mes: WebSocketMessageEvent) => {
 
-
-                const type = mes.data['type']
-
+                const type = JSON.parse(mes['data'])['type']
+                const data = JSON.parse(mes['data'])['data']
+                console.log(type);
                 switch (type) {
-                    case 'confirm-receive-message':
-                        console.log(mes.data);
+                    case 'confirm-save-message':
+                        dispatch(confrimMessageThunk(data))
+                        // console.log(data);
+                        break;
+                    case 'sync_new_messages':
+                        // console.log(data);
+
                         break;
 
+                    case "new_message":
+                        // console.log(data);
+                        dispatch(newMessageThunk(data))
+                        break;
                     default:
                         console.log("Unkown message from server!");
 

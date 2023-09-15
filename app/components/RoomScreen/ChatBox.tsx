@@ -9,7 +9,7 @@ import { useContext, useState } from 'react'
 import { WebSocketContext } from '../../webSocketContextContainer'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '../../store'
-import { sendMessage } from '../../reducers/chat'
+import { sendMessageThunk } from '../../reducers/chat'
 const RoomChatBox = ({ username }: { username: string }) => {
 
     const { colorScheme, colorText } = useTheme()
@@ -19,20 +19,14 @@ const RoomChatBox = ({ username }: { username: string }) => {
     const onSendMessage = () => {
         console.log(username);
 
-        // socket?.send(JSON.stringify({ message, username: username }))
         setMessage("")
-        
-        dispatch(sendMessage({message,socket,username}))
-
-
+        dispatch(sendMessageThunk({ message, socket, username }))
     }
 
 
     return (
         <View
             style={{
-                // position: 'absolute',
-                // bottom: 0, left: 0, right: 0,
                 maxHeight: 100,
                 paddingHorizontal: 10,
                 paddingVertical: 5,
@@ -49,7 +43,6 @@ const RoomChatBox = ({ username }: { username: string }) => {
                 multiline
                 placeholder='Message'
                 placeholderTextColor="#888"
-                // onSubmitEditing={send}
                 value={message}
                 onChangeText={setMessage}
                 style={{

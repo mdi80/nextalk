@@ -14,7 +14,7 @@ import FloatingButton from "../../components/floatingButton"
 import UsernameValidator from "../../validators/usernameValidator"
 import typogrphy from "../../theme/font"
 import colors from "../../theme/colors"
-import { checkUserExistsWithUsernam } from "../../apis/verification"
+import { checkUserExistsWithUsername } from "../../apis/verification"
 import { logoutCurrentUser } from "../../reducers/auth"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { MainStackParams } from "../../navigator/types"
@@ -48,7 +48,7 @@ function StartChatwithIdScreen({ navigation }: ScreenProps): JSX.Element {
         if (!token) {
             dispatch(logoutCurrentUser())
         } else
-            checkUserExistsWithUsernam(username, token).then(res => {
+            checkUserExistsWithUsername(username, token).then(res => {
                 if (res) {
                     navigation.replace("room", { username })
                 } else
