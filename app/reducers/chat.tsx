@@ -6,6 +6,7 @@ import { logoutCurrentUser } from "./auth"
 import { getUserInfo } from "../apis/verification"
 
 
+
 export const sendMessageThunk = createAsyncThunk<void, { message: string, socket: WebSocket | null, username: string }, { state: RootState }>(
     'chat/sendMessageThunk',
     async ({ message, socket, username }, { getState, dispatch }) => {
@@ -25,9 +26,11 @@ export const sendMessageThunk = createAsyncThunk<void, { message: string, socket
 
         socket?.send(JSON.stringify({
             type: "send_message",
-            message,
-            username,
-            messageId
+            data: {
+                message,
+                username,
+                messageId
+            }
         }))
 
 
@@ -53,10 +56,52 @@ export const confrimMessageThunk = createAsyncThunk<void, { id: string, newId: s
     }
 )
 
+export const syncNewMessages = createAsyncThunk<number[], { to_user: string, id: number, from_username: string, message: string, send_date: number, attachedFile: string | null }[], { state: RootState }>(
+    'chat/syncNewMessages',
+    async (data, { getState, dispatch }) => {
+
+        const { username: currentUsername, token } = getState().auth
+
+        if (!currentUsername || !token) {
+            dispatch(logoutCurrentUser())
+            return []
+        }
+
+        const unkownUsernames: string[] = []
+        data.forEach(chat => {
+
+            const user = getState().chat.users.find(user => user.username === chat.from_username)
+
+            if (user) {
+                dispatch(newMessage({ date: chat.send_date, from: chat.from_username, id: chat.id, message: chat.message, currentUsername }))
+            } else {
+                if (!unkownUsernames.find(i => i === chat.from_username))
+                    unkownUsernames.push(chat.from_username)
+            }
+
+        });
+
+        getUserInfo(unkownUsernames, token).then(res => {
+            res.forEach(user => {
+                dispatch(newUser(user))
+                const chats = data.filter(chat => chat.from_username === user.username)
+                chats.forEach(chat => {
+                    dispatch(newMessage({ date: chat.send_date, from: chat.from_username, id: chat.id, message: chat.message, currentUsername }))
+                });
+            });
+        })
+
+        //TODO update in db
+
+        return data.map(item => item.id)
+    }
+)
 
 
 
-export const newMessageThunk = createAsyncThunk<void, { id: number, message: string, from: string, date: number }, { state: RootState }>(
+
+
+export const newMessageThunk = createAsyncThunk<number[], { id: number, message: string, from: string, date: number }, { state: RootState }>(
     'chat/newMessageThunk',
     async (data, { getState, dispatch }) => {
 
@@ -64,7 +109,7 @@ export const newMessageThunk = createAsyncThunk<void, { id: number, message: str
 
         if (!currentUsername || !token) {
             dispatch(logoutCurrentUser())
-            return
+            return []
         }
         console.log("newMessage: " + JSON.stringify(data));
 
@@ -74,17 +119,19 @@ export const newMessageThunk = createAsyncThunk<void, { id: number, message: str
             dispatch(newMessage({ ...data, currentUsername }))
         } else {
 
+            console.log(data.from);
 
-            getUserInfo(data.from, token).then(res => {
-                console.log(res);
+            getUserInfo([data.from], token).then(res => {
 
-                dispatch(newUser(res))
+                // const user = res[0]
+                dispatch(newUser(res[0]))
                 dispatch(newMessage({ ...data, currentUsername }))
             })
         }
 
 
         //TODO update in db
+        return [data.id]
     }
 )
 
