@@ -42,7 +42,7 @@ export const getTicketWithToken = createAsyncThunk<string, void, { state: RootSt
 
 
 
-export const loadUsersData = createAsyncThunk(
+export const loadUsersData = createAsyncThunk<{ user: IUserInfo | null, users: IUserInfo[] }, void, { state: RootState }>(
     'app/loadUsersData',
     async (_, { getState, dispatch }) => {
         const payload: { user: IUserInfo | null, users: IUserInfo[] } = { user: null, users: [] }
@@ -81,6 +81,8 @@ export const changeAccount = createAsyncThunk(
 
     }
 )
+
+
 
 export type ws_status = "init" | "start" | "connecting" | "connected" | "faild"
 

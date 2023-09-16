@@ -28,7 +28,7 @@ const useConnectToWS = (socket: WebSocket | null, setSocket: (socket: WebSocket 
             socket?.close()
             setSocket(null)
             dispatch(getTicketWithToken())
-        }
+        }   
         if (wsocket_status === "connecting") {
             console.log('Socket: Connecting');
             if (!ticket) {

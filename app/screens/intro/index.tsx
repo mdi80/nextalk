@@ -5,6 +5,7 @@ import { AppStatusBar } from "../../components/StatusBar"
 import { DotIndicator } from "react-native-indicators"
 import { getAllUsersFromStorage, getUserFromStorage } from "../../db/auth-apis"
 import { useDispatch, useSelector } from "react-redux"
+import { PayloadAction } from "@reduxjs/toolkit"
 import { setUserInfo } from "../../reducers/auth"
 import { AppDispatch, RootState } from "../../store"
 import { RootStackParamsType } from "../../navigator/types"
@@ -12,6 +13,8 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { StyleSheet } from "react-native"
 import colors from "../../theme/colors"
 import { loadUsersData, restartSocketValues, setAllUsers } from "../../reducers/app"
+import { IUserInfo } from "../../db/auth-service"
+import { loadOtherUsersThunk } from "../../reducers/chat"
 type navigationType = NativeStackNavigationProp<RootStackParamsType, 'intro'>
 type Props = {
     navigation: navigationType
@@ -29,7 +32,9 @@ function IntroScreen({ navigation }: Props): JSX.Element {
 
     React.useEffect(() => {
         setTimeout(() => { setTimerFinshed(true) }, 1000)
-        dispatch(loadUsersData()).finally(() => {
+        dispatch(loadUsersData()).then(() => {
+            return dispatch(loadOtherUsersThunk())
+        }).finally(() => {
             dispatch(restartSocketValues())
             setUserLoading(false)
         })
@@ -38,10 +43,7 @@ function IntroScreen({ navigation }: Props): JSX.Element {
 
     React.useEffect(() => {
         if (timerFinished && !userLoading) {
-
-            if (token) {
-                // navigation.replace("main", { screen: "home" })
-            } else {
+            if (!token) {
                 navigation.replace("auth", { screen: 'auth_intro' })
             }
         }

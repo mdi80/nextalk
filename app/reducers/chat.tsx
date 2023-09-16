@@ -4,55 +4,93 @@ import { RootState } from "../store"
 import { OtherUserType } from "../types"
 import { logoutCurrentUser } from "./auth"
 import { getUserInfo } from "../apis/verification"
+import { getOtherUsersFromStorage } from "../db/users-apis"
+import { loadChatsFromUsername } from "../db/chat-service"
+import { loadChatFromStorage } from "../db/chat-apis"
 
 
+export const loadOtherUsersThunk = createAsyncThunk<OtherUserType[], void, { state: RootState }>(
+    'chat/loadOtherUsersThunk',
+    async (_, { getState, dispatch }) => {
 
-export const sendMessageThunk = createAsyncThunk<void, { message: string, socket: WebSocket | null, username: string }, { state: RootState }>(
-    'chat/sendMessageThunk',
-    async ({ message, socket, username }, { getState, dispatch }) => {
         const currentUsername = getState().auth.username
         if (!currentUsername) {
             dispatch(logoutCurrentUser())
-            return
+            return []
         }
-        const messageId = `${username}-${new Date().getTime()}`
-        dispatch(addMessage({ from: currentUsername, message, username, id: messageId }))
-        console.log("send: " + JSON.stringify({
-            type: "send_message",
-            message,
-            username,
-            messageId
-        }));
 
-        socket?.send(JSON.stringify({
-            type: "send_message",
-            data: {
-                message,
-                username,
-                messageId
-            }
-        }))
+        const users: OtherUserType[] = []
 
+        const db_users = await getOtherUsersFromStorage(currentUsername)
 
+        db_users.forEach(async item => {
+            const chats = await loadChatFromStorage(item.username)
+            users.push({
+                username: item.username,
+                phone: item.phone,
+                firstname: item.firstname,
+                lastname: item.lastname,
+                lastActiveDateTime: item.lastActiveDateTime,
+                imagePath: item.imagePath,
+                chats: chats,
+            })
+        })
+
+        return users
     }
 )
 
 
 
-export const confrimMessageThunk = createAsyncThunk<void, { id: string, newId: string }, { state: RootState }>(
+export const sendMessageThunk = createAsyncThunk<
+    { from: string, id: string, username: string, message: string },
+    { message: string, socket: WebSocket | null, username: string },
+    { state: RootState }>(
+        'chat/sendMessageThunk',
+        async ({ message, socket, username }, { getState, dispatch, rejectWithValue }) => {
+            const currentUsername = getState().auth.username
+            if (!currentUsername) {
+                dispatch(logoutCurrentUser())
+                return rejectWithValue("Logout!")
+            }
+            const messageId = `${username}-${new Date().getTime()}`
+            // dispatch(addMessage({ from: currentUsername, message, username, id: messageId }))
+            console.log("send: " + JSON.stringify({
+                type: "send_message",
+                message,
+                username,
+                messageId
+            }));
+
+            socket?.send(JSON.stringify({
+                type: "send_message",
+                data: {
+                    message,
+                    username,
+                    messageId
+                }
+            }))
+
+            return { from: currentUsername, message, username, id: messageId }
+        }
+    )
+
+
+
+export const confrimMessageThunk = createAsyncThunk<{ id: string, newId: string }, { id: string, newId: string }, { state: RootState }>(
     'chat/confrimMessageThunk',
-    async ({ id, newId }, { getState, dispatch }) => {
+    async ({ id, newId }, { getState, dispatch, rejectWithValue }) => {
 
         const currentUsername = getState().auth.username
         if (!currentUsername) {
             dispatch(logoutCurrentUser())
-            return
+            return rejectWithValue("Logout!")
         }
 
 
 
-        dispatch(confirmMessage({ id, newId }))
         //TODO update in db
+        return { id, newId }
     }
 )
 
@@ -123,7 +161,6 @@ export const newMessageThunk = createAsyncThunk<number[], { id: number, message:
 
             getUserInfo([data.from], token).then(res => {
 
-                // const user = res[0]
                 dispatch(newUser(res[0]))
                 dispatch(newMessage({ ...data, currentUsername }))
             })
@@ -141,11 +178,7 @@ type chatSliceStateType = {
 }
 
 const initialState: chatSliceStateType = {
-    users:
-        [
-            // { firstname: "Mahdi", lastname: "n", username: 'mdi20', imagePath: "", phone: "+98932432432", lastActiveDateTime: "19:02", chats: [] },
-            // { firstname: "Mahdi", lastname: "nzasd", username: 'mdi80', imagePath: "", phone: "+98932432432", lastActiveDateTime: "19:02", chats: [] },
-        ]
+    users: []
 }
 
 
@@ -154,34 +187,6 @@ const chatSlice = createSlice({
     name: "chat",
     initialState,
     reducers: {
-        addMessage(state: chatSliceStateType, action: PayloadAction<{ from: string, id: string, username: string, message: string }>) {
-
-            const user = state.users.find(item => item.username === action.payload.username)
-            if (!user) {
-                throw new Error("Unkown error: User not found!!!");
-            } else
-                user.chats = [{
-                    to_user: user.username,
-                    date: new Date().getTime(),
-                    from_user: action.payload.from,
-                    id: action.payload.id,
-                    message: action.payload.message,
-                    reply: null,
-                    seen: false,
-                    saved: false,
-                }, ...user.chats]
-
-        },
-        confirmMessage(state: chatSliceStateType, action: PayloadAction<{ id: string, newId: string }>) {
-            const username = action.payload.id.split("-")[0]
-
-
-            const chat = state.users.find(item => item.username === username)?.chats.find(chat => chat.id === action.payload.id)
-            if (!chat) return
-            chat.id = action.payload.newId
-            chat.saved = true
-
-        },
         newMessage(state: chatSliceStateType, action: PayloadAction<{ id: number, message: string, from: string, date: number, currentUsername: string }>) {
             const user = state.users.find(user => user.username === action.payload.from)
 
@@ -204,9 +209,39 @@ const chatSlice = createSlice({
             state.users = [action.payload, ...state.users]
         }
 
+    },
+    extraReducers: builder => {
+        builder.addCase(loadOtherUsersThunk.fulfilled, (state, action) => {
+            state.users = action.payload
+        })
+        builder.addCase(sendMessageThunk.fulfilled, (state, action) => {
+
+            const user = state.users.find(item => item.username === action.payload.username)
+            if (!user) {
+                throw new Error("Unkown error: User not found!!!");
+            } else
+                user.chats = [{
+                    to_user: user.username,
+                    date: new Date().getTime(),
+                    from_user: action.payload.from,
+                    id: action.payload.id,
+                    message: action.payload.message,
+                    reply: null,
+                    seen: false,
+                    saved: false,
+                }, ...user.chats]
+
+        })
+        builder.addCase(confrimMessageThunk.fulfilled, (state, action) => {
+            const username = action.payload.id.split("-")[0]
+            const chat = state.users.find(item => item.username === username)?.chats.find(chat => chat.id === action.payload.id)
+            if (!chat) return
+            chat.id = action.payload.newId
+            chat.saved = true
+        })
     }
 })
 
 
-export const { addMessage, confirmMessage, newMessage, newUser } = chatSlice.actions
+export const { newMessage, newUser } = chatSlice.actions
 export default chatSlice.reducer

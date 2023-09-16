@@ -17,7 +17,7 @@ export interface OtherUserType {
     lastname: string
     username: string
     phone: string
-    lastActiveDateTime: string | "online"
+    lastActiveDateTime: number | "online"
     chats: ChatType[]
     imagePath: string | null
 
