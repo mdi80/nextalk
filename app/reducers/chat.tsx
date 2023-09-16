@@ -4,9 +4,10 @@ import { RootState } from "../store"
 import { OtherUserType } from "../types"
 import { logoutCurrentUser } from "./auth"
 import { getUserInfo } from "../apis/verification"
-import { getOtherUsersFromStorage } from "../db/users-apis"
+import { addAllOtherUsersIfNotExists, addOtherUsersIfNotExists, getOtherUsersFromStorage } from "../db/users-apis"
 import { loadChatsFromUsername } from "../db/chat-service"
-import { loadChatFromStorage } from "../db/chat-apis"
+import { confirmMessageInStorage, loadChatFromStorage, saveNewMessageReceive, saveNewMessageSend, syncNewMessagesReceive } from "../db/chat-apis"
+import { getUsersInfo } from "../db/auth-service"
 
 
 export const loadOtherUsersThunk = createAsyncThunk<OtherUserType[], void, { state: RootState }>(
@@ -22,19 +23,24 @@ export const loadOtherUsersThunk = createAsyncThunk<OtherUserType[], void, { sta
         const users: OtherUserType[] = []
 
         const db_users = await getOtherUsersFromStorage(currentUsername)
+        console.log("db_users" + db_users);
 
-        db_users.forEach(async item => {
-            const chats = await loadChatFromStorage(item.username)
-            users.push({
-                username: item.username,
-                phone: item.phone,
-                firstname: item.firstname,
-                lastname: item.lastname,
-                lastActiveDateTime: item.lastActiveDateTime,
-                imagePath: item.imagePath,
-                chats: chats,
+        await Promise.all(
+            db_users.map(async item => {
+                const chats = await loadChatFromStorage(item.username)
+
+                users.push({
+                    username: item.username,
+                    phone: item.phone,
+                    firstname: item.firstname,
+                    lastname: item.lastname,
+                    lastActiveDateTime: item.lastActiveDateTime,
+                    imagePath: item.imagePath,
+                    chats: chats,
+                })
             })
-        })
+        )
+        console.log("user:" + users);
 
         return users
     }
@@ -54,14 +60,22 @@ export const sendMessageThunk = createAsyncThunk<
                 return rejectWithValue("Logout!")
             }
             const messageId = `${username}-${new Date().getTime()}`
-            // dispatch(addMessage({ from: currentUsername, message, username, id: messageId }))
-            console.log("send: " + JSON.stringify({
-                type: "send_message",
-                message,
-                username,
-                messageId
-            }));
+            const user = getState().chat.users.find(item => item.username === username)
+            if (!user) {
+                throw new Error("User dose not exists in store!")
+            }
 
+            await addOtherUsersIfNotExists(currentUsername, user)
+            await saveNewMessageSend({
+                from_user: currentUsername,
+                message: message,
+                reply: null,
+                date: new Date().getTime(),
+                to_user: username,
+                id: messageId,
+                saved: false,
+                seen: false
+            })
             socket?.send(JSON.stringify({
                 type: "send_message",
                 data: {
@@ -70,7 +84,6 @@ export const sendMessageThunk = createAsyncThunk<
                     messageId
                 }
             }))
-
             return { from: currentUsername, message, username, id: messageId }
         }
     )
@@ -87,14 +100,14 @@ export const confrimMessageThunk = createAsyncThunk<{ id: string, newId: string 
             return rejectWithValue("Logout!")
         }
 
+        await confirmMessageInStorage({ id, newId })
+        console.log("confirm");
 
-
-        //TODO update in db
         return { id, newId }
     }
 )
 
-export const syncNewMessages = createAsyncThunk<number[], { to_user: string, id: number, from_username: string, message: string, send_date: number, attachedFile: string | null }[], { state: RootState }>(
+export const syncNewMessages = createAsyncThunk<number[], { to_user: string, id: number, from_username: string, message: string, date: number, attachedFile: string | null }[], { state: RootState }>(
     'chat/syncNewMessages',
     async (data, { getState, dispatch }) => {
 
@@ -106,12 +119,15 @@ export const syncNewMessages = createAsyncThunk<number[], { to_user: string, id:
         }
 
         const unkownUsernames: string[] = []
+        const unkownUsers: OtherUserType[] = []
+
         data.forEach(chat => {
 
             const user = getState().chat.users.find(user => user.username === chat.from_username)
 
             if (user) {
-                dispatch(newMessage({ date: chat.send_date, from: chat.from_username, id: chat.id, message: chat.message, currentUsername }))
+                dispatch(newMessage({ date: chat.date, from: chat.from_username, id: chat.id, message: chat.message, currentUsername }))
+                unkownUsers.push(user)
             } else {
                 if (!unkownUsernames.find(i => i === chat.from_username))
                     unkownUsernames.push(chat.from_username)
@@ -119,17 +135,32 @@ export const syncNewMessages = createAsyncThunk<number[], { to_user: string, id:
 
         });
 
-        getUserInfo(unkownUsernames, token).then(res => {
+        await getUserInfo(unkownUsernames, token).then(res => {
+
             res.forEach(user => {
+                unkownUsers.push(user)
                 dispatch(newUser(user))
                 const chats = data.filter(chat => chat.from_username === user.username)
                 chats.forEach(chat => {
-                    dispatch(newMessage({ date: chat.send_date, from: chat.from_username, id: chat.id, message: chat.message, currentUsername }))
+                    dispatch(newMessage({ date: chat.date, from: chat.from_username, id: chat.id, message: chat.message, currentUsername }))
                 });
             });
         })
+        console.log("syncing: " + JSON.stringify(data));
 
-        //TODO update in db
+        await addAllOtherUsersIfNotExists(currentUsername, unkownUsers)
+        await syncNewMessagesReceive(data.map(item => {
+            return {
+                from_user: item.from_username,
+                message: item.message,
+                reply: null,
+                date: item.date,
+                to_user: currentUsername,
+                id: "" + item.id,
+                saved: true,
+                seen: false
+            }
+        }))
 
         return data.map(item => item.id)
     }
@@ -155,19 +186,30 @@ export const newMessageThunk = createAsyncThunk<number[], { id: number, message:
         const user = getState().chat.users.find(user => user.username === data.from)
         if (user) {
             dispatch(newMessage({ ...data, currentUsername }))
+
+            await addOtherUsersIfNotExists(currentUsername, user)
         } else {
 
-            console.log(data.from);
-
-            getUserInfo([data.from], token).then(res => {
-
+            await getUserInfo([data.from], token).then(res => {
                 dispatch(newUser(res[0]))
                 dispatch(newMessage({ ...data, currentUsername }))
+                return addOtherUsersIfNotExists(currentUsername, res[0])
             })
+
         }
+        console.log(data);
 
+        await saveNewMessageReceive({
+            from_user: data.from,
+            message: data.message,
+            reply: null,
+            date: data.date,
+            to_user: currentUsername,
+            id: "" + data.id,
+            saved: true,
+            seen: false
+        })
 
-        //TODO update in db
         return [data.id]
     }
 )
@@ -207,6 +249,10 @@ const chatSlice = createSlice({
         },
         newUser(state: chatSliceStateType, action: PayloadAction<OtherUserType>) {
             state.users = [action.payload, ...state.users]
+        },
+        deleteUser(state: chatSliceStateType, action: PayloadAction<string>) {
+            state.users = state.users.filter(user => user.username !== action.payload)
+
         }
 
     },
@@ -234,7 +280,10 @@ const chatSlice = createSlice({
         })
         builder.addCase(confrimMessageThunk.fulfilled, (state, action) => {
             const username = action.payload.id.split("-")[0]
-            const chat = state.users.find(item => item.username === username)?.chats.find(chat => chat.id === action.payload.id)
+            const chat = state.users.find(item => item.username === username)?.chats.find(c => c.id === action.payload.id)
+            console.log(action.payload.id);
+            console.log(JSON.stringify(state.users.find(item => item.username === username)?.chats));
+
             if (!chat) return
             chat.id = action.payload.newId
             chat.saved = true
@@ -243,5 +292,5 @@ const chatSlice = createSlice({
 })
 
 
-export const { newMessage, newUser } = chatSlice.actions
+export const { newMessage, newUser, deleteUser } = chatSlice.actions
 export default chatSlice.reducer

@@ -4,11 +4,12 @@ import colors from "../../theme/colors"
 import typogrphy from "../../theme/font"
 import Octicons from "react-native-vector-icons/Octicons"
 import Ionicons from "react-native-vector-icons/Ionicons"
+import { getTimeForMessage } from "./utils"
 
 
 type ChatItemProps = {
     message: string
-    time: string
+    time: number
     self: boolean
     sendToServer?: boolean
     seen?: boolean
@@ -48,16 +49,18 @@ const ChatItem = ({ message, self, time, seen, sendToServer }: ChatItemProps) =>
                             color: "#888",
                             marginRight: 2
                         }}>
-                        {time}
+                        {getTimeForMessage(time)}{self}
                     </Text>
-                    {!sendToServer ?
-                        <Octicons name="clock" />
-                        :
-                        !seen ?
-                            <Ionicons name="checkmark" size={14} color={colors.primary} />
+                    {self ?
+                        !sendToServer ?
+                            <Octicons name="clock" />
                             :
-                            <Ionicons name="checkmark-done" size={14} color={colors.primary} />
-
+                            !seen ?
+                                <Ionicons name="checkmark" size={14} color={colors.primary} />
+                                :
+                                <Ionicons name="checkmark-done" size={14} color={colors.primary} />
+                        :
+                        <></>
                     }
                 </View>
 

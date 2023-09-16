@@ -12,6 +12,7 @@ import Animated from "react-native-reanimated"
 import { OtherUserType } from "../../../types"
 import { useSelector } from "react-redux"
 import { RootState } from "../../../store"
+import { getTimeForMessage } from "../../RoomScreen/utils"
 
 
 
@@ -25,16 +26,6 @@ const ListChats = () => {
     const navigation = useNavigation<NativeStackNavigationProp<MainStackParams, "home">>()
 
 
-    useEffect(() => {
-
-        if (socket) {
-            socket.onmessage = (message) => {
-
-            }
-        }
-
-    }, [socket])
-
 
     const itemClicked = (username: string) => {
 
@@ -44,8 +35,7 @@ const ListChats = () => {
 
     const renderItem = ({ item, index }: { item: OtherUserType, index: number }) => {
 
-
-
+        if (item.chats.length === 0) return null
         return (
             <ChatListItem item={item} onPress={() => itemClicked(item.username)} />
         )
@@ -96,7 +86,7 @@ const ChatListItem = ({ item, onPress }: { item: OtherUserType, onPress: () => v
                             color: "#888",
                             alignSelf: 'flex-end'
                         }}>
-                        {item.lastActiveDateTime}
+                        {getTimeForMessage(item.chats[0].date)}
                     </Text>
                 </View>
 

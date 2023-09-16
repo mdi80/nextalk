@@ -7,11 +7,12 @@ import typogrphy from "../../theme/font"
 import Text from "../Text"
 import { Image } from "expo-image"
 import Animated from "react-native-reanimated"
+import { getDateFromTimeStampForLastSeen } from "./utils"
 
 export type SimpleHeader = {
     name: string
     username: string
-    lastseen: string
+    lastseen: number | "online"
 }
 export default function RoomHeader({ name, username, lastseen }: SimpleHeader) {
 
@@ -21,9 +22,6 @@ export default function RoomHeader({ name, username, lastseen }: SimpleHeader) {
     const back = () => {
         navigation.goBack()
     }
-
-
-
 
     return (
         <View style={{
@@ -53,9 +51,16 @@ export default function RoomHeader({ name, username, lastseen }: SimpleHeader) {
                     <Text style={styles.mainTitle}>
                         {name}
                     </Text>
-                    <Text style={styles.subTitle}>
-                        last seen at {lastseen}
-                    </Text>
+                    {lastseen === "online" ?
+                        <Text style={styles.subTitle}>
+                            online
+                        </Text>
+
+                        :
+                        <Text style={styles.subTitle}>
+                            {getDateFromTimeStampForLastSeen(lastseen)}
+                        </Text>
+                    }
                 </View>
             </View>
 

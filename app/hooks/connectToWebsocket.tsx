@@ -84,7 +84,6 @@ const useConnectToWS = (socket: WebSocket | null, setSocket: (socket: WebSocket 
                         break;
                     default:
                         console.log("Unkown message from server!");
-
                         break;
                 }
 

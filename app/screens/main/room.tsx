@@ -1,4 +1,4 @@
-import { JSX } from "react"
+import React, { JSX, useEffect } from "react"
 import { ActivityIndicator, ImageBackground, SafeAreaView, StatusBar, View } from "react-native"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 import Text from "../../components/Text"
@@ -7,7 +7,7 @@ import { AppStatusBar } from "../../components/StatusBar"
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "../../store"
 import MainHeader from "../../components/MainScreen/Header"
-import { RouteProp } from "@react-navigation/native"
+import { RouteProp, useFocusEffect } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { MainStackParams, RootStackParamsType } from "../../navigator/types"
 import RoomHeader from "../../components/RoomScreen/RoomHeader"
@@ -18,8 +18,9 @@ import { ChatType, OtherUserType } from "../../types"
 import RoomChatList from "../../components/RoomScreen/ChatList"
 import { getUserInfo } from "../../apis/verification"
 import { logoutCurrentUser } from "../../reducers/auth"
-import { newUser } from "../../reducers/chat"
+import { deleteUser, newUser } from "../../reducers/chat"
 import { DotIndicator } from "react-native-indicators"
+import { BackHandler } from "react-native"
 
 type Props = {
     route: RouteProp<MainStackParams, 'room'>
@@ -32,6 +33,7 @@ function RoomScreen({ navigation, route }: Props): JSX.Element | null {
     const user = useSelector<RootState, OtherUserType | undefined>(state => state.chat.users.find(item => item.username == route.params.username))
     const token = useSelector<RootState, string | null>(state => state.auth.token)
     const dispatch = useDispatch<AppDispatch>()
+
     if (!user) {
         // TODO Get user info
         if (!token) {
