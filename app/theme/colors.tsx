@@ -2,7 +2,7 @@
 
 export default {
     primary: "#0DB787",
-    secondry: "",
+    secondry: "#eefff8",
     darkSecond: "",
     error: "#cc3333",
     light: {
@@ -12,8 +12,8 @@ export default {
         lightText: "",
     },
     dark: {
-        background: "#111117",
-        secondBacground: "#222227",
+        background: "#0f0f0f",
+        secondBacground: "#101010",
         text: "white",
         lightText: "",
     },

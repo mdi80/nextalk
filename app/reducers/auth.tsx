@@ -1,12 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { logoutToken } from "../apis/auth"
-import { IUserInfo } from "../db/service"
+import { IUserInfo } from "../db/auth-service"
 import { RootState } from "../store"
-import { deleteUserFromFromStorage } from "../db/apis"
+import { deleteUserFromFromStorage } from "../db/auth-apis"
 import { loadUsersData } from "./app"
 
-
-type logOutProps = {}
 export const logoutCurrentUser = createAsyncThunk<void, void, { state: RootState }>(
     'auth/logout',
     async (_, { getState, dispatch }) => {
@@ -37,7 +35,7 @@ export interface IUserState {
     firstname: string | null
     lastname: string | null
     token: string | null
-    username: string | null | undefined
+    username: string | null 
 
 }
 
@@ -46,7 +44,7 @@ const initialState: IUserState = {
     firstname: null,
     lastname: null,
     token: null,
-    username: undefined,
+    username: null,
 }
 
 
@@ -61,7 +59,7 @@ const authSlice = createSlice({
                 state.token = action.payload.token
                 state.firstname = action.payload.firstname
                 state.lastname = action.payload.lastname
-                state.username = action.payload.username ? action.payload.username : null
+                state.username = action.payload.username 
             } else {
                 state.phone = null
                 state.token = null

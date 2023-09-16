@@ -16,7 +16,7 @@ export default function FloatingButton(props: propsType) {
 
         <TouchableOpacity
             {...props}
-
+            
             style={[{
                 elevation: 2,
                 justifyContent: 'center',

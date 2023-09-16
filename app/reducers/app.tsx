@@ -1,7 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { IUserState, logoutCurrentUser, setUserInfo } from "./auth"
-import { IUserInfo, deleteUser } from "../db/service"
-import { changeAccountInStorage, getAllUsersFromStorage } from "../db/apis"
+import { IUserInfo, deleteUser } from "../db/auth-service"
+import { changeAccountInStorage, getAllUsersFromStorage } from "../db/auth-apis"
 import { WEB_SOCKET_URL } from "../config"
 import { RootState } from "../store"
 import { getTicket } from "../apis/ws"
@@ -47,14 +47,14 @@ export const loadUsersData = createAsyncThunk(
     async (_, { getState, dispatch }) => {
         const payload: { user: IUserInfo | null, users: IUserInfo[] } = { user: null, users: [] }
         payload.users = await getAllUsersFromStorage()
-        
+
         payload.users.forEach(user => {
             if (user.lastactive) {
                 payload.user = user
             }
         });
         console.log(payload.user);
-        
+
         console.log("loadusers");
         dispatch(setUserInfo(payload.user))
 

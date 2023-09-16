@@ -8,14 +8,11 @@ export default StyleSheet.create({
 
     container: {
         padding: innerPadding,
+        width: "100%",
         paddingTop: (StatusBar.currentHeight ? StatusBar.currentHeight : innerPadding),
         paddingBottom: 20,
         flexDirection: "row",
         alignItems: 'center',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
         justifyContent: 'space-between',
     },
     mainTitle: {

@@ -1,9 +1,9 @@
 
 
-export interface chatsType {
-    id: number
+export interface chatItemType {
+    username: string
     from: string
-    message: string
+    lastmessage: string
     imageUrl: string
-    lastConnectDate: string
+    latestConnect: string
 }

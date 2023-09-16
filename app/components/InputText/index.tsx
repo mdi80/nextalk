@@ -15,7 +15,7 @@ export interface RefTextInput {
 
 
 const TextInput = forwardRef((props: props, ref: Ref<RefTextInput>) => {
-    const { colorText } = useTheme()
+    const { colorText, colorScheme } = useTheme()
     const tnref = useRef<RNTextInput | null>(null)
 
     useImperativeHandle(ref, () => ({ focus }));
@@ -26,7 +26,7 @@ const TextInput = forwardRef((props: props, ref: Ref<RefTextInput>) => {
         <RNTextInput
             ref={tnref}
             cursorColor="#777"
-            placeholderTextColor="#aaaaaa77"
+            placeholderTextColor={colorScheme === "light" ? "#888888" : "#aaaaaa77"}
             {...props}
             style={[{
                 borderBottomColor: colors.primary,

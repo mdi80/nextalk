@@ -1,10 +1,11 @@
-import { IUserInfo, addUser, createTableIfNotExists, deleteUser, getDBConnection, getUsersInfo, updateUserLastActive } from "./service";
+import { IUserInfo, addUser, createUserTableIfNotExists, deleteUser, getUsersInfo, updateUserLastActive } from "./auth-service";
+import { getDBConnection } from "./service";
 
 
 const getUserFromStorage = async (): Promise<IUserInfo | null> => {
     try {
         const db = await getDBConnection();
-        await createTableIfNotExists(db, "users");
+        await createUserTableIfNotExists(db, "users");
         const users = await getUsersInfo(db, "users")
 
         //No users in db
@@ -29,7 +30,7 @@ const getUserFromStorage = async (): Promise<IUserInfo | null> => {
 const getAllUsersFromStorage = async (): Promise<IUserInfo[]> => {
     try {
         const db = await getDBConnection();
-        await createTableIfNotExists(db, "users");
+        await createUserTableIfNotExists(db, "users");
         const users = await getUsersInfo(db, "users")
 
         let activeUser
@@ -63,7 +64,7 @@ const addUserToStorage = async (data: IUserInfo): Promise<IUserInfo | null> => {
     try {
 
         const db = await getDBConnection();
-        await createTableIfNotExists(db, "users");
+        await createUserTableIfNotExists(db, "users");
         const users = await getUsersInfo(db, "users")
 
 
@@ -85,7 +86,7 @@ const addUserToStorage = async (data: IUserInfo): Promise<IUserInfo | null> => {
 const changeAccountInStorage = async (targetPhone: string): Promise<IUserInfo[]> => {
 
     const db = await getDBConnection();
-    await createTableIfNotExists(db, "users");
+    await createUserTableIfNotExists(db, "users");
     const users = await getUsersInfo(db, "users")
 
 
@@ -106,7 +107,7 @@ const changeAccountInStorage = async (targetPhone: string): Promise<IUserInfo[]>
 const deleteUserFromFromStorage = async (token: string): Promise<void> => {
 
     const db = await getDBConnection();
-    await createTableIfNotExists(db, "users");
+    await createUserTableIfNotExists(db, "users");
 
     await deleteUser(db, "users", token)
 }
