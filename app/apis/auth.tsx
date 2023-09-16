@@ -105,7 +105,7 @@ interface returnUserInfo {
     firstname: string,
     lastname: string,
     phone: string,
-    userid: string | undefined,
+    userid: string,
     date_joined: string
 
 }

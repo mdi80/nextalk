@@ -63,7 +63,7 @@ function AddUserNameScreen({ navigation, route }: Props): JSX.Element {
                 return addUserToStorage({
                     token: res.token,
                     phone: res.user.phone,
-                    username: res.user.userid == "null" ? undefined : res.user.userid,
+                    username: res.user.userid,
                     firstname: res.user.firstname,
                     lastname: res.user.lastname,
                     lastactive: true,

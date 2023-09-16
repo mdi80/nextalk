@@ -37,8 +37,8 @@ function RoomScreen({ navigation, route }: Props): JSX.Element | null {
         if (!token) {
             dispatch(logoutCurrentUser())
         } else {
-            getUserInfo(route.params.username, token).then(res => {
-                dispatch(newUser(res))
+            getUserInfo([route.params.username], token).then(res => {
+                dispatch(newUser(res[0]))
             })
         }
 

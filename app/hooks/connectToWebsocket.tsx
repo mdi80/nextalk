@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "../store"
 import { getTicketWithToken, restartSocketValues, setWebsocketStatus, ws_status } from "../reducers/app"
 import { WEB_SOCKET_URL } from "../config"
-import { confrimMessageThunk, newMessageThunk } from "../reducers/chat"
+import { confrimMessageThunk, newMessageThunk, syncNewMessages } from "../reducers/chat"
 
 const useConnectToWS = (socket: WebSocket | null, setSocket: (socket: WebSocket | null) => void) => {
 
@@ -65,13 +65,22 @@ const useConnectToWS = (socket: WebSocket | null, setSocket: (socket: WebSocket 
                         // console.log(data);
                         break;
                     case 'sync_new_messages':
+                        console.log(data);
 
-                        
+                        dispatch(syncNewMessages(data)).then((action) => {
+                            console.log("ack for " + JSON.stringify(action.payload));
+
+                            socket.send(JSON.stringify({ type: "ack_message", data: action.payload }))
+                        })
                         break;
 
                     case "new_message":
                         // console.log(data);
-                        dispatch(newMessageThunk(data))
+                        dispatch(newMessageThunk(data)).then(action => {
+                            console.log("ack for " + JSON.stringify(action.payload));
+
+                            socket.send(JSON.stringify({ type: "ack_message", data: action.payload }))
+                        })
                         break;
                     default:
                         console.log("Unkown message from server!");

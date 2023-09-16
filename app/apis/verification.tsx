@@ -32,7 +32,7 @@ const checkUserExistsWithUsername = async (username: string, token: string): Pro
     }
 }
 
-const getUserInfo = async (username: string, token: string): Promise<OtherUserType> => {
+const getUserInfo = async (usernames: string[], token: string): Promise<OtherUserType[]> => {
 
     try {
         const res = await axios({
@@ -41,7 +41,7 @@ const getUserInfo = async (username: string, token: string): Promise<OtherUserTy
             headers: {
                 "Authorization": "Token " + token
             },
-            data: { username }
+            data: { usernames }
         })
         console.log(res.data);
 
