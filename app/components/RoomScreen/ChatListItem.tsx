@@ -5,6 +5,8 @@ import typogrphy from "../../theme/font"
 import Octicons from "react-native-vector-icons/Octicons"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import { getTimeForMessage } from "./utils"
+import useTheme from "../../theme"
+import { useEffect, useState } from "react"
 
 
 type ChatItemProps = {
@@ -16,7 +18,16 @@ type ChatItemProps = {
 }
 
 const ChatItem = ({ message, self, time, seen, sendToServer }: ChatItemProps) => {
+    const { colorBackground, colorScheme, colorText } = useTheme()
+    const [back, setBack] = useState(colorBackground)
+    useEffect(() => {
 
+        if (colorScheme === 'dark') {
+            setBack(!self ? colors.dark.secondBacground : "#113232")
+        } else {
+            setBack(self ? colors.secondry : "white")
+        }
+    }, [colorScheme])
     return (
 
         <View
@@ -24,7 +35,7 @@ const ChatItem = ({ message, self, time, seen, sendToServer }: ChatItemProps) =>
 
             <View
                 style={{
-                    backgroundColor: self ? colors.secondry : "white",
+                    backgroundColor: back,
                     borderRadius: 10,
                     margin: 5,
                     maxWidth: "85%",

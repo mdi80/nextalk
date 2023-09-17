@@ -22,7 +22,6 @@ export function getDateFromTimeStampForLastSeen(t: number): string {
 
 export function getTimeForMessage(t: number): string {
     const date = new Date(t)
-    console.log(date.toString());
 
     return date.getHours() + ":" + date.getMinutes()
 }

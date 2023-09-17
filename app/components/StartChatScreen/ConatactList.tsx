@@ -23,66 +23,8 @@ export type sectionType = {
     data: contactType[]
 }
 
-const DATA = [
-    {
-        name: "ali",
-        phone: "+98934345",
-    },
-    {
-        name: "reza",
-        phone: "+98934345"
-    },
-    {
-        name: "Hasan",
-        phone: "+98934345"
-    },
-    {
-        name: "alireza",
-        phone: "+98934345"
-    },
-    {
-        name: "hosein",
-        phone: "+98934345"
-    },
-    {
-        name: "ali",
-        phone: "+98934345"
-    },
-    {
-        name: "reza",
-        phone: "+98934345"
-    },
-    {
-        name: "hasan",
-        phone: "+98934345"
-    },
-    {
-        name: "alireza",
-        phone: "+98934345"
-    },
-    {
-        name: "hosein",
-        phone: "+98934345"
-    }, {
-        name: "ali",
-        phone: "+98934345"
-    },
-    {
-        name: "reza",
-        phone: "+98934345"
-    },
-    {
-        name: "hasan",
-        phone: "+98934345"
-    },
-    {
-        name: "alireza",
-        phone: "+98934345"
-    },
-    {
-        name: "hosein",
-        phone: "+98934345"
-    },
+const DATA: contactType[] | (() => contactType[]) = [
+
 ]
 
 

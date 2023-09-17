@@ -61,7 +61,7 @@ export const insertNewChat = async (db: SQLiteDatabase, username: string, data: 
                 '${data.to_user}',
                 '${data.from_user}',
                 '${data.message}',
-                ${data.date}
+                ${Math.floor(data.date * 1000)}
             );`
         );
 
@@ -83,7 +83,7 @@ export const insertAllNewChats = async (db: SQLiteDatabase, data: ChatType[]): P
                 '${c.to_user}',
                 '${c.from_user}',
                 '${c.message}',
-                ${Math.floor(c.date)}
+                ${Math.floor(c.date * 1000)}
             ),`
         })
 
