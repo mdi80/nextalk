@@ -13,6 +13,8 @@ import DrawerContent from "../../components/MainScreen/DrawerContent"
 import ListChats from "../../components/MainScreen/ChatList"
 import FloatingButton from "../../components/floatingButton"
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5"
+import { checkChatExists, createChatTableIfNotExists } from "../../db/chat-service"
+import { getDBConnection } from "../../db/service"
 
 
 type Props = {
@@ -22,7 +24,7 @@ type Props = {
 function MainScreen({ navigation }: Props): JSX.Element {
 
     // const dispatch = useDispatch<AppDispatch>()
-    const navigateToStartChat = () => {
+    const navigateToStartChat = async () => {
 
         navigation.navigate("startchat")
 

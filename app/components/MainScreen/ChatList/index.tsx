@@ -13,6 +13,7 @@ import { OtherUserType } from "../../../types"
 import { useSelector } from "react-redux"
 import { RootState } from "../../../store"
 import { getTimeForMessage } from "../../RoomScreen/utils"
+import { SortOtherUserChat } from "../../../reducers/utils"
 
 
 
@@ -21,11 +22,8 @@ const ListChats = () => {
 
     const socket = useContext(WebSocketContext)
     const otherUsers = useSelector<RootState, OtherUserType[]>(state => state.chat.users)
-
     const [len, setLen] = useState([])
     const navigation = useNavigation<NativeStackNavigationProp<MainStackParams, "home">>()
-
-
 
     const itemClicked = (username: string) => {
 
@@ -52,7 +50,6 @@ const ListChats = () => {
 
 const ChatListItem = ({ item, onPress }: { item: OtherUserType, onPress: () => void }) => {
 
-    // if (item.chats.length === 0) return null
 
     return (
         <TouchableOpacity
@@ -64,17 +61,14 @@ const ChatListItem = ({ item, onPress }: { item: OtherUserType, onPress: () => v
                 flexDirection: 'row',
                 alignItems: 'center'
             }}>
-            <Animated.View sharedTransitionTag={"chat-profile-" + item.username}>
-
-                <Image
-                    source={require("../../../assets/1_main.jpg")}
-                    style={{
-                        marginHorizontal: 10,
-                        width: 50,
-                        height: 50,
-                        borderRadius: 50 / 2
-                    }} />
-            </Animated.View>
+            <Image
+                source={require("../../../assets/1_main.jpg")}
+                style={{
+                    marginHorizontal: 10,
+                    width: 50,
+                    height: 50,
+                    borderRadius: 50 / 2
+                }} />
             <View style={{ flex: 1 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text>

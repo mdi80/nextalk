@@ -9,7 +9,7 @@ export default StyleSheet.create({
     container: {
         padding: innerPadding,
         width: "100%",
-        paddingTop: (StatusBar.currentHeight ? StatusBar.currentHeight : innerPadding),
+        paddingTop: (StatusBar.currentHeight ? StatusBar.currentHeight : innerPadding) + 20,
         paddingBottom: 20,
         flexDirection: "row",
         alignItems: 'center',

@@ -19,8 +19,8 @@ const RoomChatBox = ({ username }: { username: string }) => {
     const onSendMessage = () => {
         console.log("send to" + username);
 
+        dispatch(sendMessageThunk({ message: message.trim(), socket, username }))
         setMessage("")
-        dispatch(sendMessageThunk({ message, socket, username }))
     }
 
 

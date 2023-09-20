@@ -8,14 +8,16 @@ import { addAllOtherUsersIfNotExists, addOtherUsersIfNotExists, getOtherUsersFro
 import { loadChatsFromUsername } from "../db/chat-service"
 import { confirmMessageInStorage, loadChatFromStorage, saveNewMessageReceive, saveNewMessageSend, syncNewMessagesReceive } from "../db/chat-apis"
 import { getUsersInfo } from "../db/auth-service"
+import { SortOtherUserChat } from "./utils"
 
 
-export const loadOtherUsersThunk = createAsyncThunk<OtherUserType[], void, { state: RootState }>(
+export const loadChatsFromStorageThunk = createAsyncThunk<OtherUserType[], void, { state: RootState }>(
     'chat/loadOtherUsersThunk',
     async (_, { getState, dispatch }) => {
 
         const currentUsername = getState().auth.username
-        if (!currentUsername) {
+        const currentPhone = getState().auth.phone
+        if (!currentUsername || !currentPhone) {
             dispatch(logoutCurrentUser())
             return []
         }
@@ -23,11 +25,10 @@ export const loadOtherUsersThunk = createAsyncThunk<OtherUserType[], void, { sta
         const users: OtherUserType[] = []
 
         const db_users = await getOtherUsersFromStorage(currentUsername)
-        console.log("db_users" + db_users);
 
         await Promise.all(
             db_users.map(async item => {
-                const chats = await loadChatFromStorage(item.username)
+                const chats = await loadChatFromStorage(item.username, currentPhone)
 
                 users.push({
                     username: item.username,
@@ -40,7 +41,7 @@ export const loadOtherUsersThunk = createAsyncThunk<OtherUserType[], void, { sta
                 })
             })
         )
-        console.log("user:" + users);
+
 
         return users
     }
@@ -55,7 +56,8 @@ export const sendMessageThunk = createAsyncThunk<
         'chat/sendMessageThunk',
         async ({ message, socket, username }, { getState, dispatch, rejectWithValue }) => {
             const currentUsername = getState().auth.username
-            if (!currentUsername) {
+            const currentPhone = getState().auth.phone
+            if (!currentUsername || !currentPhone) {
                 dispatch(logoutCurrentUser())
                 return rejectWithValue("Logout!")
             }
@@ -70,12 +72,12 @@ export const sendMessageThunk = createAsyncThunk<
                 from_user: currentUsername,
                 message: message,
                 reply: null,
-                date: new Date().getTime(),
+                date: new Date().getTime() / 1000,
                 to_user: username,
                 id: messageId,
                 saved: false,
                 seen: false
-            })
+            }, currentPhone)
             socket?.send(JSON.stringify({
                 type: "send_message",
                 data: {
@@ -112,8 +114,9 @@ export const syncNewMessages = createAsyncThunk<number[], { to_user: string, id:
     async (data, { getState, dispatch }) => {
 
         const { username: currentUsername, token } = getState().auth
+        const currentPhone = getState().auth.phone
 
-        if (!currentUsername || !token) {
+        if (!currentUsername || !currentPhone || !token) {
             dispatch(logoutCurrentUser())
             return []
         }
@@ -160,7 +163,7 @@ export const syncNewMessages = createAsyncThunk<number[], { to_user: string, id:
                 saved: true,
                 seen: false
             }
-        }))
+        }), currentPhone)
 
         return data.map(item => item.id)
     }
@@ -175,8 +178,9 @@ export const newMessageThunk = createAsyncThunk<number[], { id: number, message:
     async (data, { getState, dispatch }) => {
 
         const { username: currentUsername, token } = getState().auth
+        const currentPhone = getState().auth.phone
 
-        if (!currentUsername || !token) {
+        if (!currentUsername || !token || !currentPhone) {
             dispatch(logoutCurrentUser())
             return []
         }
@@ -208,7 +212,7 @@ export const newMessageThunk = createAsyncThunk<number[], { id: number, message:
             id: "" + data.id,
             saved: true,
             seen: false
-        })
+        }, currentPhone)
 
         return [data.id]
     }
@@ -246,19 +250,24 @@ const chatSlice = createSlice({
             } else {
                 throw new Error("Unkown error: User not found!!!");
             }
+            state.users = SortOtherUserChat(state.users)
         },
         newUser(state: chatSliceStateType, action: PayloadAction<OtherUserType>) {
             state.users = [action.payload, ...state.users]
+            state.users = SortOtherUserChat(state.users)
         },
         deleteUser(state: chatSliceStateType, action: PayloadAction<string>) {
             state.users = state.users.filter(user => user.username !== action.payload)
+            state.users = SortOtherUserChat(state.users)
+        },
 
-        }
-
+        deleteAllChats(state: chatSliceStateType) {
+            state.users = []
+        },
     },
     extraReducers: builder => {
-        builder.addCase(loadOtherUsersThunk.fulfilled, (state, action) => {
-            state.users = action.payload
+        builder.addCase(loadChatsFromStorageThunk.fulfilled, (state, action) => {
+            state.users = SortOtherUserChat(action.payload)
         })
         builder.addCase(sendMessageThunk.fulfilled, (state, action) => {
 
@@ -276,6 +285,7 @@ const chatSlice = createSlice({
                     seen: false,
                     saved: false,
                 }, ...user.chats]
+            state.users = SortOtherUserChat(state.users)
 
         })
         builder.addCase(confrimMessageThunk.fulfilled, (state, action) => {
@@ -292,5 +302,5 @@ const chatSlice = createSlice({
 })
 
 
-export const { newMessage, newUser, deleteUser } = chatSlice.actions
+export const { newMessage, newUser, deleteUser, deleteAllChats } = chatSlice.actions
 export default chatSlice.reducer

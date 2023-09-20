@@ -35,17 +35,16 @@ export default function RoomHeader({ name, username, lastseen }: SimpleHeader) {
 
                     <Ionicons name="arrow-back" size={35} color="white" />
                 </TouchableOpacity>
-                <Animated.View sharedTransitionTag={"chat-profile-" + username}>
+                {/* <Animated.View sharedTransitionTag={"chat-profile-" + username}> */}
 
-                    <Image
-                        source={require("../../assets/1_main.jpg")}
-                        style={{
-                            marginHorizontal: 10,
-                            width: 50,
-                            height: 50,
-                            borderRadius: 50 / 2
-                        }} />
-                </Animated.View>
+                <Image
+                    source={require("../../assets/1_main.jpg")}
+                    style={{
+                        marginHorizontal: 10,
+                        width: 50,
+                        height: 50,
+                        borderRadius: 50 / 2
+                    }} />
                 <View>
 
                     <Text style={styles.mainTitle}>
@@ -76,7 +75,7 @@ const styles = StyleSheet.create({
 
     container: {
         padding: innerPadding,
-        paddingTop: (StatusBar.currentHeight ? StatusBar.currentHeight : innerPadding),
+        paddingTop: (StatusBar.currentHeight ? StatusBar.currentHeight + innerPadding : 2 * innerPadding),
         paddingBottom: 20,
         flexDirection: "row",
         alignItems: 'center',

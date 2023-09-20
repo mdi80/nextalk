@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 
     container: {
         padding: innerPadding,
-        paddingTop: (StatusBar.currentHeight ? StatusBar.currentHeight : innerPadding),
+        paddingTop: (StatusBar.currentHeight ? StatusBar.currentHeight + innerPadding : 2 * innerPadding),
         paddingBottom: 20,
         flexDirection: "row",
         alignItems: 'center',

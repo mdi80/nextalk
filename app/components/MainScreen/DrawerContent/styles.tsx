@@ -44,7 +44,7 @@ export const drawerHeaderStyles = (scheme: "light" | "dark") => {
             backgroundColor: scheme === "light" ? colors.primary : colors.dark.background,
             paddingHorizontal: 20,
             paddingBottom: 0,
-            paddingTop: StatusBar.currentHeight,
+            paddingTop: StatusBar.currentHeight ? StatusBar.currentHeight + 20 : 40,
         },
         headerDrawerContent: {
             flexDirection: 'row',

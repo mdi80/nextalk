@@ -18,6 +18,7 @@ export type OtherUserTypeDB = {
 export const createOtherusersTableIfNotExists = async (db: SQLiteDatabase) => {
 
     // create table if not exists
+
     const query = `CREATE TABLE IF NOT EXISTS Otherusers(
       username TEXT,
       for_user TEXT,
@@ -27,7 +28,7 @@ export const createOtherusersTableIfNotExists = async (db: SQLiteDatabase) => {
       lastActiveDateTime INTEGER,
       imagePath TEXT,
       PRIMARY KEY (username,for_user),
-      UNIQUE (username,phone)
+      UNIQUE (username,phone,for_user)
     );`;
 
     await db.executeSql(query);
@@ -38,7 +39,6 @@ export const getAllOtherUsersOf = async (db: SQLiteDatabase, currentUsername: st
     const query = `SELECT * FROM Otherusers where for_user='${currentUsername}'`
 
     const results = await db.executeSql(query);
-    console.log("here    ");
 
     const users: OtherUserTypeDB[] = []
 

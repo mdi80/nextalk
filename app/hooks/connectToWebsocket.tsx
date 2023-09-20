@@ -28,7 +28,7 @@ const useConnectToWS = (socket: WebSocket | null, setSocket: (socket: WebSocket 
             socket?.close()
             setSocket(null)
             dispatch(getTicketWithToken())
-        }   
+        }
         if (wsocket_status === "connecting") {
             console.log('Socket: Connecting');
             if (!ticket) {
@@ -62,28 +62,31 @@ const useConnectToWS = (socket: WebSocket | null, setSocket: (socket: WebSocket 
                 switch (type) {
                     case 'confirm-save-message':
                         dispatch(confrimMessageThunk(data))
-                        // console.log(data);
+
                         break;
                     case 'sync_new_messages':
                         console.log(data);
 
                         dispatch(syncNewMessages(data)).then((action) => {
-                            console.log("ack for " + JSON.stringify(action.payload));
-
-                            socket.send(JSON.stringify({ type: "ack_message", data: action.payload }))
+                            if (action.payload) {
+                                socket.send(JSON.stringify({ type: "ack_message", data: action.payload }))
+                                console.log("ack for " + JSON.stringify(action.payload));
+                            } else
+                                console.error("ack is undifined ");
                         })
                         break;
 
                     case "new_message":
-                        // console.log(data);
                         dispatch(newMessageThunk(data)).then(action => {
-                            console.log("ack for " + JSON.stringify(action.payload));
-
-                            socket.send(JSON.stringify({ type: "ack_message", data: action.payload }))
+                            if (action.payload) {
+                                socket.send(JSON.stringify({ type: "ack_message", data: action.payload }))
+                                console.log("ack for " + JSON.stringify(action.payload));
+                            } else
+                                console.error("ack is undifined ");
                         })
                         break;
                     default:
-                        console.log("Unkown message from server!");
+                        console.error("Unkown message from server!");
                         break;
                 }
 
@@ -97,8 +100,6 @@ const useConnectToWS = (socket: WebSocket | null, setSocket: (socket: WebSocket 
         }
 
     }, [wsocket_status])
-
-
 
     useEffect(() => {
         dispatch(setWebsocketStatus("init"))

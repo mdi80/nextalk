@@ -14,7 +14,7 @@ import { StyleSheet } from "react-native"
 import colors from "../../theme/colors"
 import { loadUsersData, restartSocketValues, setAllUsers } from "../../reducers/app"
 import { IUserInfo } from "../../db/auth-service"
-import { loadOtherUsersThunk } from "../../reducers/chat"
+import { loadChatsFromStorageThunk } from "../../reducers/chat"
 type navigationType = NativeStackNavigationProp<RootStackParamsType, 'intro'>
 type Props = {
     navigation: navigationType
@@ -33,7 +33,7 @@ function IntroScreen({ navigation }: Props): JSX.Element {
     React.useEffect(() => {
         setTimeout(() => { setTimerFinshed(true) }, 1000)
         dispatch(loadUsersData()).then(() => {
-            return dispatch(loadOtherUsersThunk())
+            return dispatch(loadChatsFromStorageThunk())
         }).finally(() => {
             dispatch(restartSocketValues())
             setUserLoading(false)

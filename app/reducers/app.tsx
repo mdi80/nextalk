@@ -5,6 +5,7 @@ import { changeAccountInStorage, getAllUsersFromStorage } from "../db/auth-apis"
 import { WEB_SOCKET_URL } from "../config"
 import { RootState } from "../store"
 import { getTicket } from "../apis/ws"
+import { deleteAllChats, loadChatsFromStorageThunk } from "./chat"
 
 
 
@@ -63,7 +64,7 @@ export const loadUsersData = createAsyncThunk<{ user: IUserInfo | null, users: I
 )
 
 type changeAccountProps = { phoneNumber: string }
-export const changeAccount = createAsyncThunk(
+export const changeAccount = createAsyncThunk<{ user: IUserInfo | null, users: IUserInfo[] }, changeAccountProps, { state: RootState }>(
     'app/chnageAccount',
     async ({ phoneNumber }: changeAccountProps, { getState, dispatch }) => {
         const payload: { user: IUserInfo | null, users: IUserInfo[] } = { user: null, users: [] }
@@ -74,9 +75,10 @@ export const changeAccount = createAsyncThunk(
                 payload.user = user
             }
         });
-
+        dispatch(deleteAllChats())
         dispatch(setUserInfo(payload.user))
-        dispatch(setWebsocketStatus("init"))
+        await dispatch(loadChatsFromStorageThunk())
+        // dispatch(setWebsocketStatus("init"))
         return payload
 
     }

@@ -18,7 +18,9 @@ export const createChatTableIfNotExists = async (db: SQLiteDatabase) => {
       date INTEGER NOT NULL,
       saved BOOLEAN DEFAULT 0,
       seen BOOLEAN DEFAULT 0,
-      reply INTEGER
+      reply INTEGER,
+      current_user_phone TEXT NOT NULL,
+      FOREIGN KEY (current_user_phone) REFERENCES users(phone)
     );`;
 
     await db.executeSql(query);
@@ -26,16 +28,22 @@ export const createChatTableIfNotExists = async (db: SQLiteDatabase) => {
 
 
 
-export const loadChatsFromUsername = async (db: SQLiteDatabase, username: string): Promise<ChatType[]> => {
+export const loadChatsFromUsername = async (db: SQLiteDatabase, username: string, currentPhone: string): Promise<ChatType[]> => {
     try {
 
         const results = await db.executeSql(
             `SELECT 
                 id,to_user,from_user,message,date,saved,seen,reply
             FROM chats
-            where chat_username='${username}'
+            WHERE chat_username='${username}' AND current_user_phone='${currentPhone}'
             ORDER BY date DESC;`
         );
+        console.warn(`SELECT 
+                id,to_user,from_user,message,date,saved,seen,reply
+            FROM chats
+            where chat_username='${username}' AND current_user_phone='${currentPhone}'
+            ORDER BY date DESC;`);
+
         const chats: ChatType[] = []
         results.forEach(result => {
             for (let index = 0; index < result.rows.length; index++) {
@@ -49,19 +57,22 @@ export const loadChatsFromUsername = async (db: SQLiteDatabase, username: string
     }
 };
 
-export const insertNewChat = async (db: SQLiteDatabase, username: string, data: ChatType): Promise<void> => {
+export const insertNewChat = async (db: SQLiteDatabase, username: string, data: ChatType, currentPhone: string): Promise<void> => {
     try {
-
-
+        if (await checkChatExists(db, data.id)) {
+            console.error(`Insert new: Chat Already exists! Skiping (${data.id})`);
+            return
+        }
         await db.executeSql(
-            `INSERT INTO chats(chat_username,id,to_user,from_user,message,date) 
+            `INSERT INTO chats(chat_username,id,to_user,from_user,message,date,current_user_phone) 
             VALUES (
                 '${username}',
                 '${data.id}',
                 '${data.to_user}',
                 '${data.from_user}',
                 '${data.message}',
-                ${Math.floor(data.date * 1000)}
+                ${Math.floor(data.date * 1000)},
+                '${currentPhone}'
             );`
         );
 
@@ -71,26 +82,32 @@ export const insertNewChat = async (db: SQLiteDatabase, username: string, data: 
     }
 };
 
-export const insertAllNewChats = async (db: SQLiteDatabase, data: ChatType[]): Promise<void> => {
+export const insertAllNewChats = async (db: SQLiteDatabase, data: ChatType[], currentPhone: string): Promise<void> => {
     try {
 
-        let query = "INSERT INTO chats(chat_username,id,to_user,from_user,message,date) VALUES"
+        const query = "INSERT INTO chats(chat_username,id,to_user,from_user,message,date,current_user_phone) VALUES"
+        let rows = ""
+        await Promise.all(
+            data.map(async c => {
+                if (await checkChatExists(db, c.id)) {
+                    console.error(`Insert All: Chat Already exists! Skiping (${c.id})`);
+                } else {
+                    rows += `(
+                    '${c.from_user}',
+                    '${c.id}',
+                    '${c.to_user}',
+                    '${c.from_user}',
+                    '${c.message}',
+                    ${Math.floor(c.date * 1000)},
+                    '${currentPhone}'
+                ),`
+                }
+            })
+        )
+        if (rows === "") return
+        rows = rows.substring(0, rows.length - 1) + ";"
 
-        data.forEach(c => {
-            query += `(
-                '${c.from_user}',
-                '${c.id}',
-                '${c.to_user}',
-                '${c.from_user}',
-                '${c.message}',
-                ${Math.floor(c.date * 1000)}
-            ),`
-        })
-
-        query = query.substring(0, query.length - 1) + ";"
-        console.log(query);
-
-        await db.executeSql(query);
+        await db.executeSql(query + rows);
 
     } catch (error) {
         console.error(error);
@@ -103,7 +120,9 @@ export const insertAllNewChats = async (db: SQLiteDatabase, data: ChatType[]): P
 export const updateChatIdWithConfirm = async (db: SQLiteDatabase, data: { id: string, newId: string }): Promise<void> => {
     try {
 
-
+        if (!await checkChatExists(db, data.id)) {
+            console.error(`Update db: Chat with id ${data.id} Dose not exists!`);
+        }
         await db.executeSql(`UPDATE chats 
         SET id='${data.newId}',saved=1
         WHERE id='${data.id}';`);
@@ -113,3 +132,11 @@ export const updateChatIdWithConfirm = async (db: SQLiteDatabase, data: { id: st
         throw Error('Failed to update chat!');
     }
 };
+
+
+export const checkChatExists = async (db: SQLiteDatabase, chatid: string): Promise<boolean> => {
+
+    const query = `SELECT id FROM chats WHERE id='${chatid}'`;
+    const res = await db.executeSql(query);
+    return res[0].rows.length >= 1;
+}
