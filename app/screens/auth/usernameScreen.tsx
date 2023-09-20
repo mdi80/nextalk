@@ -19,7 +19,7 @@ import { login, signup } from "../../apis/auth"
 import { addUserToStorage } from "../../db/auth-apis"
 import { useDispatch } from "react-redux"
 import { setUserInfo } from "../../reducers/auth"
-import { loadUsersData } from "../../reducers/app"
+import { changeAccount, loadUsersData } from "../../reducers/app"
 import { AppDispatch } from "../../store"
 type Props = {
     route: RouteProp<AuthStackParams, 'setusername'>
@@ -74,8 +74,7 @@ function AddUserNameScreen({ navigation, route }: Props): JSX.Element {
         }).then(data => {
 
             if (data) {
-
-                dispatch(loadUsersData())
+                dispatch(changeAccount({ phoneNumber: data.phone }))
             } else {
                 throw Error("DB Error!!!!")
             }

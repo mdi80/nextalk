@@ -54,9 +54,6 @@ export const loadUsersData = createAsyncThunk<{ user: IUserInfo | null, users: I
                 payload.user = user
             }
         });
-        console.log(payload.user);
-
-        console.log("loadusers");
         dispatch(setUserInfo(payload.user))
 
         return payload
@@ -78,7 +75,7 @@ export const changeAccount = createAsyncThunk<{ user: IUserInfo | null, users: I
         dispatch(deleteAllChats())
         dispatch(setUserInfo(payload.user))
         await dispatch(loadChatsFromStorageThunk())
-        // dispatch(setWebsocketStatus("init"))
+
         return payload
 
     }
