@@ -8,13 +8,12 @@ export const getOtherUsersFromStorage = async (currentUsername: string): Promise
         const db = await getDBConnection();
         await createOtherusersTableIfNotExists(db);
         const users = await getAllOtherUsersOf(db, currentUsername)
-        console.log("user of s: " + users);
 
         return users
 
     } catch (error) {
-        console.log(error)
-        console.log("db error!")
+        console.error(error)
+        console.error("db error!")
     }
     return []
 }
@@ -40,8 +39,8 @@ export const addOtherUsersIfNotExists = async (currentUsername: string, data: Ot
         await addOtherUserFor(db, db_data)
 
     } catch (error) {
-        console.log(error)
-        console.log("db error!")
+        console.error(error)
+        console.error("db error!")
         throw error
     }
 }
@@ -73,8 +72,8 @@ export const addAllOtherUsersIfNotExists = async (currentUsername: string, users
         if (unsavedUsers.length === 0) return
         await addAllOtherUserFor(db, unsavedUsers)
     } catch (error) {
-        console.log(error)
-        console.log("db error!")
+        console.error(error)
+        console.error("db error!")
         throw error
     }
 }

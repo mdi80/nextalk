@@ -103,7 +103,6 @@ export const confrimMessageThunk = createAsyncThunk<{ id: string, newId: string 
         }
 
         await confirmMessageInStorage({ id, newId })
-        console.log("confirm");
 
         return { id, newId }
     }
@@ -201,7 +200,6 @@ export const newMessageThunk = createAsyncThunk<number[], { id: number, message:
             })
 
         }
-        console.log(data);
 
         await saveNewMessageReceive({
             from_user: data.from,
@@ -272,6 +270,8 @@ const chatSlice = createSlice({
         builder.addCase(sendMessageThunk.fulfilled, (state, action) => {
 
             const user = state.users.find(item => item.username === action.payload.username)
+            console.log(action.payload.message);
+
             if (!user) {
                 throw new Error("Unkown error: User not found!!!");
             } else
@@ -291,8 +291,6 @@ const chatSlice = createSlice({
         builder.addCase(confrimMessageThunk.fulfilled, (state, action) => {
             const username = action.payload.id.split("-")[0]
             const chat = state.users.find(item => item.username === username)?.chats.find(c => c.id === action.payload.id)
-            console.log(action.payload.id);
-            console.log(JSON.stringify(state.users.find(item => item.username === username)?.chats));
 
             if (!chat) return
             chat.id = action.payload.newId

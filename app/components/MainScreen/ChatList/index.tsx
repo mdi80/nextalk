@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import { FlatList, TouchableOpacity, View } from "react-native"
+import { FlatList, TouchableOpacity, View, Text as RNText } from "react-native"
 import { chatItemType } from "./types"
 import Text from "../../Text"
 import { WebSocketContext } from "../../../webSocketContextContainer"
@@ -50,6 +50,7 @@ const ListChats = () => {
 
 const ChatListItem = ({ item, onPress }: { item: OtherUserType, onPress: () => void }) => {
 
+    console.error(item.chats[0]?.message);
 
     return (
         <TouchableOpacity
@@ -85,11 +86,11 @@ const ChatListItem = ({ item, onPress }: { item: OtherUserType, onPress: () => v
                 </View>
 
                 <Text
-                    numberOfLines={1}
-                    ellipsizeMode='tail'
                     style={{
                         fontSize: typogrphy.fontSize.sm,
-                        color: "#555"
+                        color: "#555",
+                        lineHeight: 25,
+                        maxHeight: 25
                     }}>
                     {item.chats[0]?.message}
                 </Text>

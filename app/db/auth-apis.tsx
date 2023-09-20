@@ -22,8 +22,8 @@ const getUserFromStorage = async (): Promise<IUserInfo | null> => {
         return users[0]
 
     } catch (error) {
-        console.log(error)
-        console.log("db error!")
+        console.error(error)
+        console.error("db error!")
     }
     return null
 }
@@ -44,7 +44,7 @@ const getAllUsersFromStorage = async (): Promise<IUserInfo[]> => {
             if (users[0]) {
 
                 await updateUserLastActive(db, "users", users[0].phone, true)
-                console.log("here");
+
                 const newusers = await getUsersInfo(db, "users")
                 return newusers
             } else return []
@@ -53,8 +53,8 @@ const getAllUsersFromStorage = async (): Promise<IUserInfo[]> => {
         return users
 
     } catch (error) {
-        console.log(error)
-        console.log("db error!")
+        console.error(error)
+        console.error("db error!")
     }
     return []
 }
@@ -77,8 +77,8 @@ const addUserToStorage = async (data: IUserInfo): Promise<IUserInfo | null> => {
         return data
 
     } catch (error) {
-        console.log(error)
-        console.log("db error!")
+        console.error(error)
+        console.error("db error!")
         return null
     }
 }
@@ -98,9 +98,6 @@ const changeAccountInStorage = async (targetPhone: string): Promise<IUserInfo[]>
     });
 
     return await getUsersInfo(db, "users")
-    // if (userData)
-    // else throw Error("No user in db with number: " + targetPhone)
-
 }
 
 

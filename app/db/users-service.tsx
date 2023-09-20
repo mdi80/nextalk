@@ -48,7 +48,7 @@ export const getAllOtherUsersOf = async (db: SQLiteDatabase, currentUsername: st
         }
     })
 
-    console.log(users);
+ 
     return users
 };
 export const addOtherUserFor = async (db: SQLiteDatabase, data: OtherUserTypeDB): Promise<void> => {
@@ -64,7 +64,7 @@ export const addOtherUserFor = async (db: SQLiteDatabase, data: OtherUserTypeDB)
          '${data.imagePath}');`;
 
 
-    console.log("log:" + await db.executeSql(query))
+    await db.executeSql(query)
 };
 
 export const addAllOtherUserFor = async (db: SQLiteDatabase, data: OtherUserTypeDB[]): Promise<void> => {

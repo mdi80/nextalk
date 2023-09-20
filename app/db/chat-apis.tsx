@@ -14,8 +14,8 @@ export const loadChatFromStorage = async (username: string, currentPhone: string
         return chats
 
     } catch (error) {
-        console.log(error)
-        console.log("db error!")
+        console.error(error)
+        console.error("db error!")
     }
     return []
 }

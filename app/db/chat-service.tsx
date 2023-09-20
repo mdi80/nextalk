@@ -38,11 +38,6 @@ export const loadChatsFromUsername = async (db: SQLiteDatabase, username: string
             WHERE chat_username='${username}' AND current_user_phone='${currentPhone}'
             ORDER BY date DESC;`
         );
-        console.warn(`SELECT 
-                id,to_user,from_user,message,date,saved,seen,reply
-            FROM chats
-            where chat_username='${username}' AND current_user_phone='${currentPhone}'
-            ORDER BY date DESC;`);
 
         const chats: ChatType[] = []
         results.forEach(result => {
