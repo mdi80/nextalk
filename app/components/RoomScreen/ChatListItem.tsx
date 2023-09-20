@@ -60,7 +60,7 @@ const ChatItem = ({ message, self, time, seen, sendToServer }: ChatItemProps) =>
                             color: "#888",
                             marginRight: 2
                         }}>
-                        {getTimeForMessage(time)}{self}
+                        {getTimeForMessage(time)}
                     </Text>
                     {self ?
                         !sendToServer ?
