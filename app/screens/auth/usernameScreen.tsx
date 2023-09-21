@@ -42,10 +42,11 @@ function AddUserNameScreen({ navigation, route }: Props): JSX.Element {
     const dispatch = useDispatch<AppDispatch>()
 
     const submit = () => {
-        setLoading(true)
+
         if (username.trim() === "") {
-            Keyboard.dismiss()
+            return
         }
+        setLoading(true)
 
         signup({
             firstname: route.params.firstname,
@@ -102,7 +103,7 @@ function AddUserNameScreen({ navigation, route }: Props): JSX.Element {
                 <TextInput
                     style={{ marginVertical: 10, }}
                     autoFocus
-                    placeholder="Username (optional)"
+                    placeholder="Username"
                     value={username}
                     onChangeText={(t) => {
                         setError('');

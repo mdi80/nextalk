@@ -75,7 +75,7 @@ interface signupProps {
 }
 
 
-const signup = async (data: signupProps): Promise<boolean | string> => {
+const signup = async (data: signupProps): Promise<boolean> => {
 
     try {
         const res = await axios.post(SIGNUP_URL, data, {
@@ -88,8 +88,7 @@ const signup = async (data: signupProps): Promise<boolean | string> => {
 
     } catch (error: any | AxiosError) {
         if (error.response) {
-            // console.log(error.response.data)
-            if (error.response.data['userid'])
+            if (error.response.status === 409)
                 return false
             throw Error("Unkown errors!")
         } else if (error.request) {
