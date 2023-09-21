@@ -1,5 +1,5 @@
 import { ChatType } from "../types";
-import { createChatTableIfNotExists, insertAllNewChats, insertNewChat, loadChatsFromUsername, updateChatIdWithConfirm } from "./chat-service";
+import { createChatTableIfNotExists, insertAllNewChats, insertNewChat, loadChatsFromUsername, loadUnsendsChatsFromUsername, updateChatIdWithConfirm } from "./chat-service";
 import { getDBConnection } from "./service";
 
 export const loadChatFromStorage = async (username: string, currentPhone: string): Promise<ChatType[]> => {
@@ -9,8 +9,6 @@ export const loadChatFromStorage = async (username: string, currentPhone: string
 
         const chats = await loadChatsFromUsername(db, username, currentPhone)
 
-
-        //Set first account in db to be login to app
         return chats
 
     } catch (error) {
@@ -29,7 +27,6 @@ export const saveNewMessageSend = async (data: ChatType, currentPhone: string) =
     const chats = await insertNewChat(db, data.to_user, data, currentPhone)
 
 
-    //Set first account in db to be login to app
     return chats
 
 }
@@ -59,8 +56,18 @@ export const confirmMessageInStorage = async (data: { id: string, newId: string 
 
     const chats = await updateChatIdWithConfirm(db, data)
 
-    //Set first account in db to be login to app
     return chats
 
 }
 
+
+
+export const getUnsendMessagesFromStorage = async (currentPhone: string) => {
+    const db = await getDBConnection();
+    await createChatTableIfNotExists(db);
+
+    const unsend_chats = await loadUnsendsChatsFromUsername(db, currentPhone)
+
+    return unsend_chats
+
+} 

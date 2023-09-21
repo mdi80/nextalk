@@ -88,13 +88,13 @@ export type ws_status = "init" | "start" | "connecting" | "connected" | "faild"
 export interface IAppState {
     ws_status: ws_status
     ticket: string | null
-    allUsersInfo: IUserInfo[] | null
+    allUsersInfo: IUserInfo[]
 }
 
 const initialState: IAppState = {
     ticket: null,
     ws_status: "init",
-    allUsersInfo: null
+    allUsersInfo: []
 }
 
 
@@ -102,7 +102,7 @@ const appSlice = createSlice({
     name: "app",
     initialState,
     reducers: {
-        setAllUsers(state: IAppState, action: PayloadAction<IUserInfo[] | null>) {
+        setAllUsers(state: IAppState, action: PayloadAction<IUserInfo[]>) {
             state.allUsersInfo = action.payload
         },
         setWebsocketStatus(state: IAppState, action: PayloadAction<ws_status>) {
@@ -125,12 +125,6 @@ const appSlice = createSlice({
             state.ws_status = "connecting"
         })
         builder.addCase(getTicketWithToken.rejected, (state, action) => {
-            if (action.payload === -5) {//invlid token
-                //TODO logut the user from device and change active user 
-                console.log('here');
-
-
-            }
             state.ws_status = "init"
             state.ticket = null
         })

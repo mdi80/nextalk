@@ -6,7 +6,7 @@ import { logoutCurrentUser } from "./auth"
 import { getUserInfo } from "../apis/verification"
 import { addAllOtherUsersIfNotExists, addOtherUsersIfNotExists, getOtherUsersFromStorage } from "../db/users-apis"
 import { loadChatsFromUsername } from "../db/chat-service"
-import { confirmMessageInStorage, loadChatFromStorage, saveNewMessageReceive, saveNewMessageSend, syncNewMessagesReceive } from "../db/chat-apis"
+import { confirmMessageInStorage, getUnsendMessagesFromStorage, loadChatFromStorage, saveNewMessageReceive, saveNewMessageSend, syncNewMessagesReceive } from "../db/chat-apis"
 import { getUsersInfo } from "../db/auth-service"
 import { SortOtherUserChat } from "./utils"
 
@@ -89,6 +89,40 @@ export const sendMessageThunk = createAsyncThunk<
             return { from: currentUsername, message, username, id: messageId }
         }
     )
+
+
+export const sendUnsendMessages = createAsyncThunk<void, { socket: WebSocket | null }, { state: RootState }>(
+    'chat/sendUnsendMessages',
+    async ({ socket }, { getState, dispatch, rejectWithValue }) => {
+        const currentPhone = getState().auth.phone
+        const users = getState().app.allUsersInfo
+        if (!currentPhone || !users) {
+            dispatch(logoutCurrentUser())
+            return rejectWithValue("Logout!")
+        }
+
+        let messages: { token: string, message: string, username: string, messageId: string }[] = []
+
+        await Promise.all(users.map(async user => {
+            await getUnsendMessagesFromStorage(user.phone).then(ms => {
+                messages = messages.concat(ms.map(item => ({
+                    token: user.token,
+                    message: item.message,
+                    username: item.to_user,
+                    messageId: item.id
+                })))
+                console.log("messages: " + JSON.stringify(messages));
+
+            })
+
+        }))
+
+        socket?.send(JSON.stringify({
+            type: "send_unsent_message",
+            data: messages
+        }))
+    }
+)
 
 
 
@@ -215,7 +249,6 @@ export const newMessageThunk = createAsyncThunk<number[], { id: number, message:
         return [data.id]
     }
 )
-
 
 type chatSliceStateType = {
     users: OtherUserType[]

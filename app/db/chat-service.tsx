@@ -52,6 +52,31 @@ export const loadChatsFromUsername = async (db: SQLiteDatabase, username: string
     }
 };
 
+
+export const loadUnsendsChatsFromUsername = async (db: SQLiteDatabase, currentPhone: string): Promise<ChatType[]> => {
+    try {
+
+        const results = await db.executeSql(
+            `SELECT 
+                id,to_user,from_user,message,date,saved,seen,reply
+            FROM chats
+            WHERE saved=0 AND current_user_phone='${currentPhone}'
+            ORDER BY date DESC;`
+        );
+
+        const chats: ChatType[] = []
+        results.forEach(result => {
+            for (let index = 0; index < result.rows.length; index++) {
+                chats.push(result.rows.item(index))
+            }
+        });
+        return chats;
+    } catch (error) {
+        console.error(error);
+        throw Error('Failed to get users!');
+    }
+};
+
 export const insertNewChat = async (db: SQLiteDatabase, username: string, data: ChatType, currentPhone: string): Promise<void> => {
     try {
         if (await checkChatExists(db, data.id)) {

@@ -8,7 +8,6 @@ export interface ChatType {
     saved: boolean
     seen: boolean
     reply: number | null
-
 }
 
 
