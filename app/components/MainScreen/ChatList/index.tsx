@@ -14,6 +14,8 @@ import { useSelector } from "react-redux"
 import { RootState } from "../../../store"
 import { getTimeForMessage } from "../../RoomScreen/utils"
 import { SortOtherUserChat } from "../../../reducers/utils"
+import colors from "../../../theme/colors"
+import FontAwesome from "react-native-vector-icons/FontAwesome"
 
 
 
@@ -50,7 +52,9 @@ const ListChats = () => {
 
 const ChatListItem = ({ item, onPress }: { item: OtherUserType, onPress: () => void }) => {
 
-    console.error(item.chats[0]?.message);
+    const currentUsername = useSelector<RootState, string | null>(state => state.auth.username)
+
+    const saveMessageItem = currentUsername === item.username
 
     return (
         <TouchableOpacity
@@ -62,18 +66,34 @@ const ChatListItem = ({ item, onPress }: { item: OtherUserType, onPress: () => v
                 flexDirection: 'row',
                 alignItems: 'center'
             }}>
-            <Image
-                source={require("../../../assets/1_main.jpg")}
-                style={{
+            {saveMessageItem ?
+                <View style={{
                     marginHorizontal: 10,
                     width: 50,
                     height: 50,
-                    borderRadius: 50 / 2
-                }} />
+                    borderRadius: 25,
+                    backgroundColor: "#36f9c5",
+                    alignItems: 'center',
+                    justifyContent: "center",
+                    overflow: 'hidden'
+                }}>
+                    <FontAwesome name="bookmark-o" size={25} color="white" />
+                </View>
+
+                :
+                <Image
+                    source={require("../../../assets/1_main.jpg")}
+                    style={{
+                        marginHorizontal: 10,
+                        width: 50,
+                        height: 50,
+                        borderRadius: 50 / 2
+                    }} />
+            }
             <View style={{ flex: 1 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text>
-                        {item.firstname} {item.lastname}
+                        {saveMessageItem ? "Saved Messages" : item.firstname + " " + item.lastname}
                     </Text>
                     <Text
                         style={{

@@ -8,6 +8,9 @@ import Text from "../Text"
 import { Image } from "expo-image"
 import Animated from "react-native-reanimated"
 import { getDateFromTimeStampForLastSeen } from "./utils"
+import FontAwesome from "react-native-vector-icons/FontAwesome"
+import { useSelector } from "react-redux"
+import { RootState } from "../../store"
 
 export type SimpleHeader = {
     name: string
@@ -23,6 +26,9 @@ export default function RoomHeader({ name, username, lastseen }: SimpleHeader) {
         navigation.goBack()
     }
 
+    const currentUsername = useSelector<RootState, string | null>(state => state.auth.username)
+
+
     return (
         <View style={{
             ...styles.container, backgroundColor: colorScheme === "light" ? colors.primary : colors.dark.secondBacground
@@ -36,29 +42,47 @@ export default function RoomHeader({ name, username, lastseen }: SimpleHeader) {
                     <Ionicons name="arrow-back" size={35} color="white" />
                 </TouchableOpacity>
                 {/* <Animated.View sharedTransitionTag={"chat-profile-" + username}> */}
+                {currentUsername === username ?
 
-                <Image
-                    source={require("../../assets/1_main.jpg")}
-                    style={{
+                    <View style={{
                         marginHorizontal: 10,
                         width: 50,
                         height: 50,
-                        borderRadius: 50 / 2
-                    }} />
+                        borderRadius: 25,
+                        backgroundColor: "#36f9c5",
+                        alignItems: 'center',
+                        justifyContent: "center",
+                        overflow: 'hidden'
+                    }}>
+                        <FontAwesome name="bookmark-o" size={25} color="white" />
+                    </View>
+                    :
+                    <Image
+                        source={require("../../assets/1_main.jpg")}
+                        style={{
+                            marginHorizontal: 10,
+                            width: 50,
+                            height: 50,
+                            borderRadius: 50 / 2
+                        }} />
+                }
                 <View>
 
                     <Text style={styles.mainTitle}>
-                        {name}
+                        {currentUsername === username ? "Saved Messages" : name}
                     </Text>
-                    {lastseen === "online" ?
-                        <Text style={styles.subTitle}>
-                            online
-                        </Text>
+                    {currentUsername !== username &&
+                        (
+                            lastseen === "online" ?
+                                <Text style={styles.subTitle}>
+                                    online
+                                </Text>
 
-                        :
-                        <Text style={styles.subTitle}>
-                            {getDateFromTimeStampForLastSeen(lastseen)}
-                        </Text>
+                                :
+                                <Text style={styles.subTitle}>
+                                    {getDateFromTimeStampForLastSeen(lastseen)}
+                                </Text>
+                        )
                     }
                 </View>
             </View>

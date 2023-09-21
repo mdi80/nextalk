@@ -16,11 +16,18 @@ const RoomChatList = ({ username }: { username: string }) => {
     const socket = useContext(WebSocketContext)
     const chats = useSelector<RootState, ChatType[] | undefined>(state => state.chat.users.find(item => item.username == username)?.chats)
     const dispatch = useDispatch<AppDispatch>()
+    const currentUsername = useSelector<RootState, string | null>(state => state.auth.username)
 
+    const saveMessage = (currentUsername === username)
 
     const renderItem = ({ item }: { item: ChatType }) => {
 
-        return <ChatItem seen={item.seen} sendToServer={item.saved} time={item.date} message={item.message} self={item.from_user !== username} />
+        return <ChatItem
+            seen={item.seen}
+            sendToServer={item.saved}
+            time={item.date}
+            message={item.message}
+            self={(saveMessage || item.from_user !== username)} />
     }
 
     return (
