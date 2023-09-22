@@ -154,6 +154,10 @@ function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
                         setError("Incorrect!")
                     else {
                         clearTimer();
+                        setCodeSend(false)
+                        setPhoneInput("")
+                        setPhoneSmsSent(null)
+
                         if (res.new)
                             navigation.navigate("signup", { phone_token: res.key, phone: phoneInput.trim() })
                         else
