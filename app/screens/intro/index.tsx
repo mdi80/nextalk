@@ -15,6 +15,7 @@ import colors from "../../theme/colors"
 import { loadUsersData, restartSocketValues, setAllUsers } from "../../reducers/app"
 import { IUserInfo } from "../../db/auth-service"
 import { loadChatsFromStorageThunk } from "../../reducers/chat"
+import { Image } from "expo-image"
 type navigationType = NativeStackNavigationProp<RootStackParamsType, 'intro'>
 type Props = {
     navigation: navigationType
@@ -54,7 +55,7 @@ function IntroScreen({ navigation }: Props): JSX.Element {
         <Container style={styles.container}>
             <AppStatusBar translucent forcelight />
 
-            <FontAwesome name="send-o" color="white" size={100} />
+            <Image source={require("../../assets/send-white.png")} style={{ width: 100, height: 100 }} />
             {timerFinished && userLoading &&
 
                 <DotIndicator

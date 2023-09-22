@@ -6,6 +6,7 @@ import Animated from "react-native-reanimated"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { AuthStackParams } from "../../navigator/types"
 import colors from "../../theme/colors"
+import { Image } from "expo-image"
 
 
 
@@ -22,7 +23,7 @@ function IntroAuthScreen({ navigation }: Props): JSX.Element {
 
     React.useEffect(() => {
         if (timerFinished)
-            navigation.navigate("phone",{})
+            navigation.navigate("phone", {})
 
     }, [timerFinished])
 
@@ -36,7 +37,7 @@ function IntroAuthScreen({ navigation }: Props): JSX.Element {
             <AppStatusBar translucent forcelight />
 
             <Animated.View sharedTransitionTag="logo">
-                <FontAwesome name="send-o" color="white" size={100} />
+                <Image source={require("../../assets/send-white.png")} style={{ width: 100, height: 100 }} />
             </Animated.View>
 
         </Container >

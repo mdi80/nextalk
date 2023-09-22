@@ -26,6 +26,7 @@ import SimpleDialog from "../../components/dialogs/simpleDialog"
 import { AppState } from "react-native"
 import { AppDispatch, RootState } from "../../store"
 import { IAppState, loadUsersData } from "../../reducers/app"
+import { Image } from "expo-image"
 
 type Props = {
     route: RouteProp<AuthStackParams, 'phone'>
@@ -231,7 +232,7 @@ function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
                 style={stylesphoneVeify().contentContainer}>
 
                 <Animated.View sharedTransitionTag="logo">
-                    <FontAwesome name="send-o" color={colors.primary} size={100} />
+                    <Image source={require("../../assets/send.png")} style={{ width: 100, height: 100 }} />
                 </Animated.View>
 
                 <View style={{ alignItems: 'center' }}>

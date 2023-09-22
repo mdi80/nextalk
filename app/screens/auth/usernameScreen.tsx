@@ -21,6 +21,7 @@ import { useDispatch } from "react-redux"
 import { setUserInfo } from "../../reducers/auth"
 import { changeAccount, loadUsersData } from "../../reducers/app"
 import { AppDispatch } from "../../store"
+import { Image } from "expo-image"
 type Props = {
     route: RouteProp<AuthStackParams, 'setusername'>
     navigation: NativeStackNavigationProp<AuthStackParams, 'setusername'>
@@ -122,7 +123,7 @@ function AddUserNameScreen({ navigation, route }: Props): JSX.Element {
                     flexDirection: 'row'
                 }}
             >
-                <FontAwesome name="send-o" color={colors.primary} size={20} />
+                <Image source={require("../../assets/send.png")} style={{ width: 20, height: 20 }} />
                 <Text style={{
                     color: "#888",
                     fontSize: typogrphy.fontSize.xsm,

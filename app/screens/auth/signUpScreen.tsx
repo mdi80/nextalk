@@ -17,6 +17,7 @@ import FloatingButton from "../../components/floatingButton"
 import type { RouteProp } from '@react-navigation/native';
 import { DotIndicator } from "react-native-indicators"
 import typogrphy from "../../theme/font"
+import { Image } from "expo-image"
 type Props = {
     route: RouteProp<AuthStackParams, 'signup'>
     navigation: NativeStackNavigationProp<AuthStackParams, 'signup'>
@@ -86,7 +87,7 @@ function SignUpScreen({ navigation, route }: Props): JSX.Element {
                     flexDirection: 'row'
                 }}
             >
-                <FontAwesome name="send-o" color={colors.primary} size={20} />
+                <Image source={require("../../assets/send.png")} style={{ width: 20, height: 20 }} />
                 <Text style={{
                     color: "#888",
                     fontSize: typogrphy.fontSize.xsm,
