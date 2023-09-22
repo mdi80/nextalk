@@ -90,7 +90,6 @@ function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
             const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
             return () => {
                 subscription.remove();
-                clearTimer()
             };
         }, [codeSend, backToInsertPhone, navigation])
     );
@@ -103,15 +102,18 @@ function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
             setPhoneInput('')
         }
     }, [timerSec])
-
     React.useEffect(() => {
         if (!phoneSmsSent) return
         if (timerInterval.current) {
             setTimerSec(0)
             clearInterval(timerInterval.current)
         }
+
+
         const initTime = new Date()
         timerInterval.current = setInterval(() => {
+            console.log(Math.floor((new Date().getTime() - initTime.getTime()) / 1000));
+
             setTimerSec(Math.floor((new Date().getTime() - initTime.getTime()) / 1000))
         }, 1000)
 
@@ -122,6 +124,7 @@ function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
     }, [phoneSmsSent])
 
     const clearTimer = () => {
+
         if (timerInterval.current)
             clearInterval(timerInterval.current)
         setTimerSec(0)
@@ -150,7 +153,7 @@ function InsertPhoneVerify({ navigation, route }: Props): JSX.Element {
                     if (!res)
                         setError("Incorrect!")
                     else {
-
+                        clearTimer();
                         if (res.new)
                             navigation.navigate("signup", { phone_token: res.key, phone: phoneInput.trim() })
                         else
