@@ -101,21 +101,17 @@ export const sendUnsendMessages = createAsyncThunk<void, { socket: WebSocket | n
             return rejectWithValue("Logout!")
         }
 
-        let messages: { token: string, message: string, username: string, messageId: string }[] = []
+        let messages: { message: string, username: string, messageId: string }[] = []
 
-        await Promise.all(users.map(async user => {
-            await getUnsendMessagesFromStorage(user.phone).then(ms => {
-                messages = messages.concat(ms.map(item => ({
-                    token: user.token,
-                    message: item.message,
-                    username: item.to_user,
-                    messageId: item.id
-                })))
-                console.log("messages: " + JSON.stringify(messages));
+        await getUnsendMessagesFromStorage(currentPhone).then(ms => {
+            messages = messages.concat(ms.map(item => ({
+                message: item.message,
+                username: item.to_user,
+                messageId: item.id
+            })))
+        })
 
-            })
 
-        }))
 
         socket?.send(JSON.stringify({
             type: "send_unsent_message",
